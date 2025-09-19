@@ -1,0 +1,1 @@
+cross/cross/resources/sources/fuentes/bd/*.sql filter=lfs diff=lfs merge=lfs -text
