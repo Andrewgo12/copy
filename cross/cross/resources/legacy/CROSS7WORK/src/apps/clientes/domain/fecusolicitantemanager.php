@@ -1,0 +1,242 @@
+<?php
+class FeCuSolicitanteManager{
+	function FeCuSolicitanteManager(){
+		$this->objGateway = Application::getDataGateway("Solicitante");
+	}
+
+	function setData($rcData){
+		$this->rcData = $rcData;
+	}
+
+	function getResult(){
+		return $this->rcResult;
+	}
+
+	function UnsetRequest() {
+		settype($sbKey,"string");
+		settype($sbValue,"string");
+		foreach ($_REQUEST as $sbKey => $sbValue) {
+			if (strpos($sbKey,"__")!==false)
+			unset ($_REQUEST[$sbKey]);
+		}
+		unset($_REQUEST["contacto_locacodigos_desc"]);
+		unset($_REQUEST["cliente_locacodigos_desc"]);
+	}
+	/**
+	 * @copyright Copyright 2012 &copy; FullEngine
+	 *
+	 * Obtiene los contactos.
+	 * @author freina <freina@parquesoft.com>
+	 * @date 28-Aug-2012 17:21
+	 * @location Cali-Colombia
+	 */
+	function getContacto(){
+
+		settype($objService,"object");
+		settype($rcData,"array");
+		settype($rcResult,"array");
+		settype($rcTmp,"array");
+		settype($rcRow, "array");
+
+		$rcData = $this->rcData;
+
+		if($rcData && is_array($rcData)){
+
+			extract($rcData);
+			$this->objGateway->setData(array("contindentis"=>$contindentis));
+			$this->objGateway->getContacto();
+			$rcTmp = $this->objGateway->getResult();
+
+			if(is_array($rcTmp) && $rcTmp){
+
+				// se obtiene el nombre de la localizacion
+				if($rcTmp[0]["locacodigos"]){
+					$objService = Application :: loadServices("General");
+					$rcRow = $objService->getByIdLocalizacion($rcTmp[0]["locacodigos"]);
+					if(is_array($rcRow) && $rcRow){
+						$rcTmp[0]["locanombres"] = $rcRow[0]["locanombres"];
+					}
+				}
+
+				$rcResult["result"] = true;
+				$rcResult["data"] = $rcTmp[0];
+			}else{
+				$rcResult["message"] = 23;
+				$rcResult["result"] = false;
+			}
+		}else{
+			$rcResult["message"] = 100;
+			$rcResult["result"] = false;
+		}
+		$this->rcResult = $rcResult;
+	}
+
+	/**
+	 * @copyright Copyright 2012 &copy; FullEngine
+	 *
+	 * Obtiene los clientes.
+	 * @author freina <freina@parquesoft.com>
+	 * @date 28-Aug-2012 17:21
+	 * @location Cali-Colombia
+	 */
+	function getCliente(){
+
+		settype($objService, "object");
+		settype($rcData,"array");
+		settype($rcResult,"array");
+		settype($rcTmp,"array");
+		settype($rcRow, "array");
+
+		$rcData = $this->rcData;
+
+		if($rcData && is_array($rcData)){
+
+			extract($rcData);
+			$this->objGateway->setData(array("clieidentifs"=>$clieidentifs));
+			$this->objGateway->getCliente();
+			$rcTmp = $this->objGateway->getResult();
+
+			if(is_array($rcTmp) && $rcTmp){
+
+				// se obtiene el nombre de la localizacion
+				if($rcTmp[0]["locacodigos"]){
+					$objService = Application :: loadServices("General");
+					$rcRow = $objService->getByIdLocalizacion($rcTmp[0]["locacodigos"]);
+					if(is_array($rcRow) && $rcRow){
+						$rcTmp[0]["locanombres"] = $rcRow[0]["locanombres"];
+					}
+				}
+
+				$rcResult["result"] = true;
+				$rcResult["data"] = $rcTmp[0];
+			}else{
+				$rcResult["message"] = 23;
+				$rcResult["result"] = false;
+			}
+		}else{
+			$rcResult["message"] = 100;
+			$rcResult["result"] = false;
+		}
+		$this->rcResult = $rcResult;
+	}
+	//-----------------------------
+
+	/**
+	 * @copyright Copyright 2012 &copy; FullEngine
+	 *
+	 * Ingreso del solicitante
+	 * Si el contacto no existe lo ingresa, igual con el cliente
+	 * Si la relacion contacto-cliente no existe la crea
+	 * @author freina <freina@parquesoft.com>
+	 * @date 31-Aug-2012 10:08
+	 * @location Cali-Colombia
+	 */
+	function addSolicitante(){
+
+		settype($objManager,"object");
+		settype($objDate,"object");
+		settype($rcData,"array");
+		settype($rcUser,"array");
+		settype($rcResult,"array");
+		settype($rcSql,"array");
+		settype($rcParams,"array");
+		settype($rcTmp,"array");
+		settype($sbResult,"string");
+		settype($sbStatus,"string");
+		settype($sbFlag,"string");
+		settype($sbFlagI,"string");
+		settype($sbSolicodigos, "string");
+		settype($nuDate,"integer");
+
+		$rcData = $this->rcData;
+
+		if($rcData && is_array($rcData)){
+
+			extract($rcData);
+			$this->objGateway->setExecuteSql(false);
+			$sbFlag = false;
+			$sbFlagI = true;
+				
+			//Trae los datos del usuario
+			$rcUser = Application :: getUserParam();
+			if (!is_array($rcUser)) {
+				//Si no existe usuario en sesion
+				$rcUser["lang"] = Application :: getSingleLang();
+			}
+
+			$objManager = Application :: getDomainController('NumeradorManager');
+			$sbStatus = Application :: getConstant("REG_ACT");
+
+			if(!$rcContacto["contcodigon"]){
+				$rcContacto["contcodigon"] = $objManager->fncgetByIdNumerador("contacto");
+				$rcContacto["contactivas"] = $sbStatus;
+				$this->objGateway->setData($rcContacto);
+				$this->objGateway->addContacto();
+			}
+			
+			if(is_array($rcCliente) && $rcCliente && $signal=="2"){
+				if(!$rcCliente["cliecodigos"]){
+					$rcCliente["cliecodigos"] = $rcCliente["clieidentifs"];
+					$rcCliente["clieactivas"] = $sbStatus;
+					$this->objGateway->setData($rcCliente);
+					$this->objGateway->addCliente();
+				}
+			}else{
+				$sbFlag = true;
+			}
+
+			//se realiza la validacion de si ya existe la relacion de solicitante.
+			if($sbFlag){
+				$rcParams["cliecodigos_n"] = true;
+			}else{
+				$rcParams["cliecodigos"] = $rcCliente["cliecodigos"];
+			}
+			$rcParams["contcodigon"] = $rcContacto["contcodigon"];
+			$rcParams["soliactivos"] = $sbStatus;
+			
+			$this->objGateway->setData($rcParams);
+			$this->objGateway->setExecuteSql(true);
+			$this->objGateway->getSolicitante();
+			$rcTmp = $this->objGateway->getResult();
+
+			if(is_array($rcTmp) && $rcTmp){
+				$sbFlagI = false;
+			}
+
+			if($sbFlagI){
+				
+				$this->objGateway->setExecuteSql(false);
+				$objDate = Application :: loadServices("DateController");
+				$nuDate = $objDate->fncintdatehour();
+				$sbSolicodigos = $objManager->fncgetByIdNumerador("solicitante");
+				$this->objGateway->setData(array("solicodigos"=>$sbSolicodigos,"contcodigon"=>$rcContacto["contcodigon"],"cliecodigos"=>$rcCliente["cliecodigos"],
+												 "solifecregn"=>$nuDate,"usuacodigos"=>$rcUser["username"],"soliactivos"=>$sbStatus,));
+				$this->objGateway->addSolicitante();
+
+				$rcSql = $this->objGateway->getSql();
+
+				//transaccion
+				$this->objGateway->setSql($rcSql);
+				$this->objGateway->executeTrans();
+				$sbResult = $this->objGateway->getConsult();
+
+				if($sbResult){
+					$rcResult["message"] = 3;
+					$rcResult["result"] = true;
+				}else{
+					$rcResult["message"] = 100;
+					$rcResult["result"] = false;
+				}
+			}else{
+				$rcResult["message"] = 24;
+				$rcResult["result"] = false;
+			}
+		}else{
+			$rcResult["message"] = 100;
+			$rcResult["result"] = false;
+		}
+			
+		$this->rcResult = $rcResult;
+	}
+}
+?>

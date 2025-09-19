@@ -1,0 +1,412 @@
+<?php
+require_once "Web/WebRequest.class.php";
+require_once "JSON/JSON.php";
+class FeCuCmdAddSolicitante {
+	function execute() {
+		extract($_REQUEST);
+
+		settype($objJson, "object");
+		settype($objService,"object");
+		settype($objManager, "object");
+		settype($rcResult, "array");
+		settype($rcUser,"array");
+		settype($rcTmp,"array");
+		settype($rcSession,"array");
+		settype($sbOutput, "string");
+		settype($sbHtml,"string");
+
+		//labels
+		//Trae los datos del usuario
+		$rcUser = Application :: getUserParam();
+		if (!is_array($rcUser)) {
+			//Si no existe usuario en sesion
+			$rcUser["lang"] = Application :: getSingleLang();
+		}
+
+		include ($rcUser["lang"]."/".$rcUser["lang"].".messages.php");
+
+		$objJson = new Services_JSON();
+		$objService = Application :: loadServices("Data_type");
+
+		$sbOutput = $objJson->encode("AAAAAAAA");
+		die($sbOutput);
+
+		if(isset($sbContacto) && $sbContacto){
+				
+			$rcSession["contacto"] = unserialize($objService->decode($sbContacto));
+				
+			// Se valida que el contacto exista
+			// Si no existe entonce es que se pretende ingresarlo entonces se deben realizar las validaciones de ingreso
+			if(!$rcSession["contacto"]["contacto__contcodigon"]){
+				$this->_rcData = $rcSession["contacto"];
+				$this->_valCon();
+				if($this->_rcResult["result"]==false){
+					$rcResult[0] = 0;
+					$rcResult[1]= $objService->encode(html_entity_decode($rcmessages[$this->_rcResult["message"]]));
+					$sbOutput = $objJson->encode($rcResult);
+					die($sbOutput);
+				}
+
+				$this->_parserDataCon();
+				$rcSession["contacto"] = $this->_rcData;
+			}else{
+				$rcSession["contacto"] = array("contcodigon"=>$rcSession["contacto"]["contacto__contcodigon"]);
+			}
+
+			// Si viene informacion de cliente se valida que exista
+			// Si no existe entonce es que se pretende ingresarlo entonces se deben realizar las validaciones de ingreso
+				
+			if(isset($sbCliente) && $sbCliente){
+
+				$rcSession["cliente"] = unserialize($objService->decode($sbCliente));
+
+				if(!$rcSession["cliente"]["cliente__cliecodigos"]){
+					if($signal=="2"){
+						$this->_rcData = $rcSession["cliente"];
+						$this->_valCli();
+						if($this->_rcResult["result"]==false){
+							$rcResult[0] = 0;
+							$rcResult[1]= $objService->encode(html_entity_decode($rcmessages[$this->_rcResult["message"]]));
+							$sbOutput = $objJson->encode($rcResult);
+							die($sbOutput);
+						}
+						$this->_parserDataCli();
+						$rcSession["cliente"] = $this->_rcData;
+					}
+				}else{
+					$rcSession["cliente"] = array("cliecodigos"=>$rcSession["cliente"]["cliente__cliecodigos"]);
+				}
+			}
+
+			$objManager = Application :: getDomainController('SolicitanteManager');
+			$objManager->setData(array("rcContacto"=>$rcSession["contacto"],"rcCliente"=>$rcSession["cliente"],"signal"=>$signal));
+			$objManager->addSolicitante();
+			$rcTmp = $objManager->getResult();
+				
+			if($rcTmp && is_array($rcTmp) && $rcTmp["result"]){
+
+				WebSession :: unsetProperty("_rcSolicitante");
+				$rcResult[0]=1;
+				$rcResult[1]=$objService->encode(html_entity_decode($rcmessages[$rcTmp["message"]]));
+			}else{
+				$rcResult[0] = 0;
+				$rcResult[1]= $objService->encode(html_entity_decode($rcmessages[$rcTmp["message"]]));
+			}
+		}else{
+			$rcResult[0] = 0;
+			$rcResult[1]= $objService->encode(html_entity_decode($rcmessages[0]));
+		}
+
+		$sbOutput = $objJson->encode($rcResult);
+		die($sbOutput);
+	}
+
+	function _valCon() {
+
+		settype($objService, "object");
+		settype($objDate, "object");
+		settype($rcLong,"array");
+		settype($nuLong, "integer");
+		settype($nuCantAnho, "integer");
+
+
+		if(is_array($this->_rcData) && $this->_rcData){
+
+			extract($this->_rcData);
+
+			if (($contacto__contindentis != NULL) && ($contacto__contindentis != "")
+			&& ($contacto__contprinoms != NULL) && ($contacto__contprinoms != "")
+			&& ($contacto__contpriapes != NULL) && ($contacto__contpriapes != "")
+			&& ($contacto__contsexos != NULL) && ($contacto__contsexos != "")
+			&& ($contacto__tiidcodigos != NULL) && ($contacto__tiidcodigos != "")) {
+
+				$objService = Application :: loadServices("Data_type");
+					
+				$rcLong["MIN_FNC"] = (int) Application :: getConstant("LON_MIN_FNC");
+				$rcLong["MAX_FNC"] = (int) Application :: getConstant("LON_MAX_FNC");
+				$rcLong["MIN_LNC"] = (int) Application :: getConstant("LON_MIN_LNC");
+				$rcLong["MAX_LNC"] = (int) Application :: getConstant("LON_MAX_LNC");
+					
+				$nuLong = strlen(trim($contacto__contprinoms));
+				if($rcLong["MAX_FNC"]<$nuLong || $rcLong["MIN_FNC"]>$nuLong){
+					$this->_rcResult["result"] = false;
+					$this->_rcResult["message"] = 18;
+					return;
+				}
+
+				$nuLong = strlen(trim($contacto__contpriapes));
+				if($rcLong["MAX_LNC"]<$nuLong || $rcLong["MIN_LNC"]>$nuLong){
+					$this->_rcResult["result"] = false;
+					$this->_rcResult["message"] = 20;
+					return;
+				}
+
+				if($contacto__contsegnoms){
+					$contacto__contsegnoms = trim($contacto__contsegnoms);
+					$nuLong = strlen(trim($contacto__contsegnoms));
+					if($rcLong["MAX_LNC"]<$nuLong || $rcLong["MIN_LNC"]>$nuLong){
+						$this->_rcResult["result"] = false;
+						$this->_rcResult["message"] = 19;
+						return;
+					}
+				}
+
+				if($contacto__contsegapes){
+					$contacto__contsegapes = trim($contacto__contsegapes);
+					$nuLong = strlen(trim($contacto__contsegapes));
+					if($rcLong["MAX_LNC"]<$nuLong || $rcLong["MIN_LNC"]>$nuLong){
+						$this->_rcResult["result"] = false;
+						$this->_rcResult["message"] = 21;
+						return;
+					}
+				}
+
+				//Hace la validacion de formato (Caracteres no permitidos) de la llave primaria
+				if ($objService->formatPrimaryKey($contacto__contindentis) == false) {
+					$this->_rcResult["result"] = false;
+					$this->_rcResult["message"] = 4;
+					return;
+				}
+					
+				$objDate = Application :: loadServices("DateController");
+				if ($contacto__contfecnacis != "") {
+					if (!$objDate->fncvalidatedate($contacto__contfecnacis)) {
+						$this->_rcResult["result"] = false;
+						$this->_rcResult["message"] = 7;
+						return;
+					}
+				}
+					
+				if ($contacto__contemail) {
+					if (!$objService->IsEmail($contacto__contemail)) {
+						$this->_rcResult["result"] = false;
+						$this->_rcResult["message"] = 16;
+						return;
+					}
+				}
+
+				if($contacto__contfecnacis){
+					$contacto__contedadn = $objDate->getYearsOld($contacto__contfecnacis);
+				}
+					
+				if($contacto__contedadn){
+					$nuCantAnho = (int) Application :: getConstant("CAN_MAX_EDAD");
+					if($contacto__contedadn > $nuCantAnho){
+						$this->_rcResult["result"] = false;
+						$this->_rcResult["message"] = 22;
+						return;
+					}
+				}
+
+			}else {
+				$this->_rcResult["result"] = false;
+				$this->_rcResult["message"] = 0;
+				return;
+			}
+		}else {
+			$this->_rcResult["result"] = false;
+			$this->_rcResult["message"] = 0;
+			return;
+		}
+		$this->_rcResult["result"] = true;
+		return;
+	}
+
+	function _valCli(){
+
+		settype($objService, "object");
+		settype($objDate, "object");
+		settype($rcLong,"array");
+		settype($nuLong, "integer");
+
+		if(is_array($this->_rcData) && $this->_rcData){
+
+			extract($this->_rcData);
+
+			if(($cliente__clieidentifs != NULL) && ($cliente__clieidentifs != "") &&
+			($cliente__locacodigos != NULL) && ($cliente__locacodigos != "") &&
+			($cliente__esclcodigos != NULL) && ($cliente__esclcodigos != "") &&
+			($cliente__ticlcodigos != NULL) && ($cliente__ticlcodigos != "") &&
+			($cliente__clienombres != NULL) && ($cliente__clienombres != "") &&
+			($cliente__tiidcodigos != NULL) && ($cliente__tiidcodigos != "") &&
+			($cliente__clielocalizs != NULL) && ($cliente__clielocalizs != "") &&
+			($cliente__clietelefons != NULL) && ($cliente__clietelefons != "")){
+					
+				$objService = Application::loadServices("Data_type");
+					
+				$rcLong["MIN_FNC"] = (int) Application :: getConstant("LON_MIN_FNC");
+				$rcLong["MAX_FNC"] = (int) Application :: getConstant("LON_MAX_FNC");
+				$rcLong["MIN_LNC"] = (int) Application :: getConstant("LON_MIN_LNC");
+				$rcLong["MAX_LNC"] = (int) Application :: getConstant("LON_MAX_LNC");
+
+				if($cliente__clierepprnos){
+					$nuLong = strlen(trim($cliente__clierepprnos));
+					if($rcLong["MAX_FNC"]<$nuLong || $rcLong["MIN_FNC"]>$nuLong){
+						$this->_rcResult["result"] = false;
+						$this->_rcResult["message"] = 18;
+						return;
+					}	
+				}
+				
+				if($cliente__cliereppraps){
+					$nuLong = strlen(trim($cliente__cliereppraps));
+					if($rcLong["MAX_LNC"]<$nuLong || $rcLong["MIN_LNC"]>$nuLong){
+						$this->_rcResult["result"] = false;
+						$this->_rcResult["message"] = 20;
+						return;
+					}	
+				}
+
+				if($cliente__clierepsenos){
+					$cliente__clierepsenos = trim($cliente__clierepsenos);
+					$nuLong = strlen(trim($cliente__clierepsenos));
+					if($rcLong["MAX_LNC"]<$nuLong || $rcLong["MIN_LNC"]>$nuLong){
+						$this->_rcResult["result"] = false;
+						$this->_rcResult["message"] = 19;
+						return;
+					}
+				}
+
+				if($cliente__clierepseaps){
+					$cliente__clierepseaps = trim($cliente__clierepseaps);
+					$nuLong = strlen(trim($cliente__clierepseaps));
+					if($rcLong["MAX_LNC"]<$nuLong || $rcLong["MIN_LNC"]>$nuLong){
+						$this->_rcResult["result"] = false;
+						$this->_rcResult["message"] = 21;
+						return;
+					}
+				}
+
+				//Hace la validacion de formato (Caracteres no permitidos) de la llave primaria
+				if($objService->formatPrimaryKey($cliente__clieidentifs) == false){
+					$this->_rcResult["result"] = false;
+					$this->_rcResult["message"] = 4;
+					return;
+				}
+
+				if($cliente__cliemails){
+					if(!$objService->IsEmail($cliente__cliemails)){
+						$this->_rcResult["result"] = false;
+						$this->_rcResult["message"] = 5;
+						return;
+					}
+				}
+			}else{
+				$this->_rcResult["result"] = false;
+				$this->_rcResult["message"] = 0;
+				return;
+			}
+		}else{
+			$this->_rcResult["result"] = false;
+			$this->_rcResult["message"] = 0;
+			return;
+		}
+		$this->_rcResult["result"] = true;
+		return;
+	}
+
+	function _parserDataCon() {
+
+		settype($objService, "object");
+		settype($objDate, "object");
+		settype($rcData, "array");
+		settype($rcTmp, "array");
+		settype($sbDbNull,"string");
+		settype($sbIndex, "string");
+		settype($sbValue, "string");
+		settype($sbPos, "string");
+		settype($sbTmp, "string");
+
+		if(is_array($this->_rcData) && $this->_rcData){
+
+			$rcData = $this->_rcData;
+
+			$objDate = Application :: loadServices("DateController");
+			$objService = Application :: loadServices("Data_type");
+			$sbDbNull = Application :: getConstant("DB_NULL");
+
+			//Se valida si viene null
+			if($rcData["contacto__contfecnacis"]){
+				$rcData["contacto__contedadn"] = $objDate->getYearsOld($rcData["contacto__contfecnacis"]);
+				$rcData["contacto__contfecnacis"] = $objDate->fncdatetoint($rcData["contacto__contfecnacis"]);
+			}else{
+				$rcData["contacto__contedadn"] = $sbDbNull;
+				$rcData["contacto__contfecnacis"] = $sbDbNull;
+			}
+
+			$rcData["contacto__contindentis"] = $objService->formatString($rcData["contacto__contindentis"]);
+			$rcData["contacto__tiidcodigos"] = $objService->formatString($rcData["contacto__tiidcodigos"]);
+			$rcData["contacto__cliecodigon"] = $objService->formatString($rcData["contacto__cliecodigos"]);
+			$rcData["contacto__contprinoms"] = $objService->formatString($rcData["contacto__contprinoms"]);
+			$rcData["contacto__contsegnoms"] = $objService->formatString($rcData["contacto__contsegnoms"]);
+			$rcData["contacto__contpriapes"] = $objService->formatString($rcData["contacto__contpriapes"]);
+			$rcData["contacto__contsegapes"] = $objService->formatString($rcData["contacto__contsegapes"]);
+			$rcData["contacto__contnumcels"] = $objService->formatString($rcData["contacto__contnumcels"]);
+
+			//determina la localidad
+			if ($rcData["contacto__locacodigos"]){
+				$rcData["contacto__locacodigos"] = $objService->formatString($rcData["contacto__locacodigos"]);
+			}
+
+			$rcData["contacto__contdirecios"] = $objService->formatString($rcData["contacto__contdirecios"]);
+			$rcData["contacto__conttelefons"] = $objService->formatString($rcData["contacto__conttelefons"]);
+			$rcData["contacto__contobservs"] = $objService->formatString($rcData["contacto__contobservs"]);
+
+			foreach ($rcData as $sbIndex => $sbValue) {
+				$sbPos = strpos($sbIndex, "__");
+				if (!($sbPos === false)) {
+					$sbTmp = substr($sbIndex, ($sbPos +2));
+					$rcTmp[$sbTmp] = $sbValue;
+				}
+			}
+		}
+
+		$this->_rcData = $rcTmp;
+	}
+
+	function _parserDataCli(){
+
+		settype($objService, "object");
+		settype($rcData, "array");
+		settype($rcTmp, "array");
+		settype($sbIndex, "string");
+		settype($sbValue, "string");
+		settype($sbPos, "string");
+		settype($sbTmp, "string");
+
+		if(is_array($this->_rcData) && $this->_rcData){
+
+			$rcData = $this->_rcData;
+
+			$objService = Application::loadServices("Data_type");
+
+			//Hace la validacion de campos numericos y formateo de campos cadena
+			$rcData["cliente__clieidentifs"] = $objService->formatString($rcData["cliente__clieidentifs"]);
+			$rcData["cliente__ticlcodigos"] = $objService->formatString($rcData["cliente__ticlcodigos"]);
+			$rcData["cliente__clienombres"] = $objService->formatString($rcData["cliente__clienombres"]);
+			$rcData["cliente__clierepprnos"] = $objService->formatString($rcData["cliente__clierepprnos"]);
+			$rcData["cliente__clierepsenos"] = $objService->formatString($rcData["cliente__clierepsenos"]);
+			$rcData["cliente__cliereppraps"] = $objService->formatString($rcData["cliente__cliereppraps"]);
+			$rcData["cliente__clierepseaps"] = $objService->formatString($rcData["cliente__clierepseaps"]);
+			$rcData["cliente__clielocalizs"] = $objService->formatString($rcData["cliente__clielocalizs"]);
+			$rcData["cliente__clietelefons"] = $objService->formatString($rcData["cliente__clietelefons"]);
+			$rcData["cliente__locacodigos"] = $objService->formatString($rcData["cliente__locacodigos"]);
+			$rcData["cliente__cliepagwebs"] = $objService->formatString($rcData["cliente__cliepagwebs"]);
+			$rcData["cliente__esclcodigos"] = $objService->formatString($rcData["cliente__esclcodigos"]);
+			$rcData["cliente__tiidcodigos"] = $objService->formatString($rcData["cliente__tiidcodigos"]);
+			$rcData["cliente__grclcodigos"] = $objService->formatString($rcData["cliente__grclcodigos"]);
+			$rcData["cliente__clienumfaxs"] = $objService->formatString($rcData["cliente__clienumfaxs"]);
+			$rcData["cliente__clieaparaers"] = $objService->formatString($rcData["cliente__clieaparaers"]);
+
+			foreach ($rcData as $sbIndex => $sbValue) {
+				$sbPos = strpos($sbIndex, "__");
+				if (!($sbPos === false)) {
+					$sbTmp = substr($sbIndex, ($sbPos +2));
+					$rcTmp[$sbTmp] = $sbValue;
+				}
+			}
+		}
+		$this->_rcData = $rcTmp;
+	}
+}
+?>

@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2021-08-05T01:19:40.332500Z
+K 7
+svn:log
+V 140
+Se actualiza las librerias de envío de correo y se agrega comando para testear el correo a través de la interfaz de tipos de localización
+END

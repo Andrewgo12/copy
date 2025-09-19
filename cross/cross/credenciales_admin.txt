@@ -1,0 +1,100 @@
+CREDENCIALES DE ADMINISTRADORES - SISTEMA CROSS
+==============================================
+
+USUARIOS ADMINISTRADORES EXISTENTES:
+------------------------------------
+
+1. Usuario: Admin
+   - Contraseña: secret
+   - Nombre Real: Admin Admin Admin
+   - Email: (no especificado)
+   - Perfil: Administrador (ID: 1)
+   - Estado: Activo (A)
+   - Esquema: profiles (ID: 1)
+
+2. Usuario: webuser
+   - Contraseña: zpmqtgv
+   - Nombre Real: Usuario web
+   - Email: (no especificado)
+   - Perfil: Usuario Web (ID: 3)
+   - Estado: Activo (A)
+   - Esquema: PQR (ID: 2)
+
+3. Usuario: leacosta
+   - Contraseña: desinfectante2020
+   - Nombre Real: LUIS EDUARDO ACOSTA BELTRÁN
+   - Email: leacosta@suntic.co
+   - Perfil: Administrador (ID: 1)
+   - Estado: Activo (A)
+   - Esquema: PQR (ID: 2)
+
+4. Usuario: swquintero
+   - Contraseña: desinfectante2020
+   - Nombre Real: SACHAT WALESKA QUINTERO ROSALES
+   - Email: squintero@suntic.co
+   - Perfil: Administrador (ID: 1)
+   - Estado: Activo (A)
+   - Esquema: PQR (ID: 2)
+
+5. Usuario: jcgrajales
+   - Contraseña: desinfectante2020
+   - Nombre Real: JUAN CARLOS GRAJALES
+   - Email: jcgrajales@suntic.co
+   - Perfil: Administrador (ID: 1)
+   - Estado: Activo (A)
+   - Esquema: PQR (ID: 2)
+
+NUEVAS CREDENCIALES RECOMENDADAS:
+---------------------------------
+
+Usuario: admin_sistema
+Contraseña: Cr0ss@dm1n2024!
+Nombre Real: Administrador del Sistema
+Email: admin@sistema.local
+Perfil: Administrador (ID: 1)
+Estado: Activo (A)
+
+Usuario: admin_backup
+Contraseña: B@ckup$3cur3_2024
+Nombre Real: Administrador de Respaldo
+Email: backup@sistema.local
+Perfil: Administrador (ID: 1)
+Estado: Activo (A)
+
+PERFILES DISPONIBLES:
+--------------------
+- ID 1: Administrador (Acceso completo al sistema)
+- ID 2: Público (Perfil para usuario público)
+- ID 3: Usuario Web (Perfil para usuario Web)
+- ID 4: Principal (Perfil para usuarios principales)
+- ID 5: Supervisor (Perfil para personal que asigna trabajo)
+- ID 6: Operativo (Perfil operativo)
+
+ESQUEMAS DISPONIBLES:
+--------------------
+- ID 1: profiles (Usuario: postgres, Contraseña: full.2004)
+- ID 2: PQR (Usuario: crosshuvdb, Contraseña: QDI.843V)
+
+CONFIGURACIÓN DE BASE DE DATOS:
+------------------------------
+- Motor: PostgreSQL
+- Base de datos principal: crosshuvdb
+- Esquema de perfiles: profiles
+- Esquema de datos: schema2 (PQR)
+
+NOTAS DE SEGURIDAD:
+------------------
+1. Cambiar inmediatamente las contraseñas por defecto
+2. Implementar políticas de contraseñas fuertes
+3. Revisar y actualizar permisos de usuarios regularmente
+4. Considerar implementar autenticación de dos factores
+5. Auditar accesos de usuarios administradores
+
+ARCHIVOS IMPORTANTES IDENTIFICADOS:
+----------------------------------
+- Configuración: /ASAP/applications/profiles/config/
+- Templates de autenticación: /ASAP/applications/profiles/web/templates/Form_AuthAdmin.tpl
+- Base de datos SQL: dbCROSS7desa.sql
+- Script de configuración: set_config.sh
+
+Fecha de generación: $(Get-Date)

@@ -1,0 +1,2305 @@
+<?php
+//Paquete de conexion a bases de datos
+include_once ("pkdatabases.php");
+class FeCrPgsqlSqlExtended {
+	var $consult;
+	var $objdb;
+	var $tarecodigos;
+	var $rcEstadosCompromiso;
+	var $nuOffset;
+	var $sql;
+
+	function FeCrPgsqlSqlExtended() {
+		$config = & ASAP :: getStaticProperty('Application', 'config');
+		$this->objdb = new databases();
+		$this->objdb->fncadoconn($config['database']);
+	}
+	function setTipoTarea($tarea){
+		$this->seguimiento=$tarea;
+	}
+	//000267AT - FECHA DE DIGITACI�N
+	function setFechasDigitacion($fecha1,$fecha2) {
+		$this->ordefecdiginin = $fecha1;
+		$this->ordefecdigfinn = $fecha2;
+	}
+	function getByCofocodigonLj($cofocodigon) {
+		$sql = 'SELECT
+			"campconfform"."cacoprocedes",
+			"detaconfform"."decooperados",
+			"detaconfform"."decovalors"'.' FROM  
+			"detaconfform","campconfform"'.' WHERE 
+			"detaconfform"."cofocodigon"='.$cofocodigon.' AND 
+			"detaconfform"."cacocodigon"="campconfform"."cacocodigon"'.' ORDER BY 
+			"detaconfform"."cacocodigon"';
+		$this->objdb->fncadoselect($sql, FETCH_ASSOC);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 *  Trae el listado de atenciones(actaempresa)
+	 * @param string $actacodigos Codigo del acta
+	 * @return Array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 21-sep-2004 12:20:58
+	 * @location Cali-Colombia
+	 */
+	function getListActaempresa($actacodigos) {
+		settype($sbEstate,"string");
+		settype($sbSql,"string");
+		$sbEstate = Application :: getConstant("REG_ACT");
+		$sbSql = 'SELECT
+					"actaempresa"."acemnumeros",
+					"estadoacta"."esacnombres" AS "esaccodigos",
+					"actaempresa"."acemfeccren",
+					"actaempresa"."acemfecaten",
+					"actaempresa"."acemhorainn",
+					"actaempresa"."acemhorafin",
+					"organizacion"."organombres" AS "orgacodigos",
+					"actaempresa"."acemusuars",' .
+					'"actaempresa"."acemradicas",
+					"actaempresa"."acemobservas"
+				FROM
+					"actaempresa","estadoacta","organizacion" 
+				WHERE ' .
+					'"actaempresa"."acemactivas"=\''.$sbEstate.'\' AND
+					"actaempresa"."actacodigos"=\''.$actacodigos.'\' AND
+					"actaempresa"."esaccodigos"="estadoacta"."esaccodigos" AND
+					"actaempresa"."orgacodigos"="organizacion"."orgacodigos"
+				ORDER BY
+					"actaempresa"."acemnumeros"';
+			
+		//Ejecuta el sql en db pero haciendo el fectch para hacer la conversion de fechas
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		if (!$this->objdb->objresult)
+		return null;
+			
+		//Carga el servicio de control de fechas
+		$servceDate = Application :: loadServices("DateController");
+
+		//Carga el servicio de recursos humanos
+		$humanService = Application :: loadServices("Human_resources");
+		$nuCont = 0;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+				
+			//Hace la conversion de fechas
+			$rcTmp["acemfeccren"] = $servceDate->fncformatofechahora($rcTmp["acemfeccren"]);
+			$rcTmp["acemfecaten"] = $servceDate->fncformatofechahora($rcTmp["acemfecaten"]);
+				
+			//Hace la conversion de horas
+			$rcTmp["acemhorainn"] = $servceDate->secs2hour($rcTmp["acemhorainn"]);
+			$rcTmp["acemhorafin"] = $servceDate->secs2hour($rcTmp["acemhorafin"]);
+				
+			//Consulta los participantes del grupo
+			$rcTmp["acemusuars"] = $humanService->getGrupoDetalle($rcTmp["acemusuars"], false);
+			$rcActas[$nuCont] = $rcTmp;
+			$nuCont ++;
+		}
+		$humanService->close();
+		return $rcActas;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 *  Obtiene el metamodelo de una tabla
+	 * @param string $isbtabla (Cadena con el nombr de la tabla)
+	 * @return Array
+	 * @author freina <freina@parquesoft.com>
+	 * @date 04-Oct-2004 11:54
+	 * @location Cali-Colombia
+	 */
+	function fncmetadata($isbtable) {
+		$this->objdb->fncadometacolumns($isbtable);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 *  Obtiene la llave primaria de una tabla
+	 * @param string $isbtabla (Cadena con el nombr de la tabla)
+	 * @return Array
+	 * @author freina <freina@parquesoft.com>
+	 * @date 22-Nov-2005 11:17
+	 * @location Cali-Colombia
+	 */
+	function fncMetaPrimayKey($isbtable){
+		$this->objdb->fncadometaprimarykeys($isbtable);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 *  Obtiene de la bd la data de para los email
+	 * @param string $ircdata (arreglo con los parametros de busqueda)
+	 * @return Array o null
+	 * @author freina <freina@parquesoft.com>
+	 * @date 18-Oct-2004 12:06
+	 * @location Cali-Colombia
+	 */
+	function getDataEmail($ircdata) {
+
+		settype($sbwhereo, "string");
+		settype($sbwhereor, "string");
+		settype($sbwheref, "string");
+
+		if ($ircdata["ordenumeros"]) {
+			$sbwhereo = " AND \"orden\".\"ordenumeros\"='".$ircdata["ordenumeros"]."'";
+		}
+		if ($ircdata["orgacodigos"]) {
+			$sbwhereor = " AND \"ordenempresa\".\"orgacodigos\"='".$ircdata["orgacodigos"]."'";
+		}
+		if ($ircdata["ordefecregdi"] && $ircdata["ordefecregdf"]) {
+			$sbwheref = " AND \"orden\".\"ordefecregd\" BETWEEN ".$ircdata["ordefecregdi"]." AND ".$ircdata["ordefecregdf"];
+		}
+		$sbsql = 'SELECT
+                    "orden"."ordenumeros",
+                    "orden"."ordeobservs",
+                    "orden"."ordefecregd",
+                    "orden"."ordesitiejes",
+                    "ordenempresa"."orgacodigos", 
+                    "ordenempresa"."contidentis" 
+				FROM "orden", "ordenempresa" 
+				WHERE 
+                    "orden"."ordenumeros"="ordenempresa"."ordenumeros" ' .$sbwhereo.$sbwheref.$sbwhereor;
+		$this->objdb->fncadoselect($sbsql, FETCH_ASSOC);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 * Obtiene los datos de las ordenes
+	 * @param string $ordenumeros
+	 * @return array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 28-oct-2004 11:51:14
+	 * @location Cali-Colombia
+	 */
+	function getOrden($ordenumeros = null) {
+		if ($ordenumeros)
+		$ordenumeros = " \"orden\".\"ordenumeros\"='$ordenumeros' AND";
+		$sql = 'SELECT
+				"orden"."ordenumeros",
+				"proceso"."procnombres",
+				"orden"."usuacodigos",
+				"organizacion"."organombres",
+				"orden"."ordeobservs",
+				"orden"."ordefecingd",
+				"orden"."ordefecregd",
+				"orden"."ordefecvend",
+				"orden"."ordefecfinad",
+				"orden"."ordefecentn"
+			FROM 
+				"orden","organizacion","proceso"
+			WHERE '.$ordenumeros.' 
+				"orden"."proccodigos"="proceso"."proccodigos" AND
+				"proceso"."orgacodigos"="organizacion"."orgacodigos"';
+
+		$this->objdb->fncadoselect($sql, FETCH_ASSOC);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 * Trae las actas parametrizadas por orden
+	 * @param string $ordenumeros
+	 * @return array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 28-oct-2004 12:12:09
+	 * @location Cali-Colombia
+	 */
+	function getActas($ordenumeros = null,$seguimiento=null) {
+
+		if ($ordenumeros)
+		$ordenumeros = " \"acta\".\"ordenumeros\"='$ordenumeros' AND ";
+		if($seguimiento)
+		$ordenumeros .= " \"acta\".\"tarecodigos\" = '".$this->tarecodigos."' AND ";
+		else if($this->tarecodigos)
+		$ordenumeros .= " \"acta\".\"tarecodigos\"<>'".$this->tarecodigos."' AND ";
+		$sql = 'SELECT
+                    "acta"."actacodigos",
+                    "acta"."ordenumeros",
+					"tarea"."tarecodigos",
+                    "tarea"."tarenombres",
+                    "acta"."actaestacts",
+                    "estadoacta"."esacnombres",
+                    "acta"."actafechingn",
+                    "acta"."actafechinin",
+                    "acta"."actafechvenn",
+                    "acta"."usuacodigos",
+                    "organizacion"."organombres",
+                    "acta"."actaactivas"
+                FROM
+                    "acta","tarea","estadoacta","organizacion"
+                WHERE '.$ordenumeros.' 
+                    "acta"."actaactivas"<> \'I\' AND 
+                    "acta"."tarecodigos"="tarea"."tarecodigos" AND
+                    "acta"."actaestacts"="estadoacta"."esaccodigos" AND
+                    "acta"."orgacodigos"="organizacion"."orgacodigos"
+                ORDER BY 
+                    "acta"."ordenumeros","acta"."actafechingn"';
+		$this->objdb->fncadoselect($sql, FETCH_ASSOC);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 * Trae las atenciones hechas a un acta
+	 * @param string $actacodigos
+	 * @return array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 28-oct-2004 13:17:19
+	 * @location Cali-Colombia
+	 */
+	function getAtenciones($actacodigos) {
+		settype($sbEstate,"string");
+		settype($sbSql,"string");
+		$sbEstate = Application :: getConstant("REG_ACT");
+		if ($actacodigos)
+		$actacodigos = " \"actaempresa\".\"actacodigos\"='$actacodigos' AND ";
+		$sbSql = 'SELECT
+				"actaempresa"."actacodigos",
+				"actaempresa"."acemnumeros",
+				"estadoacta"."esacnombres",
+				"actaempresa"."acemfeccren",
+				"actaempresa"."acemfecaten",
+				"actaempresa"."acemhorainn",
+				"actaempresa"."acemhorafin",
+				"organizacion"."organombres",
+				"actaempresa"."acemusuars",
+				"actaempresa"."acemobservas" 
+			FROM
+				"actaempresa","estadoacta","organizacion" 
+			WHERE '.$actacodigos.
+				' "actaempresa"."acemactivas"=\''.$sbEstate.'\' AND
+				"actaempresa"."esaccodigos"="estadoacta"."esaccodigos" AND
+				"actaempresa"."orgacodigos"="organizacion"."orgacodigos"
+			ORDER BY
+				"actaempresa"."actacodigos","actaempresa"."acemfecaten","actaempresa"."acemhorainn"';
+		$this->objdb->fncadoselect($sbSql, FETCH_ASSOC);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 *  Obtiene de la bd la data necesaria para crear una comunicacion
+	 * @param string $isbordenumeros (Cadena con el codigo del requerimiento)
+	 * @return Array $orcresult (Arreglo con la data  o null)
+	 * @author freina <freina@parquesoft.com>
+	 * @date 28-Oct-2004 08:49
+	 * @location Cali-Colombia
+	 */
+	function getDataComunicacion($isbordenumeros) {
+
+		settype($sbsql, "string");
+
+		$sbsql = 'SELECT "orden"."ordenumeros","orden"."ordeobservs","orden"."proccodigos",
+						 "orden"."ordefecregd","orden"."ordesitiejes",
+						 "ordenempresa"."orgacodigos","ordenempresa"."contidentis",
+						 "ordenempresa"."oremradicas","ordenempresa"."infrcodigos","ordenempresa"."merecodigos",
+						 "ordenempresa"."tiorcodigos"  
+						 FROM "orden", "ordenempresa" 
+						 WHERE "orden"."ordenumeros"=\''.$isbordenumeros.'\' AND "orden"."ordenumeros" = "ordenempresa"."ordenumeros"';
+		$this->objdb->fncadoselect($sbsql, FETCH_ASSOC);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 *  Obtiene de la bd la data de una orden
+	 * @param string $isbordenumeros (Cadena con el codigo del requerimiento)
+	 * @return Array $orcresult (Arreglo con la data  o null)
+	 * @author freina <freina@parquesoft.com>
+	 * @date 29-Oct-2004 16:13
+	 * @location Cali-Colombia
+	 */
+	function getByIdOrden($isbordenumeros) {
+		$sbsql = 'SELECT * FROM "orden", "ordenempresa" WHERE  "orden"."ordenumeros"=\''.$isbordenumeros.'\' AND "orden"."ordenumeros"="ordenempresa"."ordenumeros"';
+		$this->objdb->fncadoselect($sbsql, FETCH_ASSOC);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 * Hace la consulta para los combobox
+	 * @param string $sqlId
+	 *@param array $rcParams Arreglo con parametros para la consulta
+	 * @return array
+	 * @author freina <freina@parquesoft.com>
+	 * @date 05-Nov-2004 07:39
+	 * @location Cali-Colombia
+	 */
+	function getDataCombo($sqlId,$rcParams=null) {
+		settype($objService,"object");
+		settype($rcResult,"array");
+		settype($rcUser,"array");
+		settype($sbTmp,"string");
+		settype($nuSchema,"integer");
+		$sbestado = Application :: getConstant("REG_ACT");
+		switch ($sqlId) {
+			case "evento" :
+				$sql = 'SELECT * FROM "evento" WHERE "evenactivos"=\''.$sbestado.'\'';
+				break;
+			case "grupo" :
+				$objtmp = Application :: loadServices("General");
+				$rctmp = $objtmp->getParam("human_resources", "EST_GRUP_INA");
+				$sbtmp = "'".implode("','",$rctmp)."'";
+				$sql = 'SELECT * FROM "grupo" WHERE "esgrcodigos" NOT IN ('.$sbtmp.') ORDER BY "grupnombres"';
+				break;
+			case "causa" :
+				$sql = 'SELECT * FROM "causa" WHERE "causactivas"=\''.$sbestado.'\'';
+				break;
+			case "prioridad" :
+				$sql = 'SELECT * FROM "prioridad" WHERE "prioactivas"=\''.$sbestado.'\'';
+				break;
+			case "tipoorden" :
+				$sql = 'SELECT * FROM "tipoorden" WHERE "tioractivos"=\''.$sbestado.'\' ORDER BY "tiornombres"';
+				break;
+			case "tipoorden_web" :
+				$objService = Application :: loadServices("General");
+				$rcTypeClosed = $objService->getParam("cross300", "type_close");
+				if(is_array($rcTypeClosed)){
+					$sbTmp = implode("','",$rcTypeClosed);
+					$notIn = ' AND "tiorcodigos" NOT IN (\''.$sbTmp.'\')';
+				}
+				$sql = 'SELECT * FROM "tipoorden" WHERE "tioractivos"=\''.$sbestado.'\' '.$notIn.' ORDER BY "tiornombres"';
+				break;
+			case "mediorecepcion" :
+				$sql = 'SELECT * FROM "mediorecepcion" WHERE "mereactivos"=\''.$sbestado.'\'';
+				break;
+			case "estadoacta" :
+				$sql = 'SELECT * FROM "estadoacta" WHERE "esacactivas"=\''.$sbestado.'\'';
+				break;
+			case "prioridad" :
+				$sql = 'SELECT * FROM "prioridad" WHERE "prioactivas"=\''.$sbestado.'\'';
+				break;
+			case "mediorecepcionesp" :
+				if($rcParams[0]){
+					$sbTmp='"merecodigos" <> \''.$rcParams[0].'\' AND ';
+				}
+				$sql = 'SELECT * FROM "mediorecepcion" WHERE '.$sbTmp.' "mereactivos"=\''.$sbestado.'\'';
+				break;
+			case "contacto_ref" :
+				$sql = 'SELECT "solicodigos" AS "contcodigon",("contindentis" || \' -- \' || COALESCE("contprinoms", \'\') || \' \' || COALESCE("contsegnoms", \'\') || \' \' || COALESCE("contpriapes", \'\') || \' \' || COALESCE("contsegapes", \'\') || \' -- \' || COALESCE("clienombres", \'\')) AS "contnombre"  FROM "solicitante" LEFT JOIN "contacto" ON ("solicitante"."contcodigon"="contacto"."contcodigon") LEFT JOIN "cliente" ON ("solicitante"."cliecodigos"="cliente"."cliecodigos") ORDER BY "contprinoms","contsegnoms","contpriapes","contsegapes"';
+				break;
+			case "contacto_ident" :
+				$sql = 'SELECT "solicodigos" AS "contcodigon",("contindentis" || \' -- \' || COALESCE("contprinoms", \'\') || \' \' || COALESCE("contsegnoms", \'\') || \' \' || COALESCE("contpriapes", \'\') || \' \' || COALESCE("contsegapes", \'\') || \' -- \' || COALESCE("clienombres", \'\')) AS "contindentis"  FROM "solicitante" LEFT JOIN "contacto" ON ("solicitante"."contcodigon"="contacto"."contcodigon") LEFT JOIN "cliente" ON ("solicitante"."cliecodigos"="cliente"."cliecodigos") ORDER BY "contindentis"';
+				break;
+			case "cliente_ref" :
+				$sql = 'SELECT "cliecodigos","clienombres" FROM "cliente" ORDER BY "clienombres"';
+				break;
+			case "ips" :
+				$sql = 'SELECT * FROM "ipsservicio" WHERE "ipseactivos"=\''.$sbestado.'\' ORDER BY "ipsenombres"';
+				break;
+			case "segurisocial":
+				$sql = 'SELECT * FROM "segurisocial" WHERE "sesoactivos"=\''.$sbestado.'\' ORDER BY "sesonombres"';
+				break;
+			case "condiusuario":
+				$sql = 'SELECT * FROM "condiusuario" WHERE "cousactivos"=\''.$sbestado.'\' ORDER BY "cousnombres"';
+				break;
+			case "paciente_ref" :
+				$sql = 'SELECT "paciindentis",("paciindentis" || \' -- \' || COALESCE("paciprinoms", \'\') || \' \' || COALESCE("pacisegnoms", \'\') || \' \' || COALESCE("pacipriapes", \'\') || \' \' || COALESCE("pacisegapes", \'\')) AS "pacinombres"  FROM "paciente" ORDER BY "paciprinoms","pacisegnoms","pacipriapes","pacisegapes"';
+				break;
+			case "paciente_ident" :
+				$sql = 'SELECT "paciindentis" AS "paciindentis_c",("paciindentis" || \' -- \' || COALESCE("paciprinoms", \'\') || \' \' || COALESCE("pacisegnoms", \'\') || \' \' || COALESCE("pacipriapes", \'\') || \' \' || COALESCE("pacisegapes", \'\')) AS "paciindentis"  FROM "paciente" ORDER BY "paciindentis"';
+				break;
+			case "contacto_ref_c" :
+				$sql = 'SELECT "contcodigon",("contindentis" || \' -- \' || COALESCE("contprinoms", \'\') || \' \' || COALESCE("contsegnoms", \'\') || \' \' || COALESCE("contpriapes", \'\') || \' \' || COALESCE("contsegapes", \'\')) AS "contnombre"  FROM "contacto" ORDER BY "contprinoms","contsegnoms","contpriapes","contsegapes"';
+				break;
+		}
+		$this->objdb->fncadoselect($sql, FETCH_ASSOC);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 * Contiene y ejecuta SQL
+	 * @param string $sqlId Identificador del sql
+	 * @return array $rcParams Vector con los parametros.
+	 * @author freina <freina@parquesoft.com>
+	 * @date 05-Nov-2004 13:28
+	 * @location Cali-Colombia
+	 */
+	function getAutoReference($sqlId, $rcParams = null) {
+		settype($objService,"object");
+		settype($rcTmp,"array");
+		settype($orcResult,"array");
+		settype($rcData, "array");
+		settype($sbestado,"string");
+		settype($sbTmp,"string");
+		settype($sbTmp1,"string");
+		$sbestado = Application :: getConstant("REG_ACT");
+		switch ($sqlId) {
+			case "evento_causa" :
+				$sql = 'SELECT * FROM "causa" WHERE "evencodigos"=\''.$rcParams[0].'\' AND "causactivas"=\''.$sbestado.'\' ORDER BY "causnombres"';
+				break;
+			case "tipoorden_evento" :
+				$sql = 'SELECT * FROM "evento" WHERE "tiorcodigos"=\''.$rcParams[0].'\' AND "evenactivos"=\''.$sbestado.'\' ORDER BY "evennombres"';
+				break;
+			case "tipoorden_evento_causa" :
+				$sql = 'SELECT * FROM "causa" WHERE "tiorcodigos"=\''.$rcParams[0].'\' AND "evencodigos"=\''.$rcParams[1].'\' AND "causactivas"=\''.$sbestado.'\' ORDER BY "causnombres"';
+				break;
+			case "contacto" :
+				$sql = 'SELECT (COALESCE("contprinoms", \'\') || \' \' || COALESCE("contsegnoms", \'\') || \' \' || COALESCE("contpriapes", \'\') || \' \' || COALESCE("contsegapes", \'\'))  AS "contnombre" FROM "contacto" WHERE "contindentis"=\''.$rcParams["contindentis"][0].'\' AND "contactivas"=\''.$sbestado.'\'';
+				break;
+			case "infractor" :
+				$sql = 'SELECT "infrnombres" FROM "infractor" WHERE "infrcodigos"=\''.$rcParams["infrcodigos"][0].'\' AND "infractivas"=\''.$sbestado.'\'';
+				break;
+			case "organizacion" :
+				$objService = Application :: loadServices("Human_resources");
+				return $objService->getOrganizacionActiveByOrgacodigos($rcParams["orgacodigos"][0]);
+				break;
+			case "localizacion" :
+				$objService = Application :: loadServices("General");
+				$rcTmp =  $objService->getByIdLocalizacion($rcParams["locacodigos"][0]);
+				$orcResult[0][0] =$rcTmp[0]["locanombres"];
+				return $orcResult;
+			case "personal" :
+				$objService = Application :: loadServices("Human_resources");
+				$rcTmp =  $objService->getPersonal($rcParams["perscodigos"][0]);
+				$orcResult[0][0] =$rcTmp[0]["persnombres"]." ".$rcTmp[0]["persapell1s"]." ".$rcTmp[0]["persapell2s"];
+				return $orcResult;
+			case "cliente" :
+				$objService = Application :: loadServices("Customers");
+				$objGateway = $objService->getGateWay("cliente");
+				$rcTmp =  $objGateway->getByIdentif($rcParams["clieidentifs"][0]);
+				$orcResult[0][0] = $rcTmp[0]["clienombres"];
+				$objService->close();
+				return $orcResult;
+			case 'dep_fisica':
+				$objService = Application::loadServices('General');
+            	$rcData = $objService->getParam("human_resources","TIP_DEP_FISICA");
+            	if(is_array($rcData) && $rcData){
+            		$sbTmp = " AND \"tipoorgani\".\"tiorcodigos\" IN ('".implode("','",$rcData)."') ";
+            	}
+            	unset($rcData);
+				$objService = Application::loadServices('General');
+            	$rcData = $objService->getParam("human_resources","ORG_INACT");
+            	if(is_array($rcData) && $rcData){
+            		$sbTmp1 = " AND \"organizacion\".\"esorcodigos\" NOT IN ('".implode("','",$rcData)."') ";
+            	}
+				$sql = 'SELECT "organizacion"."organombres" FROM "organizacion","tipoorgani" WHERE "organizacion"."orgacodigos"=\''.$rcParams["orgacodigos"][0].'\' AND "organizacion"."orgaactivas"=\''.$sbestado.'\' '.$sbTmp1.'AND "organizacion"."tiorcodigos" = "tipoorgani"."tiorcodigos"'.$sbTmp;
+				break;
+			default :
+				return null;
+		}
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @Copyright 2004  FullEngine
+	 *
+	 * Consulta las actividades de una actencion
+	 * @param string $acemnumeros
+	 * @return array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 09-dic-2004 15:32:35
+	 * @location Cali - Colombia
+	 */
+	function getActiviactaByAcem($acemnumeros) {
+		$sql = 'SELECT '.
+                    '"activiacta"."acticodigos",'.
+                    '"actividad"."actinombres" '.
+                'FROM '.
+                    '"activiacta","actividad" '.
+                'WHERE '.
+                    ' "activiacta"."acemcodigos"=\''.$acemnumeros.'\' AND '.
+                    ' "activiacta"."acticodigos"="actividad"."acticodigos"';
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @Copyright 2004  FullEngine
+	 *
+	 * Consulta las actividades de una actencion
+	 * @param string $acemnumeros
+	 * @return array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 09-dic-2004 15:32:35
+	 * @location Cali - Colombia
+	 */
+	function getAcemcompromiByAcem($acemnumeros) {
+		$sql = 'SELECT '.
+                    '* '.
+                'FROM '.
+                    '"acemcompromi","compromiso" '.
+                'WHERE '.
+                    ' "acemcompromi"."acemcodigos"=\''.$acemnumeros.'\' AND '.
+                    ' "acemcompromi"."compcodigos"="compromiso"."compcodigos"';
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @Copyright 2004 FullEngine
+	 *
+	 * Arma el sql para la consulta de ordenes
+	 * @param typedata
+	 * @return typedata
+	 * @author mrestrepo <mrestrepo@parquesoft.com>
+	 * @date 11-dic-2007 13:06:12
+	 * @location Cali - Colombia
+	 */
+	function getListadoOrdenes($rcParams, $rcParamsDate, $rcView, $rcOrder, $children = null, $tareacc = null) {
+		
+		settype($objService,"object");
+		settype($objGateway, "object");
+		settype($dateService,"object");
+		settype($rcUser,"array");
+		settype($rcJoin,"array");
+		settype($rcChildren,"array");
+		settype($rcEnte,"array");
+		settype($rcTmp,"array");
+		settype($rcTables,"array");
+		settype($rcTablesJ,"array");
+		settype($rcWhere,"array");
+		settype($rcWhereP,"array");
+		settype($rcNewView,"array");
+		settype($rcIndex, "array");
+		settype($sbTmp,"string");
+		settype($sbWhereSchema,"string");
+		settype($sbWhere,"string");
+		settype($sbEstateI,"string");
+		settype($sbTable,"string");
+		settype($sbValue,"string");
+		settype($sbPos,"string");
+		settype($sbFlag,"string");
+		settype($sbIndex,"string");
+		settype($stEntes,"string");
+		settype($sbLeft,"string");
+		settype($sbView,"string");
+		settype($sbTareaCC, "string");
+		settype($nuSchema,"integer");
+		settype($nuCant,"integer");
+		settype($nuCont,"integer");
+		settype($nuIndex,"integer");
+
+		//estado inactivo
+		$sbEstateI = Application :: getConstant("REG_INACT");
+
+		$rcRules["orden.ordenumeros"] = array ("view" => '"orden"."ordenumeros"', "where" => null, "table" => '"orden"');
+		$rcRules["orden.ordefecingd"] = array ("view" => '"orden"."ordefecingd"', "where" => null, "table" => '"orden"');
+		$rcRules["orden.ordefecregd"] = array ("view" => '"orden"."ordefecregd"', "where" => null, "table" => '"orden"');
+		$rcRules["orden.ordefecvend"] = array ("view" => '"orden"."ordefecvend"', "where" => null, "table" => '"orden"');
+		$rcRules["orden.usuacodigos"] = array ("view" => '"orden"."usuacodigos"', "where" => null, "table" => '"orden"');
+
+		$rcRules["orden.ordefecfinad"] = array ("view" => '"orden"."ordefecfinad"', "where" => null, "table" => '"orden"');
+		$rcRules["orden.ordesitiejes"] = array ("view" => '"org"."organombres" AS "ordesitiejes"', "where" => '"orden"."ordesitiejes"="org"."orgacodigos"', "table" => '"organizacion" AS "org"');
+		$rcRules["ordenempresa.tiorcodigos"] = array ("view" => '"tipoorden"."tiornombres" as "tiorcodigos"', "where" => '"ordenempresa"."tiorcodigos"="tipoorden"."tiorcodigos"', "table" => '"tipoorden"');
+		$rcRules["ordenempresa.evencodigos"] = array ("view" => '"evento"."evennombres" as "evencodigos"', "where" => '"ordenempresa"."tiorcodigos"="evento"."tiorcodigos" AND "ordenempresa"."evencodigos"="evento"."evencodigos"', "table" => '"evento"');
+		$rcRules["acta.orgacodigos"] = array ("view" => '"organizacion"."organombres" AS "orgacodigos"', "where" => '"acta"."orgacodigos"="organizacion"."orgacodigos"', "table" => '"organizacion"');
+		$rcRules["ordenempresa.merecodigos"] = array ("view" => '"mediorecepcion"."merenombres" AS "merecodigos"', "where" => '"ordenempresa"."merecodigos"="mediorecepcion"."merecodigos"', "table" => '"mediorecepcion"');
+		$rcRules["ordenempresa.oremradicas"] = array ("view" => '"ordenempresa"."oremradicas"', "where" => null, "table" => null);
+		$rcRules["acta.actaestacts"] = array ("view" => '"estadoacta"."esacnombres"', "where" => '"acta"."actaestacts"="estadoacta"."esaccodigos"', "table" => '"estadoacta"');
+		$rcRules["acta.tarecodigos"] = array ("view" => '"tarea"."tarenombres"', "where" => '"acta"."tarecodigos"="tarea"."tarecodigos"', "table" => '"tarea"');
+		
+		$rcLeftJoin["ordenempresa.causcodigos"] = array ("view" => '"causa"."causnombres" as "causcodigos"', "where" => '"ordenempresa"."tiorcodigos"="causa"."tiorcodigos" AND "ordenempresa"."evencodigos"="causa"."evencodigos" AND "ordenempresa"."causcodigos"="causa"."causcodigos"', "table" => 'causa',"source"=>'"ordenempresa"');
+		$rcLeftJoin["ordenempresa.priocodigos"] = array ("view" => '"prioridad"."prionombres" AS "priocodigos"', "where" => '"ordenempresa"."priocodigos"="prioridad"."priocodigos"', "table" => 'prioridad',"source"=>'"ordenempresa"');
+		$rcLeftJoin["ordenempresa.locacodigos"] = array ("view" => '"localizacion"."locanombres" AS "locacodigos"', "where" => '"ordenempresa"."locacodigos"="localizacion"."locacodigos"', "table" => 'localizacion',"source"=>'"ordenempresa"');
+		$rcLeftJoin["view_solicitante.contcodigon"] = array ("view" => '"view_solicitante"."contnombres" as "contidentis"', "where" => '"ordenempresa"."contidentis"="view_solicitante"."solicodigos"', "table" => 'view_solicitante',"source"=>'"ordenempresa"');
+		$rcLeftJoin["view_solicitante.cliecodigos"] = array ("view" => '(COALESCE("view_solicitante"."cliecodigos", \'\') || \' -- \' || COALESCE("view_solicitante"."clienombres", \'\')) as "cliecodigos"', "where" => '"ordenempresa"."contidentis"="view_solicitante"."solicodigos"', "table" => 'view_solicitante',"source"=>'"ordenempresa"');
+		
+		$rcTables['"orden"'] = null;
+		$rcTables['"ordenempresa"'] = null;
+
+		//arma la parte de where para los campos no fecha
+		if (is_array($rcParams) && $rcParams) {			
+			foreach ($rcParams as $field => $value) {
+				$sbFlag = true;
+				$sbLeft = '';
+				if($value!=null || $value!=''){
+					if($field == 'acta.orgacodigos' && $children){
+						//Debe consultar para este ente y todos sus hijos
+						$objService = Application::loadServices('Human_resources');
+						$rcChildren = $objService->getEnteSon($value);
+						if(is_array($rcChildren)&& $rcChildren){
+							foreach($rcChildren as $rcEnte){
+								$rcTmp[] = $rcEnte['orgacodigos'];
+							}
+							unset($rcChildren);
+							$stEntes = ",'".implode("','",$rcTmp)."'";
+							 
+						}
+						$rcWhere[] = "\"acta\".\"orgacodigos\" IN ('$value'$stEntes)";
+					}else{
+						//se pone el campo entre comillas
+						$sbTmp = preg_replace("#((([_]?[a-z]|[0-9])*)\.(([a-z]|[0-9])*))#", '"$2"."$4"', $field);
+						$rcWhere[] = $sbTmp."='$value'";
+					}
+
+					//evalua si debe incluir las tablas en el from o en el left join
+					if(is_array($rcView) && $rcView && in_array($field,$rcView)){
+						$sbFlag = false;
+
+					}
+					if($sbFlag){
+						if($rcRules[$field]["table"]){
+							$rcTables[$rcRules[$field]["table"]] = null;
+							if ($rcRules[$field]["where"]){
+								$rcWhereP[] = $rcRules[$field]["where"];
+							}
+						}else{							
+							if($rcLeftJoin[$field]["table"] && !$rcTablesJ[$rcLeftJoin[$field]["table"]]){
+								$sbLeft = ' LEFT JOIN "'.$rcLeftJoin[$field]["table"].'" ON('.$rcLeftJoin[$field]["where"].') ';
+								$rcTablesJ[$rcLeftJoin[$field]["table"]] = $field;
+							}
+
+							if($sbLeft) {
+								$rcTables[$rcLeftJoin[$field]["source"]] = null;
+								$rcJoin[$rcLeftJoin[$field]["source"]] .= $sbLeft;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		//Determina los campos a visualizar
+		if(is_array($rcView) && $rcView){
+			foreach ($rcView as $field){
+				
+				$sbLeft = '';
+
+				$rcNewView[] = $rcRules[$field]["view"];
+				if ($rcRules[$field]["where"]){
+					$rcWhere[] = $rcRules[$field]["where"];
+				}
+				 
+				if($rcRules[$field]["table"]) {
+					$rcTables[$rcRules[$field]["table"]] = null;
+				}
+
+				if(array_key_exists($field,$rcLeftJoin)){
+					$rcNewView[] = $rcLeftJoin[$field]["view"];
+
+					if($rcLeftJoin[$field]["table"] && !$rcTablesJ[$rcLeftJoin[$field]["table"]]){
+						$sbLeft = ' LEFT JOIN "'.$rcLeftJoin[$field]["table"].'" ON('.$rcLeftJoin[$field]["where"].') ';
+						$rcTablesJ[$rcLeftJoin[$field]["table"]] = $field;
+					}
+      
+					if($sbLeft) {
+						$rcTables[$rcLeftJoin[$field]["source"]] = null;
+						$rcJoin[$rcLeftJoin[$field]["source"]] .= $sbLeft;
+					}
+				}
+			}
+		}
+		
+		$rcView = $rcNewView;
+		$rcTables = array_keys($rcTables);
+		
+		if(is_array($rcWhere) && $rcWhere){
+			$rcWhere = array_merge($rcWhere,$rcWhereP);
+		}else{
+			$rcWhere = $rcWhereP;
+		}
+
+		//Arma el where para las fechas
+		if (is_array($rcParamsDate) && $rcParamsDate) {
+			foreach ($rcParamsDate as $field => $value) {
+				if (strpos($field,"2")===false) {
+					if ($value != null && $rcParamsDate[$field."2"] != null){
+						$sbTmp = preg_replace("#((([a-z]|[0-9])*)\.(([a-z]|[0-9])*))#", '"$2"."$4"', $field);
+						$rcWhere[] = $sbTmp." BETWEEN $value AND ".$rcParamsDate[$field."2"];
+					}
+				}
+			}
+		}
+
+		//Arma la cadena del where
+		$sbWhere = ' WHERE "orden"."ordenumeros"="ordenempresa"."ordenumeros"';
+		$sbWhere .= ' AND "orden"."ordenumeros"="acta"."ordenumeros" ';
+		if (is_array($rcWhere))
+		$sbWhere .= " AND ".implode(" AND ", $rcWhere);
+			
+		//se anhade el where del squema
+		if($sbWhereSchema){
+			$sbWhere .= $sbWhereSchema;
+		}
+		$sbView = "\"orden\".\"ordenumeros\"";
+		//Arma la cadena de los campos a mostrar y los del ordenamiento
+
+		if(is_array($rcView) && $rcView){
+			$rcView = array_filter($rcView);
+			$sbView .= ",".implode(",", $rcView);
+		}
+
+
+		$rcTables = array_unique($rcTables);
+		//se recorre el arreglo de tablas y se determina si tiene left join
+		$nuCant = sizeof($rcTables);
+		foreach($rcTables as $nuCont=>$sbTable){
+			$sbTables .= (($nuCont+1)==$nuCant)?$sbTable." ".$rcJoin[$sbTable]:$sbTable." ".$rcJoin[$sbTable].",";
+		}
+		
+		//tabla temporal para el ultima acta activa
+		if($tareacc){
+			$objService = Application::loadServices("General");
+			$sbTareaCC = $objService->getParam("cross300","TAREA_CC");
+			if($sbTareaCC){
+				$sbTareaCC = ' AND "acta"."tarecodigos" <> \''.$sbTareaCC.'\' ';	
+			}
+		}
+		$objService = Application::loadServices('Workflow');
+		$objGateway = $objService->getGateWay("actatmp");
+		if($sbTareaCC){
+			$objGateway->setData(array("where"=>$sbTareaCC));
+		}
+		$objGateway->create();
+		$sbTable = $objGateway->getName();
+		$objService->close();
+		
+		//se pone la linea para la tabla acta
+		$sbTables .=', "'.$sbTable.'" AS "acta" ';
+
+		if($_REQUEST["ordeobservs"])
+		$sbView .= ',"orden"."ordeobservs"';
+
+		if(!strstr($sbTables,"ordenempresa"))
+		$sbTables .= ',"ordenempresa"';
+			
+
+		//MODIFICACION AGOSTO 29 - PAGINACI�N LISTADO DE CASOS
+		//Necesitamos calcular cu�ntos registros hay
+		$this->nuTotal = $_REQUEST["total"];
+		if(!$this->nuTotal) {
+			$sqlCount = 'SELECT COUNT(DISTINCT "orden"."ordenumeros") AS "cuantos" FROM '.$sbTables.' '.$sbWhere;
+			$this->objdb->fncadoselect($sqlCount, FETCH_ASSOC);
+			$this->nuTotal = $this->objdb->rcresult[0]["cuantos"];
+			$_REQUEST["total"] = $this->nuTotal;
+		}
+
+		$sql = 'SELECT DISTINCT '.$sbView.' FROM '.$sbTables.' '.$sbWhere;
+		if($_REQUEST["orderby"])
+		$sql .= ' ORDER BY '.$_REQUEST["orderby"];
+
+		//CALCULEMOS LA PAGINACI�N
+		$nuLimit = 100;
+		$this->nuOffset = WebRequest::getEnvValue("page")-1;
+		$this->nuOffset = $this->nuOffset*$nuLimit;
+		$this->sql = $sql;
+		 
+		$this->objdb->fncadoselect($sql, FETCH_ASSOC,$nuLimit,$this->nuOffset);
+		$rcConsulta = $this->objdb->rcresult;
+		
+		//borrado tabla temporal para el ultima acta activa
+		$objService = Application::loadServices('Workflow');
+		$objGateway = $objService->getGateWay("actatmp");
+		$objGateway->drop();
+		$objService->close();
+		
+		if (!is_array($rcConsulta))
+		return null;
+
+		//Carga el modulo de fecha
+		$objDate = Application :: loadServices("DateController");
+
+		//Inserta los valore que no caben en la consulta y da formato a las fechas
+		$hoy = (int) $objDate->fncintdate();
+		foreach ($rcConsulta as $key => $rcTmp){
+			//Formatea la fecha de ingreso
+			if ($rcTmp["ordefecingd"]){
+				$rcTmp["ordefecingd"] = $objDate->fncformatofechahora($rcTmp["ordefecingd"]);	
+			}
+			//Formatea la fecha de registro
+			if ($rcTmp["ordefecregd"]){
+				$rcTmp["ordefecregd"] = $objDate->fncformatofechahora($rcTmp["ordefecregd"]);
+			}
+			//Formatea la fecha de vencimiento
+			if ($rcTmp["ordefecvend"]){
+				$rcTmp["ordefecvend"] = $objDate->fncformatofechahora($rcTmp["ordefecvend"])." $cadena";
+			}
+			//Formatea la fecha de finalizacion
+			if ($rcTmp["ordefecfinad"]){
+				$rcTmp["ordefecfinad"] = $objDate->fncformatofechahora($rcTmp["ordefecfinad"]);	
+			}
+
+			$rcReturn[$key] = $rcTmp;
+		}
+		return $rcReturn;
+	}
+	/**
+	 * @Copyright 2004 FullEngine
+	 *
+	 * Consulta las causas pero retorna un vector con la llave formateada
+	 * concatenando el tipo de orden, evnto y causa
+	 * @return array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 13-dic-2004 13:53:30
+	 * @location Cali - Colombia
+	 */
+	function getCausasFormatKey() {
+		$sbSql = 'SELECT * FROM "causa"';
+
+		//Ejecuta el sql en db pero haciendo el fectch para hacer la conversion de fechas
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[$rcTmp["causcodigos"]] = $rcTmp["causnombres"];
+		}
+		return $rcReturn;
+	}
+	/**
+	 * @Copyright 2004 FullEngine
+	 *
+	 * Consulta las localizaciones pero retorna un vector con la llave formateada
+	 * Como el codigo de la localizacion
+	 * @return array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 13-dic-2004 13:53:30
+	 * @location Cali - Colombia
+	 */
+	function getLocationsFormatKey() {
+		$generalService = Application :: loadServices("General");
+		$rcTmpLocal = $generalService->getAllLocations();
+		if (!is_array($rcTmpLocal))
+		return null;
+		foreach ($rcTmpLocal as $rcTmp) {
+			$rcReturn[$rcTmp["locacodigos"]] = $rcTmp["locanombres"];
+		}
+		return $rcReturn;
+	}
+	/**
+	 * @Copyright 2004 FullEngine
+	 *
+	 * Consulta los contactos pero retorna un vector con la llave formateada Como
+	 * la identificacion del contacto
+	 * @return array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 13-dic-2004 13:53:30
+	 * @location Cali - Colombia
+	 */
+	function getContactoFormatKey() {
+		$customersService = Application :: loadServices("Customers");
+		$rcTmpcontacto = $customersService->getAllContacto();
+		if (!is_array($rcTmpcontacto))
+		return null;
+		foreach ($rcTmpcontacto as $rcTmp) {
+			$rcReturn[$rcTmp["contindentis"]] = $rcTmp["contnombre"];
+		}
+		return $rcReturn;
+	}
+	/**
+	 * @Copyright 2004 FullEngine
+	 *
+	 * Consulta las prioridades pero retorna un vector con la llave formateada
+	 * Como el codigo de la localizacion
+	 * @return array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 13-dic-2004 13:53:30
+	 * @location Cali - Colombia
+	 */
+	function getPrioridadFormatKey() {
+		$gateway = Application::getDataGateway('prioridad');
+		$rcTmpLocal = $gateway->getAllPrioridad();
+		if (!is_array($rcTmpLocal))
+		return null;
+		foreach ($rcTmpLocal as $rcTmp) {
+			$rcReturn[$rcTmp["priocodigos"]] = $rcTmp["prionombres"];
+		}
+		return $rcReturn;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Genera un sql generico
+	 * @author creyes
+	 * @param string $table
+	 * @return string
+	 * @date 29-August-2005 14:0:51
+	 * @location Cali-Colombia
+	 */
+	function getGenericSql($table, $viewfields='*'){
+
+		settype($rcTmp,"array");
+		settype($rcTables,"array");
+		settype($rcFields,"array");
+		settype($sbValue,"string");
+		settype($sbPos,"string");
+
+		if($table){
+			$rcTmp = explode(",",$table);
+			foreach ($rcTmp as $sbValue)
+			{
+				//analiza si es tabla.campo
+				$sbPos = strpos($sbValue, ".");
+				if (!($sbPos === false)) {
+					$sbValue = preg_replace("#((([a-z]|[0-9])*)\.(([a-z]|[0-9])*))#", '"$2"."$4"', $sbValue);
+				} else {
+					$sbValue = '"'.$sbValue.'"';
+				}
+				$rcTables[] = $sbValue;
+			}
+			$table = implode(",",$rcTables);
+		}else{
+			return null;
+		}
+
+		 
+		if ($fields_view !='*'){
+			$rcTmp = explode(",",$fields_view);
+			foreach ($rcTmp as $sbValue)
+			{
+				//analiza si es tabla.campo
+				$sbPos = strpos($sbValue, ".");
+				if (!($sbPos === false)) {
+					$sbValue = preg_replace("#((([a-z]|[0-9])*)\.(([a-z]|[0-9])*))#", '"$2"."$4"', $sbValue);
+				} else {
+					$sbValue = '"'.$sbValue.'"';
+				}
+				$rcFields[] = $sbValue;
+			}
+			$fields_view = implode(",",$rcFields);
+		}
+		return $sbsql = "SELECT $viewfields FROM $table";
+
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Inserta los filtros en un sql
+	 * @author creyes
+	 * @param string $sql
+	 * @param array $rcFilter
+	 * @return string
+	 * @date 29-August-2005 14:0:51
+	 * @location Cali-Colombia
+	 */
+	function setFilterSql($sbSql, $rcFilter=null){
+		 
+		settype($rcTable,"array");
+		settype($rcTmp,"array");
+		settype($sbPos,"string");
+		settype($sbTable,"string");
+		settype($sbFieldC,"string");
+		settype($sbField,"string");
+		settype($sbValue,"string");
+		settype($sbWere,"string");
+		 
+		if(!$sbSql){
+			return null;
+		}
+
+		if(!is_array($rcFilter)|| !$rcFilter){
+			return $sbSql;
+		}
+
+		foreach($rcFilter as $sbField => $sbValue){
+			 
+			//analiza si es tabla.campo
+			$sbPos = strpos($sbField, ".");
+			if (!($sbPos === false)) {
+				$sbTable = substr($sbField,0,($sbPos));
+				$sbFieldC = strtoupper(substr($sbField,($sbPos+1)));
+				$sbField = preg_replace("#((([a-z]|[0-9])*)\.(([a-z]|[0-9])*))#", '"$2"."$4"', $sbField);
+			} else {
+				$sbField = '"'.$sbField.'"';
+			}
+			 
+			//Se obtiene el metamodelo
+			if($sbTable){
+				$this->objdb->fncadometacolumns($sbTable);
+				$rcTable = $this->objdb->rcresult;
+				if(in_array($rcTable[$sbFieldC]->type,$this->objdb->rcType_to_Like)){
+					$this->objdb->setField($sbField);
+					$this->objdb->setValue($sbValue);
+					$rcTmp[] = $this->objdb->fncadogetlike();
+				}else{
+					$rcTmp[] = "$sbField='$sbValue'";
+				}
+			}else{
+				$rcTmp[] = "$sbField='$sbValue'";
+			}
+
+		}
+		if(stripos($sbSql,'WHERE')===false)
+		$sbWere = " WHERE ".implode(" AND ",$rcTmp);
+		else $sbWere = " AND ".implode(" AND ",$rcTmp);
+		return "$sbSql $sbWere";
+	}
+
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 *  Contiene los SQL de las listas despleglables
+	 * @param string $id Identificador del sql
+	 * @param array $ircParam Arreglo con parametros de consulta
+	 * @return string SQL
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 01-oct-2004 16:20:03
+	 * @location Cali-Colombia
+	 */
+	function getSqlConsult($id,$ircParam=null){
+		settype($objService,"object");
+		settype($sbEstateI, "string");
+		settype($sbMerecodigos,"string");
+		switch($id){
+			case "evento":
+				$sql = 'SELECT ' .
+							'"evento"."evencodigos",' .
+							'"evento"."evennombres",' .
+							'"evento"."tiorcodigos",' .
+							'"tipoorden"."tiornombres",' .
+							'"evento"."evendescrips",' .
+							'"evento"."evenactivos" ' .
+						'FROM "evento","tipoorden" ' .
+						'WHERE ' .
+							'"evento"."tiorcodigos"="tipoorden"."tiorcodigos"';
+				break;
+			case "causa":
+				$sql = 'SELECT ' .
+							'"causa"."causcodigos",' .
+							'"causa"."causnombres",' .
+							'"causa"."tiorcodigos",' .
+							'"tipoorden"."tiornombres",' .
+							'"causa"."evencodigos",' .
+							'"evento"."evennombres",' .
+							'"causa"."causactivas" ' .
+						'FROM "causa","tipoorden","evento" ' .
+						'WHERE ' .
+							'"causa"."tiorcodigos"="tipoorden"."tiorcodigos" AND ' .
+                            '"causa"."tiorcodigos"="evento"."tiorcodigos" AND '.
+							'"causa"."evencodigos"="evento"."evencodigos"';
+				break;
+			case "orden":
+				$sbEstateI = Application :: getConstant("REG_INACT");
+				$objService = Application :: loadServices("General");
+				$rcWebUser = $objService->getParam("cross300", "web_user_conf");
+				$sbMerecodigos = $rcWebUser["merecodigos"];
+				$sql = 'SELECT ' .
+							'"orden"."ordenumeros",' .
+							'"proceso"."procnombres" AS "proccodigos",' .
+							'COALESCE("view_solicitante"."contnombres", \'\') || \' -- \' || COALESCE("view_solicitante"."clienombres", \'\') AS "contidentis",' .
+							'"organizacion"."organombres" AS "ordesitiejes",' .
+							'"tipoorden"."tiornombres" AS "tiorcodigos",' .
+							'"orden"."ordefecingd" ' .
+						'FROM "orden","ordenempresa" LEFT JOIN "view_solicitante" ON ("ordenempresa"."contidentis"="view_solicitante"."solicodigos"),'.
+						'(SELECT "acta".* FROM "acta" WHERE  ("ordenumeros","actacodigos") IN '
+						.' (SELECT "orden"."ordenumeros",CAST(MAX(CAST("acta"."actacodigos" AS integer)) AS varchar) AS "actacodigos" '
+						.'FROM "orden","acta" WHERE "orden"."ordenumeros"="acta"."ordenumeros" AND "acta"."actaactivas" <> \''.$sbEstateI.'\' '
+						.' GROUP BY "orden"."ordenumeros")) AS "acta",'
+						.'"proceso","tipoorden","organizacion" ' .
+						'WHERE ' .
+							'"orden"."ordenumeros"="ordenempresa"."ordenumeros" AND ' .
+							'"orden"."ordenumeros"="acta"."ordenumeros" AND ' .
+					
+				//POR SOLICITUD DE CAROLINA, YA NO HACEMOS ESTA EXCEPCI�N
+				//    '"ordenempresa"."merecodigos"<>\''.$sbMerecodigos.'\' AND ' .
+				//'"orden"."ordefecfinad" IS NULL AND'.
+							'"ordenempresa"."tiorcodigos"="tipoorden"."tiorcodigos" AND ' .
+							'"orden"."proccodigos"="proceso"."proccodigos" AND '.
+                            '"orden"."ordefecfinad" IS NULL AND ' .
+                            '"orden"."ordesitiejes"="organizacion"."orgacodigos"';
+				break;
+			case "contacto":
+				$sql = 'SELECT ' .
+							'"contcodigon",' .
+							'"contindentis",' .
+							'(COALESCE("contprinoms", \'\') || \' \' || COALESCE("contsegnoms", \'\') || \' \' || COALESCE("contpriapes", \'\') || \' \' || COALESCE("contsegapes", \'\')) AS "contnombre" FROM "contacto"';
+				break;
+			case "solucion":
+				$sql = 'SELECT '.
+                            '"ordenempresa"."ordenumeros", '.
+                            '"ordenempresa"."oremsolucios" '.
+                        'FROM "ordenempresa" '.
+                        'WHERE '.
+                        '"ordenempresa"."oremsolucios" IS NOT NULL';
+				if(is_array($ircParam))
+				{
+					if(array_key_exists("solucion.resumen",$ircParam)){
+						$this->objdb->setField('"ordenempresa"."oremsolucios"');
+						$this->objdb->setValue($ircParam["solucion.resumen"]);
+						$sql .= ' AND '.$this->objdb->fncadogetlike();	
+					}
+					
+					if(array_key_exists("ordenempresa.ordenumeros",$ircParam)){
+						$this->objdb->setField('"ordenempresa"."ordenumeros"');
+						$this->objdb->setValue($ircParam["ordenempresa.ordenumeros"]);
+						$sql .= ' AND '.$this->objdb->fncadogetlike();	
+					}
+					
+				}
+				break;
+			case "tipoorden":
+				$sql = 'SELECT ' .
+							'"tipoorden"."tiorcodigos",' .
+							'"tipoorden"."tiornombres",' .
+							'"tipoorden"."tiordescrips",' .
+							'"tipoorden"."tioractivos"' .
+						'FROM "tipoorden" ';
+				break;
+			case "localizacion" :
+				$recAct = Application :: getConstant("REG_ACT");
+				$sql = 'SELECT "locacodigos","locanombres" FROM "localizacion" WHERE "locaestados"=\''.$recAct.'\'';
+				break;
+					
+			case "prospecto" :
+				$recAct = Application :: getConstant("REG_ACT");
+				$sql = 'SELECT contcodigon as contindentis,\'(\'||contindentis||\' - \'||contcodigon||\') \'||(COALESCE("contprinoms", \'\') || \' \' || COALESCE("contsegnoms", \'\') || \' \' || COALESCE("contpriapes", \'\') || \' \' || COALESCE("contsegapes", \'\')) AS contnombre
+						FROM contacto WHERE contactivas=\''.$recAct.'\'';
+				break;
+
+			case 'ciudades':
+				$sql = 'SELECT a.locacodigos AS locacodigos,b.locanombres||\' - \'||a.locanombres AS locanombres
+							FROM localizacion a,localizacion b
+							WHERE a.tilocodigos=\'3\' 
+							AND a.locacodpadrs=b.locacodigos
+							ORDER BY 2';
+				break;
+			case "contacto_ref" :
+				$recAct = Application :: getConstant("REG_ACT");
+				$sql = 'SELECT "solicitante"."solicodigos" AS "contcodigon",(COALESCE("B"."contnombre", \'\') || \' -- \' || COALESCE("clienombres", \'\')) AS "contnombre"  FROM "solicitante" LEFT JOIN "contacto" ON ("solicitante"."contcodigon"="contacto"."contcodigon") LEFT JOIN "cliente" ON ("solicitante"."cliecodigos"="cliente"."cliecodigos"),
+						(SELECT "contcodigon",("contindentis" || \' -- \' || COALESCE("contprinoms", \'\') || \' \' || COALESCE("contsegnoms", \'\') || \' \' || COALESCE("contpriapes", \'\') || \' \' || COALESCE("contsegapes", \'\')) AS "contnombre" FROM "contacto") AS "B"
+						WHERE "contactivas"=\''.$recAct.'\' AND "solicitante"."contcodigon"="B"."contcodigon"';
+				break;
+			case "contacto_ident" :
+				$recAct = Application :: getConstant("REG_ACT");
+				$sql = 'SELECT "solicodigos" AS "contcodigon",("contindentis" || \' -- \' || COALESCE("contprinoms", \'\') || \' \' || COALESCE("contsegnoms", \'\') || \' \' || COALESCE("contpriapes", \'\') || \' \' || COALESCE("contsegapes", \'\') || \' -- \' || COALESCE("clienombres", \'\')) AS "contindentis"  FROM "solicitante" LEFT JOIN "contacto" ON ("solicitante"."contcodigon"="contacto"."contcodigon") LEFT JOIN "cliente" ON ("solicitante"."cliecodigos"="cliente"."cliecodigos") WHERE "contacto"."contactivas"=\''.$recAct.'\'';
+				break;
+			case "cliente_ref" :
+				$recAct = Application :: getConstant("REG_ACT");
+				$sql = 'SELECT "cliecodigos","clienombres" FROM "cliente" WHERE "clieactivas"=\''.$recAct.'\' ';
+				break;
+			case "paciente_ref" :
+				$recAct = Application :: getConstant("REG_ACT");
+				$sql = 'SELECT "paciente"."paciindentis",(COALESCE("B"."pacinombres", \'\')) AS "pacinombres"  FROM "paciente",
+						(SELECT "paciindentis",("paciindentis" || \' -- \' || COALESCE("paciprinoms", \'\') || \' \' || COALESCE("pacisegnoms", \'\') || \' \' || COALESCE("pacipriapes", \'\') || \' \' || COALESCE("pacisegapes", \'\')) AS "pacinombres" FROM "paciente") AS "B"
+						WHERE "paciactivos"=\''.$recAct.'\' AND "paciente"."paciindentis"="B"."paciindentis"';
+				break;
+			case "paciente_ident" :
+				$recAct = Application :: getConstant("REG_ACT");
+				$sql = 'SELECT "paciindentis" AS "paciindentis_c",("paciindentis" || \' -- \' || COALESCE("paciprinoms", \'\') || \' \' || COALESCE("pacisegnoms", \'\') || \' \' || COALESCE("pacipriapes", \'\') || \' \' || COALESCE("pacisegapes", \'\')) AS "paciindentis"  FROM "paciente" WHERE "paciactivos"=\''.$recAct.'\'';
+				break;
+			case "contacto_ref_c" :
+				$recAct = Application :: getConstant("REG_ACT");
+				$sql = 'SELECT "contacto"."contcodigon",("contacto"."contindentis" || \' -- \' || COALESCE("B"."contnombre", \'\')) AS "contnombre"  FROM "contacto",
+						(SELECT "contcodigon",(COALESCE("contprinoms", \'\') || \' \' || COALESCE("contsegnoms", \'\') || \' \' || COALESCE("contpriapes", \'\') || \' \' || COALESCE("contsegapes", \'\')) AS "contnombre" FROM "contacto") AS "B"
+						WHERE "contactivas"=\''.$recAct.'\' AND "contacto"."contcodigon"="B"."contcodigon"';
+				break;
+			default: $sql = null;
+		}
+
+		return $sql;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 *  Contiene los SQL de las listas despleglables
+	 * @param string $id Identificador del sql
+	 * @return string SQL
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 01-oct-2004 16:20:03
+	 * @location Cali-Colombia
+	 */
+	function getSqlHelp($id){
+		switch($id){
+			case "contacto":
+				$recAct = Application :: getConstant("REG_ACT");
+				$sql = 'SELECT "contcodigon","contindentis",(COALESCE("contprinoms", \'\') || \' \' || COALESCE("contsegnoms", \'\') || \' \' || COALESCE("contpriapes", \'\') || \' \' || COALESCE("contsegapes", \'\')) AS "contnombre" FROM "contacto" WHERE "contactivas"=\''.$recAct.'\'';
+				break;
+			case "infractor":
+				$recAct = Application :: getConstant("REG_ACT");
+				$sql = 'SELECT "infrcodigos","infrnombres" FROM "infractor" WHERE "infractivas"=\''.$recAct.'\'';
+				break;
+			case "personal":
+				$recAct = Application :: getConstant("REG_ACT");
+				$sql = 'SELECT "perscodigos","persidentifs", "persnombres", "persapell1s", "persapell2s" FROM "personal" WHERE "persestadoc"=\''.$recAct.'\'';
+				break;
+		}
+		return $sql;
+	}
+	/**
+	 * @copyright Copyright 2004 &copy; FullEngine
+	 *
+	 * Hace la consulta para los combobox (por RS)
+	 * @param string $isbSqlId Id del sql
+	 * @param array $ircParam	 Arreglo con los parametros de la consulta
+	 * @return array
+	 * @author freina <freina@parquesoft.com>
+	 * @date 05-Jul-2005 15:29
+	 * @location Cali-Colombia
+	 */
+	function getLoadSelect($isbSqlId, $ircParam) {
+		settype($objService,"object");
+		settype($sbEstate,"string");
+		settype($sbSql,"string");
+		$sbEstate = Application :: getConstant("REG_ACT");
+		switch ($isbSqlId) {
+			case "tipoorden_evento" :
+				$sbSql = 'SELECT "evencodigos","evennombres" FROM "evento" WHERE "tiorcodigos"'.
+				$ircParam["tiorcodigos"][1].'\''.$ircParam["tiorcodigos"][0].
+				'\'  AND "evenactivos"=\''.$sbEstate.'\'';
+				break;
+			case "tipoorden_evento_causa" :
+				$sbSql = 'SELECT "causcodigos","causnombres" FROM "causa" WHERE "tiorcodigos"'.
+				$ircParam["tiorcodigos"][1].'\''.$ircParam["tiorcodigos"][0].
+				'\' AND "evencodigos"'.$ircParam["evencodigos"][1].'\''.$ircParam["evencodigos"][0].
+				'\'  AND "causactivas"=\''.$sbEstate.'\'';
+				break;
+			case "localizacion" :
+				$objService = Application :: loadServices("General");
+				return $objService->getLocation($ircParam["tipo"][0], $ircParam["nivel"][0] ,$ircParam["locacodigos"][0]);
+				break;
+			case "tipolocaliza" :
+				$objService = Application :: loadServices("General");
+				return $objService->getTipolocalizaByLocacodigos($ircParam["locacodigos"][0]);
+				break;
+		}
+		$this->objdb->fncadoselect($sbSql);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * @copyright Copyright 2005 &copy; FullEngine
+	 *
+	 * Arma el sql para consultar las actuaciones por requerimiento
+	 * @param array $rcParams Vector con los parametros de la consulta
+	 * @return string SQL
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 18-jul-2005 16:15:03
+	 * @location Cali-Colombia	* @location Cali-Colombia
+	 */
+	function getActuareq($rcParams){
+		extract($rcParams);
+		$recAct = Application :: getConstant("REG_ACT");
+
+		if($ordenumeros)
+		$rcWhere[] = " \"acta\".\"ordenumeros\"='$ordenumeros'";
+		if($orgacodigos)
+		$rcWhere[] = " \"actaempresa\".\"orgacodigos\"='$orgacodigos'";
+		if($grupcodigos)
+		$rcWhere[] = " \"grupo\".\"grupcodigos\"='$grupcodigos'";
+		if($acemfeccren && $acemfeccren2)
+		$rcWhere[] = " \"actaempresa\".\"acemfeccren\" BETWEEN $acemfeccren AND $acemfeccren2";
+		if(!$acemfeccren && $acemfeccren2)
+		$rcWhere[] = " \"actaempresa\".\"acemfeccren\" <= $acemfeccren2";
+		if($acemfeccren && !$acemfeccren2)
+		$rcWhere[] = " \"actaempresa\".\"acemfeccren\" >= $acemfeccren";
+
+		if($acemfecaten && $acemfecaten2)
+		$rcWhere[] = " \"actaempresa\".\"acemfecaten\" BETWEEN $acemfecaten AND $acemfecaten2";
+		if(!$acemfecaten && $acemfecaten2)
+		$rcWhere[] = " \"actaempresa\".\"acemfecaten\" <= $acemfecaten2";
+		if($acemfecaten && !$acemfecaten2)
+		$rcWhere[] = " \"actaempresa\".\"acemfecaten\" >= $acemfecaten";
+
+		if(is_array($rcWhere))
+		$sbWhere = implode(" AND ",$rcWhere)." AND ";
+
+		//Comprueba si existen registros para la consulta
+		$sqlProbe = 'SELECT count(*) AS "cantidad" '.
+                    'FROM "acta","actaempresa","estadoacta","organizacion","grupo", "ordenempresa"'. 
+                    ' WHERE '.$sbWhere.
+                        ' "actaempresa"."actacodigos"="acta"."actacodigos" AND '.
+                        '"acta"."actaactivas"<> \'I\' AND '.
+                        '"acta"."ordenumeros"="ordenempresa"."ordenumeros" AND '.
+                        '"actaempresa"."esaccodigos"="estadoacta"."esaccodigos" AND '.
+                        '"actaempresa"."orgacodigos"="organizacion"."orgacodigos" AND '.
+                        'CAST("actaempresa"."acemusuars" AS integer)="grupo"."grupcodigon"';
+		$this->objdb->fncadoselect($sqlProbe, FETCH_ASSOC);
+		$cantidad = (integer) $this->objdb->rcresult[0]['cantidad'];
+		if(!$cantidad)
+		return null;
+
+		$sql = 'SELECT '.
+                        '"acta"."ordenumeros",'.
+                        '"estadoacta"."esacnombres",'.
+                        '"actaempresa"."acemfecaten",'.
+                        '"actaempresa"."acemfeccren",'.
+                        '"actaempresa"."acemobservas",'.
+                        '"organizacion"."organombres",'.
+                        '"grupo"."grupnombres" '.
+                    'FROM "acta","actaempresa","estadoacta","organizacion","grupo", "ordenempresa" '. 
+                    ' WHERE '.$sbWhere.
+                        ' "actaempresa"."actacodigos"="acta"."actacodigos" AND '.
+                        '"acta"."actaactivas"<> \'I\' AND '.
+                        '"acta"."ordenumeros"="ordenempresa"."ordenumeros" AND '.
+                        '"actaempresa"."esaccodigos"="estadoacta"."esaccodigos" AND '.
+                        '"actaempresa"."orgacodigos"="organizacion"."orgacodigos" AND '.
+                        'CAST("actaempresa"."acemusuars" AS integer)="grupo"."grupcodigon"';
+		return $sql;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta todos los tipos de pero retorna un array con indices aosciativos
+	 * con el indice como el codigo del tipo y el nombre como el valor
+	 * @param array $rcTypes Arreglo con lo tipos que no deben ser devueltos
+	 * @author creyes
+	 * @return array name array con indices aosciativos
+	 * con el indice como el codigo del tipo y el nombre como el valor
+	 * @date 9-August-2005 14:16:38
+	 * @location Cali-Colombia
+	 */
+	function getAllTipoorden($rcTypes=null){
+		 
+		settype($rcReturn,"array");
+		settype($rcTmp,"array");
+		settype($sbTmp,"string");
+		settype($sbSql,"string");
+		 
+		//COMENTAR PUES YA LOS SEGUIMIENTOS SON UNA TAREA
+		/*
+		if(is_array($rcTypes) && $rcTypes){
+		$sbTmp = " WHERE \"tipoorden\".\"tiorcodigos\" NOT IN ('".implode("','",$rcTypes)."')";
+		}
+		*/
+		 
+		$sbSql = 'SELECT * FROM "tipoorden" '.$sbTmp.' ORDER BY "tiornombres"';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[$rcTmp["tiorcodigos"]] = $rcTmp["tiornombres"];
+		}
+		return $rcReturn;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta la cantidad de requeriminetos por dependencia
+	 * @author creyes
+	 * @param int $fechini fecha inicial
+	 * @param int $fechfin fecha final
+	 * @param Array $rcTypes Arreglo con los tipos que o deben presentarse
+	 * @return array
+	 * @date 9-August-2005 16:4:42
+	 * @location Cali-Colombia
+	 */
+	function getReqByDepByTipo($fechini,$fechfin,$rcTypes=null){
+		 
+		settype($sbTmp,"string");
+		 
+		//COMENTAR PUES YA LOS SEGUIMIENTOS SON UNA TAREA
+		/*
+		if(is_array($rcTypes) && $rcTypes){
+		$sbTmp = " AND \"ordenempresa\".\"tiorcodigos\" NOT IN ('".implode("','",$rcTypes)."') ";
+		}
+		*/
+		 
+		$sql = 'SELECT "acta"."orgacodigos",' .
+        		'"organizacion"."organombres",' .
+        		'"tipoorden"."tiorcodigos",' .
+        		'"tipoorden"."tiornombres",' .
+        		'count("orden"."ordenumeros") AS "cantidad" ' .
+        		'FROM "orden", "ordenempresa", "organizacion", "tipoorden" ' .
+        		'WHERE ' .
+        		'"orden"."ordefecregd" BETWEEN '.$fechini.' AND '.$fechfin.' ' .
+        		'AND "orden"."ordenumeros" = "ordenempresa"."ordenumeros"' .
+		$sbTmp.
+                 ' AND "acta"."orgacodigos"="organizacion"."orgacodigos" ' .
+        		' AND "ordenempresa"."tiorcodigos" = "tipoorden"."tiorcodigos" ' .
+                'GROUP BY "acta"."orgacodigos", "organizacion"."organombres", ' .
+                '"tipoorden"."tiorcodigos", "tipoorden"."tiornombres" 
+                ORDER BY 2, 3';
+
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcArray = $rcReturn[$rcTmp['orgacodigos']];
+			$rcArray[$rcTmp['tiorcodigos']] = array('nombre' => $rcTmp['tiornombres'],'cantidad' => $rcTmp['cantidad']);
+			$rcArray['total'] += $rcTmp['cantidad'];
+			$rcArray['organombres'] = $rcTmp['organombres'];
+			$todas += $rcTmp['cantidad'];
+			$rcTotalByDep[$rcTmp['tiorcodigos']] += $rcTmp['cantidad'];
+			$rcReturn[$rcTmp['orgacodigos']] = $rcArray;
+		}
+		if(!is_array($rcReturn))
+		return null;
+
+		//Calcula los porcentajes
+		foreach($rcReturn as $orgacodigos => $rcTmp){
+			$total = $rcTmp['total'];
+			$organombre = $rcTmp['organombres'];
+			unset($rcTmp['total']);
+			unset($rcSalidaTipos);
+			foreach($rcTmp as $tipo => $rcTipos)
+			{
+				//% del tipo en la dependencia
+				$rcTipos['tipxdep'] = ($rcTipos['cantidad'] * 100) / $total;
+				$rcTipos['tipxdep'] = number_format($rcTipos['tipxdep'],2,',',".");
+
+				//% del tipo en la corporacion ocurridas en la dependencia
+				$rcTipos['topxcorpxdep'] = ($rcTipos['cantidad'] * 100) / $todas;
+				$rcTipos['topxcorpxdep'] = number_format($rcTipos['topxcorpxdep'],2,',',".");
+				$rcSalidaTipos[$tipo] = $rcTipos;
+			}
+			// Rearma el vector de los tipos
+			$rcSalidaTipos['total'] = $total;
+			$rcSalidaTipos['organombres'] = $organombre;
+
+			//% de la dependencia con respecto a toda la corpaoracion
+			$rcSalidaTipos['depxcorp'] = ($total * 100) / $todas;
+			$rcSalidaTipos['depxcorp'] = number_format($rcSalidaTipos['depxcorp'],2,',',".");
+			$rcSalidaOrganiza[$orgacodigos] = $rcSalidaTipos;
+
+		}
+		unset($rcTmp);
+		//% total de los tipo con respectos al total de la corporacion
+		foreach($rcTotalByDep as $tipo => $valor){
+			$rcTmp[$tipo]['valor'] = $valor;
+			$rcTmp[$tipo]['procentaje'] = number_format((($valor * 100) / $todas),2,',',".");
+		}
+		$rcSalidaOrganiza['totalxdep'] = $rcTmp;
+		$rcSalidaOrganiza['todas'] = $todas;
+		unset($rcReturn);
+		return $rcSalidaOrganiza;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta todos los eventos de un tipo de orden de retornando un array
+	 * con indices aosciativos con el indice como el codigo del tipo concatenado
+	 * con el codigo del evento y el nombre del evento como el valor
+	 * @author creyes
+	 * @return array name array con indices aosciativos
+	 * con el indice como el codigo del tipo y el nombre como el valor
+	 * @date 9-August-2005 14:16:38
+	 * @location Cali-Colombia
+	 */
+	function getEventoByTipoorden($tiorcodigos){
+		$sbSql = 'SELECT
+                            "evento"."evencodigos", 
+                            "evento"."evennombres", 
+                            "causa"."causcodigos", 
+                            "causa"."causnombres" 
+                        FROM 
+                            "evento" LEFT JOIN "causa" ON ("evento"."tiorcodigos"="causa"."tiorcodigos" AND 
+                                                       "evento"."evencodigos"="causa"."evencodigos") 
+                        WHERE "evento"."tiorcodigos"=\''.$tiorcodigos.'\'';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcArray = $rcReturn[$tiorcodigos.$rcTmp["evencodigos"]];
+			$rcArray['nombre'] = $rcTmp["evennombres"];
+			if($rcTmp["causcodigos"]){
+				$rcCausas = $rcArray['causas'];
+				$rcCausas[$tiorcodigos.$rcTmp["evencodigos"].$rcTmp["causcodigos"]] = $rcTmp["causnombres"];
+				$rcArray['causas'] = $rcCausas;
+			}
+			$rcReturn[$tiorcodigos.$rcTmp["evencodigos"]] = $rcArray;
+		}
+		return $rcReturn;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta la cantidad de requerimientos en las dependecia por evento
+	 * en determinado tipo de requerimiento y rango de fechas
+	 * @author creyes
+	 * @param string $tiorcodigos desc
+	 * @param string $fechini desc
+	 * @param string $fechfin desc
+	 * @return array
+	 * @date 10-August-2005 16:34:3
+	 * @location Cali-Colombia
+	 */
+	function getReqByEvento($tiorcodigos,$fechini,$fechfin){
+		$sbSql = 'SELECT
+                    "organizacion"."orgacodigos", 
+                    "organizacion"."organombres",
+                    "evento"."evencodigos",
+                    "evento"."evennombres", 
+                    count("ordenempresa"."ordenumeros") AS "cantidad"
+                FROM "orden","ordenempresa","organizacion","evento" 
+                WHERE 
+                    "orden"."ordefecregd" BETWEEN '.$fechini.' AND '.$fechfin.' AND 
+                    "orden"."ordenumeros" = "ordenempresa"."ordenumeros" AND 
+                    "ordenempresa"."tiorcodigos" = \''.$tiorcodigos.'\' AND 
+                    "acta"."orgacodigos" = "organizacion"."orgacodigos" AND 
+                    "ordenempresa"."evencodigos"  = "evento"."evencodigos" 
+                GROUP BY "organizacion"."orgacodigos", "organizacion"."organombres", ' .
+                		'"evento"."evencodigos", "evento"."evennombres"
+                ORDER  BY "organizacion"."organombres" ASC ';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcArray = $rcReturn[$rcTmp['orgacodigos']];
+
+			//Acumula la cantidad por evento y su nombre
+			$rcArray[$tiorcodigos.$rcTmp['evencodigos']] = array('nombre' => $rcTmp['evennombres'],'cantidad' => $rcTmp['cantidad']);
+
+			//Cantidad atendida por dependencia
+			$rcArray['totalxdep'] += $rcTmp['cantidad'];
+				
+			//Cantidad de requerimientos por evento
+			$rcReqByEven[$tiorcodigos.$rcTmp['evencodigos']] += $rcTmp['cantidad'];
+
+			//Cantidad atendida por la corporacion
+			$total += $rcTmp['cantidad'];
+			$rcArray['organombres'] = $rcTmp['organombres'];
+			$rcReturn[$rcTmp['orgacodigos']] = $rcArray;
+		}
+		if(!is_array($rcReturn))
+		return null;
+
+		//Calcula los porcentajes
+		foreach($rcReturn as $orgacodigos => $rcData){
+			$totalDep = $rcData['totalxdep'];
+			$organombres = $rcData['organombres'];
+			unset($rcData['totalxdep'], $rcData['organombres']);
+			foreach($rcData as $evencodigos => $rcEventos){
+				$rcEventos['porcentaje'] = ($rcEventos['cantidad'] * 100) / $rcReqByEven[$evencodigos];
+				$rcEventos['porcentaje'] = number_format($rcEventos['porcentaje'],2,',','.');
+				$rcData[$evencodigos] = $rcEventos;
+			}
+			$rcData['porcxdep'] = number_format((($totalDep * 100) / $total),2,',','.');
+			$rcData['totalxdep'] = $totalDep;
+			$rcData['organombres'] = $organombres;
+			$rcReturn[$orgacodigos] = $rcData;
+
+		}
+		unset($rcTmp);
+
+		//Calcula lo prcentajes por evento con respecto a toda la coporacion
+		foreach($rcReqByEven as $evento => $valor){
+			$rcTmp[$evento]['valor'] = $valor;
+			$rcTmp[$evento]['porcentaje'] = number_format((($valor * 100) / $total),2,',','.');
+		}
+		unset($rcReqByEven);
+		$rcReturn = array('consulta'=>$rcReturn,'todas' => $total, 'totalxeven' => $rcTmp);
+		return $rcReturn;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta la cantidad de requerimientos en las dependencia
+	 * discriminandolos por causa
+	 * @author creyes
+	 * @param string $tiorcodigos desc
+	 * @param string $fechini desc
+	 * @param string $fechfin desc
+	 * @return array
+	 * @date 11-August-2005 9:25:55
+	 * @location Cali-Colombia
+	 */
+	function getReqByCausa($tiorcodigos,$fechini,$fechfin){
+		$sbSql = 'SELECT
+                        "organizacion"."orgacodigos", 
+                        "organizacion"."organombres", 
+                        "evento"."evencodigos", 
+                        "evento"."evennombres", 
+                        "causa"."causcodigos", 
+                        "causa"."causnombres", 
+                        count("ordenempresa"."ordenumeros") AS "cantidad" 
+                    FROM "orden","ordenempresa","organizacion","evento","causa" 
+                    WHERE 
+                        "orden"."ordefecregd" BETWEEN '.$fechini.' AND '.$fechfin.' AND 
+                        "orden"."ordenumeros" = "ordenempresa"."ordenumeros" AND 
+                        "ordenempresa"."tiorcodigos" = \''.$tiorcodigos.'\' AND 
+                        "acta"."orgacodigos" = "organizacion"."orgacodigos" AND 
+                        "ordenempresa"."tiorcodigos" = "evento"."tiorcodigos" AND 
+                        "ordenempresa"."evencodigos" = "evento"."evencodigos" AND 
+                        "ordenempresa"."tiorcodigos" = "causa"."tiorcodigos" AND 
+                        "ordenempresa"."evencodigos" = "causa"."evencodigos" AND 
+                        "ordenempresa"."causcodigos"  = "causa"."causcodigos" 
+                    GROUP BY "organizacion"."orgacodigos", "organizacion"."organombres", ' .
+                    		'"evento"."evencodigos", "evento"."evennombres", ' .
+                    		'"causa"."causcodigos", "causa"."causnombres" 
+                    ORDER BY "organizacion"."organombres" ASC, "evento"."evennombres" ASC';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcArray = $rcReturn[$rcTmp['orgacodigos']];
+			$rcCausas = $rcArray[$tiorcodigos.$rcTmp['evencodigos']];
+			$rcCausas[$tiorcodigos.$rcTmp['evencodigos'].$rcTmp['causcodigos']]['nombre'] = $rcTmp['causnombres'];
+			$rcCausas[$tiorcodigos.$rcTmp['evencodigos'].$rcTmp['causcodigos']]['cantidad'] += $rcTmp['cantidad'];
+			$rcTotalCausa[$tiorcodigos.$rcTmp['evencodigos'].$rcTmp['causcodigos']] += $rcTmp['cantidad'];
+			$rcArray[$tiorcodigos.$rcTmp['evencodigos']] = $rcCausas;
+			$rcReturn[$rcTmp['orgacodigos']] = $rcArray;
+		}
+		//Calcula los porcentajes por causa
+		return array('causas' => $rcReturn, 'totales' => $rcTotalCausa);
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta los estados de las actas
+	 * @author creyes
+	 * @return array Con indices asociativos como indice pg_
+	 * @date 12-August-2005 14:5:57
+	 * @location Cali-Colombia
+	 */
+	function getEstadoacta(){
+		$sbSql = 'SELECT * FROM "estadoacta" ORDER BY "esacnombres"';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[$rcTmp["esaccodigos"]] = $rcTmp["esacnombres"];
+		}
+		return $rcReturn;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta el reporte de requerimientos por todos los estados
+	 * @author creyes
+	 * @param integer $fechini Entero con la fecha de registro inicio
+	 * @param integer $fechfin Entero con la fecha de registro fin
+	 * @param array $rcTypes Arreglo con los tipos de caso que deben ser excluidos
+	 * @return type name desc
+	 * @date 12-August-2005 14:24:10
+	 * @modified
+	 * Se a�ade el parametro que permite definir que tipos de caso deben ser excluidos
+	 * @author freina<freina@parquesoft.com>
+	 * @date 29-May-2007 11:22
+	 * @location Cali-Colombia
+	 */
+	function getReqByEnd($fechini, $fechfin, $rcTypes=null){
+		 
+		settype($objService,"object");
+		settype($sbTmp,"string");
+		settype($sbSql,"string");
+		settype($nuHoy,"integer");
+		 
+		$objService = Application :: loadServices("DateController");
+		$nuHoy = (int) $objService->fncintdatehour();
+
+		//COMENTAR PUES YA LOS SEGUIMIENTOS SON UNA TAREA
+		/*
+		if(is_array($rcTypes) && $rcTypes){
+		$sbTmp = " AND \"ordenempresa\".\"tiorcodigos\" NOT IN ('".implode("','",$rcTypes)."') ";
+		}
+		*/
+		if($this->seguimiento<>'')
+		$sbTmp .= " AND \"acta\".\"tarecodigos\" <> '".$this->seguimiento."'";
+
+		//000267AT - FECHA DE DIGITACI�N
+		if($this->ordefecdiginin && $this->ordefecdigfinn) {
+			$sbTmp .= ' AND "orden"."ordefecingd" BETWEEN '.$this->ordefecdiginin.' AND '.$this->ordefecdigfinn.' ';
+		}
+
+		$sbSql = 'SELECT "organizacion"."orgacgpads","organizacion"."orgacodigos", '.
+                    '"organizacion"."organombres", '.
+                    '"orden"."ordefecvend", '.
+                    '"orden"."ordefecfinad" '.
+                'FROM "orden","ordenempresa","organizacion","acta"'.
+                ' WHERE '.
+                '"orden"."ordefecregd" BETWEEN '.$fechini.' AND '.$fechfin.' ' .
+                ' AND "orden"."ordenumeros"="ordenempresa"."ordenumeros" '.
+                ' AND "acta"."ordenumeros"="ordenempresa"."ordenumeros" '.
+		$sbTmp.
+                ' AND "acta"."orgacodigos"="organizacion"."orgacodigos" '.
+                ' ORDER BY "organizacion"."orgacgpads" asc ';
+
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn['data'][$rcTmp['orgacodigos']]['organombres'] = $rcTmp['organombres'];
+
+			//Verifica si no es finalizado
+			if(!$rcTmp['ordefecfinad'])
+			{
+				//Si es pendiente vencida
+				if($nuHoy > $rcTmp['ordefecvend']){
+					$rcReturn['data'][$rcTmp['orgacodigos']]['pend_out'] ++;
+					$rcReturn['pend_out'] ++;
+
+				}else{ //Si en pendiente no vencida
+					$rcReturn['data'][$rcTmp['orgacodigos']]['pend_in'] ++;
+					$rcReturn['pend_in'] ++;
+				}
+			}else{
+				//Si es finalizada vencida
+				if($rcTmp['ordefecfinad'] > $rcTmp['ordefecvend']){
+					$rcReturn['data'][$rcTmp['orgacodigos']]['fin_out'] ++;
+					$rcReturn['fin_out'] ++;
+
+				}else{ //Si en finalizada no vencida
+					$rcReturn['data'][$rcTmp['orgacodigos']]['fin_in'] ++;
+					$rcReturn['fin_in'] ++;
+				}
+			}
+			$rcReturn['data'][$rcTmp['orgacodigos']]['total'] ++;
+			$rcReturn['total'] ++;
+
+		}
+		return $rcReturn;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta los estado por tarea
+	 * @author creyes
+	 * @param string $actacodigos
+	 * @return array
+	 * @date 2-September-2005 16:29:57
+	 * @location Cali-Colombia
+	 */
+	function getEstadostareaByActa($actacodigos,$tarecodigos=false){
+		$sbestado = Application :: getConstant("REG_ACT");
+		$sql = 'SELECT DISTINCT '.
+                    '"estadoacta"."esaccodigos", '.
+                    '"estadoacta"."esacnombres" ';
+		if($tarecodigos)
+		$sql .= 'FROM "estadotarea", "estadoacta" ';
+		else
+		$sql .= 'FROM "acta", "estadotarea", "estadoacta" ';
+		$sql .= 'WHERE ';
+		if($tarecodigos)
+		$sql .= '"estadotarea"."tarecodigos" = \''.$tarecodigos.'\' AND ';
+		else
+		$sql .= '"acta"."actacodigos" = \''.$actacodigos.'\' AND ';
+		if(!$tarecodigos)
+		$sql .= '"acta"."tarecodigos" = "estadotarea"."tarecodigos" AND ';
+		$sql .= '"estadotarea"."esaccodigos" = "estadoacta"."esaccodigos" AND '.
+                    '"estadoacta"."esacactivas"=\''.$sbestado.'\' '.
+                    'ORDER BY "estadoacta"."esacnombres"';
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta los estado por tarea
+	 * @author creyes
+	 * @param string $actacodigos
+	 * @return array
+	 * @date 2-September-2005 16:29:57
+	 * @location Cali-Colombia
+	 */
+	function getEstadostarea(){
+		$sbestado = Application :: getConstant("REG_ACT");
+		$sql = 'SELECT '.
+                    '"estadoacta"."esaccodigos", '.
+                    '"estadoacta"."esacnombres" '.
+                'FROM "estadoacta" '.
+                'WHERE "estadoacta"."esacactivas"=\''.$sbestado.'\' '.
+                'ORDER BY "estadoacta"."esacnombres"';
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Obtiene las transferencias de un acta;
+	 * @author creyes
+	 * @param string $actacodigos
+	 * @return array
+	 * @date 16-September-2005 13:16:37
+	 * @location Cali-Colombia
+	 */
+	function getTranfertarea($actacodigos){
+		$sql = 'SELECT '.
+                    '"organizacion"."orgacodigos", '.
+                    '"organizacion"."organombres", '.
+                    '"transfertarea"."trtafecingn", '.
+					'"transfertarea"."trtafechan", '.
+					'"transfertarea"."trtaobservas" '.
+                'FROM "transfertarea","organizacion" '.
+                'WHERE '.
+                    '"transfertarea"."tarecodigos" = \''.$actacodigos.'\' AND '.
+                    '"transfertarea"."orgacodigos" = "organizacion"."orgacodigos" '.
+                'ORDER BY "transfertarea"."trtafechan" ASC ';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoselect($sql);
+
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta la cantidad de req consolucion
+	 * por tipo
+	 * @author creyes
+	 * @param type name desc
+	 * @return array
+	 * @date 10-December-2005 1:20:48
+	 * @location Cali-Colombia
+	 */
+	function getNumReqBytype(){
+		$sql = 'SELECT '.
+                    '"tipoorden"."tiorcodigos", '.
+                    'count("ordenempresa"."ordenumeros") AS "cantidad"'.
+                'FROM "ordenempresa","tipoorden" '.
+                'WHERE '.
+                    '"ordenempresa"."oremsolucios" IS NOT NULL AND '.
+                    '"ordenempresa"."tiorcodigos" = "tipoorden"."tiorcodigos" '.
+                'GROUP BY "tipoorden"."tiorcodigos" ';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[$rcTmp["tiorcodigos"]] = $rcTmp["cantidad"];
+		}
+		return $rcReturn;
+	}
+	/**
+	 * @Copyright 2004 FullEngine
+	 *
+	 * Consulta los tipos de req pero retorna un vector con la llave formateada
+	 * concatenando el tipo de orden, evnto y causa
+	 * @return array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 13-dic-2004 13:53:30
+	 * @location Cali - Colombia
+	 */
+	function getTiposFormatKey() {
+		$sbSql = 'SELECT * FROM "tipoorden" ORDER BY "tiornombres"';
+
+		//Ejecuta el sql en db pero haciendo el fectch para hacer la conversion de fechas
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[$rcTmp["tiorcodigos"]] = $rcTmp["tiornombres"];
+		}
+		return $rcReturn;
+	}
+	/**
+	 * @Copyright 2004 FullEngine
+	 * Consulta los eventos pero retorna un vector con la llave formateada
+	 * concatenando el tipo de orden, evnto y causa
+	 * @param $tiorcodigos
+	 * @return array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 13-dic-2004 13:53:30
+	 * @location Cali - Colombia
+	 */
+	function getEventosFormatKey($tiorcodigos) {
+		$sbSql = 'SELECT * FROM "evento" WHERE "tiorcodigos"=\''.$tiorcodigos.'\' ORDER BY "evennombres"';
+
+		//Ejecuta el sql en db pero haciendo el fectch para hacer la conversion de fechas
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[$rcTmp["evencodigos"]] = $rcTmp["evennombres"];
+		}
+		return $rcReturn;
+	}
+
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta la cantidad de req consolucion
+	 * por Evento
+	 * @author creyes
+	 * @param type name desc
+	 * @return array
+	 * @date 10-December-2005 1:20:48
+	 * @location Cali-Colombia
+	 */
+	function getNumReqByEvent($tiorcodigos){
+		$sql = 'SELECT '.
+                    '"evento"."tiorcodigos", '.
+                    '"evento"."evencodigos", '.
+                    'count("ordenempresa"."ordenumeros") AS "cantidad" '.
+                'FROM "evento","ordenempresa" '.
+                'WHERE '.
+                    '"evento"."tiorcodigos" = \''.$tiorcodigos.'\' AND '.
+                    '"evento"."tiorcodigos" = "ordenempresa"."tiorcodigos" AND '.
+                    '"evento"."evencodigos" = "ordenempresa"."evencodigos" AND '.
+                    '"ordenempresa"."oremsolucios" IS NOT NULL '.
+                'GROUP BY "evento"."tiorcodigos", "evento"."evencodigos"';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[$rcTmp["tiorcodigos"].'|'.$rcTmp["evencodigos"]] = $rcTmp["cantidad"];
+		}
+		return $rcReturn;
+	}
+	/**
+	 * @Copyright 2004 FullEngine
+	 *
+	 * Consulta las causas pero retorna un vector con la llave formateada
+	 * concatenando el tipo de orden, evnto y causa
+	 * @param $tiorcodigos
+	 * @return array
+	 * @author creyes <cesar.reyes@parquesoft.com>
+	 * @date 13-dic-2004 13:53:30
+	 * @location Cali - Colombia
+	 */
+	function getByFkeyCausasFormatKey($tiorcodigos, $evencodigos) {
+		$sbSql = 'SELECT * FROM "causa" WHERE "tiorcodigos"=\''.$tiorcodigos.'\' AND "evencodigos"=\''.$evencodigos.'\' ORDER BY "causnombres"';
+
+		//Ejecuta el sql en db pero haciendo el fectch para hacer la conversion de fechas
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[$rcTmp["causcodigos"]] = $rcTmp["causnombres"];
+		}
+		return $rcReturn;
+	}
+
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta la cantidad de req consolucion
+	 * por Evento
+	 * @author creyes
+	 * @param type name desc
+	 * @return array
+	 * @date 10-December-2005 1:20:48
+	 * @location Cali-Colombia
+	 */
+	function getNumReqByCausa($tiorcodigos, $evencodigos){
+		$sql = 'SELECT '.
+                    '"causa"."tiorcodigos", '.
+                    '"causa"."evencodigos", '.
+                    '"causa"."causcodigos", '.
+                    'count("ordenempresa"."ordenumeros") AS "cantidad" '.
+                'FROM "causa","ordenempresa" '.
+                'WHERE '.
+                    '"causa"."tiorcodigos" = \''.$tiorcodigos.'\' AND '.
+                    '"causa"."evencodigos" = \''.$evencodigos.'\' AND '.
+                    '"causa"."tiorcodigos" = "ordenempresa"."tiorcodigos" AND '.
+                    '"causa"."evencodigos" = "ordenempresa"."evencodigos" AND '.
+                    '"causa"."causcodigos" = "ordenempresa"."causcodigos" AND '. 
+                    '"ordenempresa"."oremsolucios" IS NOT NULL '.
+                'GROUP BY "causa"."tiorcodigos", "causa"."evencodigos", "causa"."causcodigos"';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[$rcTmp["tiorcodigos"].'|'.$rcTmp["evencodigos"].'|'.$rcTmp["causcodigos"]] = $rcTmp["cantidad"];
+		}
+		return $rcReturn;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta las solucuiones por tipo
+	 * @author creyes
+	 * @param type name desc
+	 * @return array
+	 * @date 10-December-2005 1:20:48
+	 * @location Cali-Colombia
+	 */
+	function getSolReqBytype($tiorcodigos){
+		$sql = 'SELECT '.
+                    '"ordenempresa"."ordenumeros", '.
+                    '"ordenempresa"."oremsolucios" '.
+                'FROM "ordenempresa" '.
+                'WHERE '.
+                    '"ordenempresa"."tiorcodigos" = \''.$tiorcodigos.'\' AND '.
+                    '"ordenempresa"."oremsolucios" IS NOT NULL '.
+                'ORDER BY "ordenempresa"."ordenumeros"';
+
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[] = $rcTmp;
+		}
+		return $rcReturn;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta las solucuiones por evento
+	 * @author creyes
+	 * @param type name desc
+	 * @return array
+	 * @date 10-December-2005 1:20:48
+	 * @location Cali-Colombia
+	 */
+	function getSolReqByEvento($tiorcodigos,$evencodigos){
+		$sql = 'SELECT '.
+                    '"ordenempresa"."ordenumeros", '.
+                    '"ordenempresa"."oremsolucios" '.
+                'FROM "ordenempresa" '.
+                'WHERE '.
+                    '"ordenempresa"."tiorcodigos" = \''.$tiorcodigos.'\' AND '.
+                    '"ordenempresa"."evencodigos" = \''.$evencodigos.'\' AND '.
+                    '"ordenempresa"."oremsolucios" IS NOT NULL '.
+                'ORDER BY "ordenempresa"."ordenumeros"';
+
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[] = $rcTmp;
+		}
+		return $rcReturn;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta las solucuiones por causa
+	 * @author creyes
+	 * @param type name desc
+	 * @return array
+	 * @date 10-December-2005 1:20:48
+	 * @location Cali-Colombia
+	 */
+	function getSolReqByCausa($tiorcodigos,$evencodigos,$causcodigos){
+		$sql = 'SELECT '.
+                    '"ordenempresa"."ordenumeros", '.
+                    '"ordenempresa"."oremsolucios" '.
+                'FROM "ordenempresa" '.
+                'WHERE '.
+                    '"ordenempresa"."tiorcodigos" = \''.$tiorcodigos.'\' AND '.
+                    '"ordenempresa"."evencodigos" = \''.$evencodigos.'\' AND '.
+                    '"ordenempresa"."causcodigos" = \''.$causcodigos.'\' AND '.
+                    '"ordenempresa"."oremsolucios" IS NOT NULL '.
+                'ORDER BY "ordenempresa"."ordenumeros"';
+
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[] = $rcTmp;
+		}
+		return $rcReturn;
+	}
+
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta las solucuiones por cadena
+	 * @author creyes
+	 * @param type name desc
+	 * @return array
+	 * @date 10-December-2005 1:20:48
+	 * @location Cali-Colombia
+	 */
+	function getSolReqByString($oremsolucios){
+		$sql = 'SELECT '.
+                    '"ordenempresa"."ordenumeros", '.
+                    '"ordenempresa"."oremsolucios" '.
+                'FROM "ordenempresa" '.
+                'WHERE '.
+                    '"ordenempresa"."oremsolucios" LIKE \'%'.$oremsolucios.'%\''.
+                'ORDER BY "ordenempresa"."ordenumeros"';
+
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sql);
+		if (!$this->objdb->objresult)
+		return null;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			$rcReturn[] = $rcTmp;
+		}
+		return $rcReturn;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta orden empresa por el tipo
+	 * @author creyes
+	 * @param string $tiorcodigos
+	 * @return array
+	 * @date 26-December-2005 11:59:17
+	 * @location Cali-Colombia
+	 */
+	function getReqByTipo($tiorcodigos){
+		$sql = 'SELECT * FROM "ordenempresa" WHERE "tiorcodigos"=\''.$tiorcodigos.'\'';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta orden empresa por el evento
+	 * @author creyes
+	 * @param string $tiorcodigos
+	 * @param string $evencodigos
+	 * @return array
+	 * @date 26-December-2005 11:59:17
+	 * @location Cali-Colombia
+	 */
+	function getRequerimientoByEvento($tiorcodigos, $evencodigos){
+		$sql = 'SELECT * '.
+                'FROM "ordenempresa" '.
+                'WHERE '.
+                    '"tiorcodigos"=\''.$tiorcodigos.'\' AND '.
+                    '"evencodigos"=\''.$evencodigos.'\'';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta orden empresa por la causa
+	 * @author creyes
+	 * @param string $tiorcodigos
+	 * @param string $evencodigos
+	 * @param string $causcodigos
+	 * @return array
+	 * @date 26-December-2005 11:59:17
+	 * @location Cali-Colombia
+	 */
+	function getRequerimientoByCausa($tiorcodigos, $evencodigos, $causcodigos){
+		$sql = 'SELECT * '.
+                'FROM "ordenempresa" '.
+                'WHERE '.
+                    '"tiorcodigos"=\''.$tiorcodigos.'\' AND '.
+                    '"evencodigos"=\''.$evencodigos.'\' AND '.
+                    '"causcodigos"=\''.$causcodigos.'\'';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta orden empresa por el medio de recepcion
+	 * @author creyes
+	 * @param string $merecodigos
+	 * @return array
+	 * @date 26-December-2005 11:59:17
+	 * @location Cali-Colombia
+	 */
+	function getReqByMediorecepion($merecodigos){
+		$sql = 'SELECT * FROM "ordenempresa" WHERE "merecodigos"=\''.$merecodigos.'\'';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta orden empresa por la organizacion
+	 * @author creyes
+	 * @param string $orgacodigos
+	 * @return array
+	 * @date 26-December-2005 11:59:17
+	 * @location Cali-Colombia
+	 */
+	function getReqByOrganizacion($orgacodigos){
+		$sql = 'SELECT * FROM "ordenempresa" WHERE "orgacodigos"=\''.$orgacodigos.'\'';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta orden empresa por la localizacion
+	 * @author creyes
+	 * @param string $locacodigos
+	 * @return array
+	 * @date 26-December-2005 11:59:17
+	 * @location Cali-Colombia
+	 */
+	function getReqByLocalizacion($locacodigos){
+		$sql = 'SELECT * FROM "ordenempresa" WHERE "locacodigos"=\''.$locacodigos.'\'';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta orden empresa por la prioridad
+	 * @author creyes
+	 * @param string $priocodigos
+	 * @return array
+	 * @date 26-December-2005 11:59:17
+	 * @location Cali-Colombia
+	 */
+	function getReqByPrioridad($priocodigos){
+		$sql = 'SELECT * FROM "ordenempresa" WHERE "priocodigos"=\''.$priocodigos.'\'';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+
+	function addActa($actacodigos,$tarecodigos,$orden,$orga,$username,$sbActive,$now)
+	{
+		$sql = 'INSERT INTO "acta" ("actacodigos","ordenumeros","tarecodigos","actaestacts","actaestants","actafechingn","actafechfinn","usuacodigos","orgacodigos","actaactivas")
+    				VALUES(\''.$actacodigos.'\',\''.$orden.'\','.$tarecodigos.' ,3,2,'.$now.','.$now.',\''.$username.'\',\''.$orga.'\',\''.$sbActive.'\')';
+		$this->objdb->fncadoexecute($sql);
+		if (!$this->objdb->objresult)
+		$this->consult = false;
+		else
+		$this->consult = true;
+	}
+
+	function getListadoCasosFichas($listadoCasos) {
+		$sql = 'SELECT * FROM "orden" WHERE "ordenumeros" IN (\''.$listadoCasos.'\')';
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoselect($sql);
+		return $this->objdb->rcresult;
+	}
+
+	/**
+	 * Copyright 2005 FullEngine
+	 *
+	 * Consulta las tareas
+	 * @author freina<freina@parquesoft.com>
+	 * @return array
+	 * @date 09-Noviembre-2009 14:4:00
+	 * @location Cali-Colombia
+	 */
+	function getTarea(){
+		settype($objService,"object");
+		settype($rcTmp,"array");
+		settype($rcResult,"array");
+		settype($rcRow,"array");
+		$objService = Application :: loadServices("Workflow");
+		$rcTmp = $objService->getAllTarea();
+		 
+		if(is_array($rcTmp) && $rcTmp){
+			foreach($rcTmp as $rcRow){
+				$rcResult[$rcRow["tarecodigos"]] = $rcRow["tarenombres"];
+			}
+		}
+		return $rcResult;
+	}
+} //End of Class SqlExtended
+?>

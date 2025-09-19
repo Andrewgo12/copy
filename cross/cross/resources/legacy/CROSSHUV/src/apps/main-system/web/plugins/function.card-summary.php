@@ -1,0 +1,125 @@
+<?php
+/**
+ *   Propiedad intelectual del FullEngine.
+ *
+ *   Ficha resumida del caso
+ *   @author freina<freina@parquesoft.com>
+ *   @date 26-Apr-2007 11:33
+ *   @location Cali-Colombia
+ */
+function smarty_function_card_summary($params, & $smarty) {
+
+	extract($_REQUEST);
+
+//	echo "<pre>";
+//	var_dump($_REQUEST);
+//	echo "</pre>";
+
+	settype($objGateway, "object");
+	settype($objService, "object");
+	settype($rcUser, "array");
+	settype($rcTmp, "array");
+	settype($rcActa, "array");
+	settype($rcParams, "array");
+	settype($rcData, "array");
+	settype($rcInfoActa,"array");
+	settype($rcInfoTarea,"array");
+	settype($sbHtml, "string");
+	settype($sbOrdenumeros, "string");
+
+	if (!$acta && !$tarecodigos) {
+		return false;
+	}
+
+	//Data de usuario
+	$rcUser = Application :: getUserParam();
+
+	//Para cargar el lenguaje
+	include ($rcUser["lang"]."/".$rcUser["lang"].".fichaord.php");
+
+	$objService = Application :: loadServices("Workflow");
+	$rcInfoActa = $objService->getByIdActa($acta,false);
+	if(is_array($rcInfoActa) && $rcInfoActa){
+		$rcInfoActa = $rcInfoActa[0];
+	}
+	
+	if(!$tarecodigos || strlen($tarecodigos)==0){
+		$tarecodigos = $rcInfoActa["tarecodigos"];
+		$_REQUEST["tarecodigos"] = $tarecodigos;
+	}
+	$rcInfoTarea = $objService->getDataTarea($tarecodigos,false);
+	$rcActa = $objService->getByIdActaFicha($acta);
+	
+	if(is_array($rcActa) && $rcActa){
+		$rcActa = $rcActa[0];
+	}
+	if($tarecodigos){
+		if(strlen($_REQUEST["acta"])==0){
+			$_REQUEST["acta"] = $actacodigos;
+		}
+	}
+
+	if(!$rcActa){
+		return false;
+	}
+	$sbOrdenumeros = $rcInfoActa["ordenumeros"];
+	$_REQUEST["ordenumeros"] = $sbOrdenumeros;
+
+	//Obtiene la compuerta
+	$objGateway = Application :: getDataGateway("OrdenempresaExtended");
+
+	//Busco la orden en ordenempresa
+	$rcData = $objGateway->getByIdOrdenempresajoin($sbOrdenumeros);
+
+	if(isset($compromiso)){
+		$dataComp = Application::getDataGateway("compromiso");
+		$compdescris = $dataComp->getCompnombres($compromiso);
+	}
+
+	if (!is_array($rcData)) {
+		include ($rcUser["lang"]."/".$rcUser["lang"].".messages.php");
+		echo $rcmessages[21].' '.$sbOrdenumeros;
+		return null;
+	}
+
+	//data a presentar
+	$rcTmp["ordenumeros"] = $rcData["ordenumeros"];
+	if(!$tarecodigos){
+		$rcTmp["tarecodigos"] = $rcActa["tarecodigos"];	
+	}else{
+		$rcTmp["tarecodigos"] = $tarecodigos;	
+	}
+
+	unset($rcTmp["tarecodigos"]);
+	unset($rcTmp["causcodigos"]);
+	$rcTmp["tarenombres"] = $rcInfoTarea[0]["tarenombres"];
+	$_REQUEST["orgacodigos"] = $rcInfoActa["orgacodigos"];
+	$rcTmp["orgacodigos"] = $rcActa["orgacodigos"];
+	$rcTmp["actaestacts"] = $rcActa["actaestacts"];
+	$rcTmp["tiorcodigos"] = $rcData["tiornombres"];
+	$rcTmp["evencodigos"] = $rcData["evennombres"];
+	$rcTmp["contidentis"] = $rcData["contidentis"];
+	$rcTmp["ordefecregd"] = $rcData["ordefecregd"];
+	if($compdescris)
+	$rcTmp["compcodigos"] = $compdescris;
+
+	//Carga el servicio de HTML para elaborar las fichas y los listados
+	$objService = Application :: loadServices("Html");
+	$rcParams["cols"] = 2;
+	$rcParams["size_table"] = "100%";
+	$rcParams["size_data"] = "100%";
+	$rcParams["size_label"] = "45%";
+	$rcParams["size_puntos"] = "5%";
+	$rcParams["size_datos"] = "50%";
+
+	$sbHtml .= "<table align='center' width='100%'>";
+	$sbHtml .= "<tr><td class='piedefoto'>";
+	$sbHtml .= "<div  align=\"justify\" style=\"border:1px solid #1c4ab9;\">";
+	$sbHtml .= $objService->genCard($rcTmp, $rclabels, $rcParams);
+	$sbHtml .= "</div>";
+	$sbHtml .= "</td></tr>";
+	$sbHtml .= "</table>";
+
+	return $sbHtml;
+}
+?>

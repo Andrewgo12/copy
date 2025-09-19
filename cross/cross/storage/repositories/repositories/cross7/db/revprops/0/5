@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-09-24T02:55:24.578881Z
+K 7
+svn:log
+V 51
+Se actualiza SQL en el que se quita lo de pacientes
+END

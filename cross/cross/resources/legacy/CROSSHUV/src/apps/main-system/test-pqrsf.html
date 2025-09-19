@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🧪 ACCESO DIRECTO - PRUEBAS PQRSF</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { color: #003366; margin: 0; font-size: 2.5em; }
+        .header p { color: #666; font-size: 1.2em; margin: 10px 0; }
+        .test-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0; }
+        .test-card { background: #f8f9fa; padding: 20px; border-radius: 15px; border-left: 5px solid #003366; transition: transform 0.3s; }
+        .test-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .test-card h3 { color: #003366; margin-top: 0; }
+        .btn { background: #003366; color: white; padding: 12px 25px; border: none; border-radius: 25px; cursor: pointer; text-decoration: none; display: inline-block; font-weight: bold; transition: all 0.3s; }
+        .btn:hover { background: #004488; transform: scale(1.05); }
+        .btn-large { font-size: 1.2em; padding: 15px 30px; }
+        .status { padding: 15px; border-radius: 10px; margin: 20px 0; }
+        .status.info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        .quick-links { background: #e8f4fd; padding: 20px; border-radius: 15px; margin: 30px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 PRUEBAS PQRSF</h1>
+            <p><strong>Hospital Universitario del Valle</strong></p>
+            <p>Sistema de Pruebas para Consulta Web de PQRSF</p>
+        </div>
+
+        <div class="status info">
+            <strong>🎯 OBJETIVO:</strong> Probar que los usuarios web puedan consultar sus PQRSF de forma simplificada, 
+            mientras los administradores siguen viendo la información completa.
+        </div>
+
+        <!-- ACCESO PRINCIPAL -->
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="index.php?action=FeCrCmdTestPQRSF" class="btn btn-large" target="_blank">
+                🚀 INICIAR PRUEBAS COMPLETAS
+            </a>
+        </div>
+
+        <!-- PRUEBAS RÁPIDAS -->
+        <div class="test-grid">
+            <div class="test-card">
+                <h3>👥 VISTA USUARIO WEB</h3>
+                <p>Ficha simplificada - Solo información básica y respuesta final</p>
+                <a href="index.php?action=FeCrCmdDefaultFichas&topFrame=FeCrCmdDefaultHeadRepoTiemposEjec&mainFrame=FeCrCmdDefaultBodyFichaOrdWeb&ordenumerosFO=1061242025&vars=ordenumerosFO" class="btn" target="_blank">
+                    Ver Ficha Web
+                </a>
+            </div>
+
+            <div class="test-card">
+                <h3>👨💼 VISTA ADMINISTRADOR</h3>
+                <p>Ficha completa - Toda la información interna del hospital</p>
+                <a href="index.php?action=FeCrCmdDefaultFichas&topFrame=FeCrCmdDefaultHeadRepoTiemposEjec&mainFrame=FeCrCmdDefaultBodyFichaOrd&ordenumerosFO=1061242025&vars=ordenumerosFO" class="btn" target="_blank">
+                    Ver Ficha Admin
+                </a>
+            </div>
+
+            <div class="test-card">
+                <h3>🔐 AUTENTICACIÓN WEB</h3>
+                <p>Probar el sistema de login para usuarios web</p>
+                <a href="index.php?action=FeCrCmdDefaultWebUser&username=webuser&context=2&lang=es" class="btn" target="_blank">
+                    Probar Login
+                </a>
+            </div>
+
+            <div class="test-card">
+                <h3>🔍 CONSULTA DE CASOS</h3>
+                <p>Buscar casos por número específico</p>
+                <a href="index.php?action=FeCrCmdConsultarCasoWeb&numeroCaso=1061242025" class="btn" target="_blank">
+                    Consultar Caso
+                </a>
+            </div>
+        </div>
+
+        <!-- ENLACES RÁPIDOS -->
+        <div class="quick-links">
+            <h3>🔗 Enlaces Rápidos de Prueba</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                    <strong>📋 Caso de Prueba:</strong><br>
+                    <code>1061242025</code> - SUGERENCIA-RECOMENDACIÓN
+                </div>
+                <div>
+                    <strong>👤 Usuario Web:</strong><br>
+                    <code>webuser</code> - Contexto: <code>2</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- INSTRUCCIONES -->
+        <div style="background: #fff3cd; padding: 20px; border-radius: 15px; border-left: 5px solid #ffc107;">
+            <h3>📋 INSTRUCCIONES DE PRUEBA</h3>
+            <ol>
+                <li><strong>Haz clic en "INICIAR PRUEBAS COMPLETAS"</strong> para acceder al panel completo</li>
+                <li><strong>Compara las dos vistas:</strong> Web vs Admin del mismo caso</li>
+                <li><strong>Verifica que la vista web NO muestre:</strong>
+                    <ul>
+                        <li>Flujo interno de tareas</li>
+                        <li>Personal que atendió</li>
+                        <li>Transferencias entre dependencias</li>
+                        <li>Observaciones internas</li>
+                    </ul>
+                </li>
+                <li><strong>Verifica que la vista web SÍ muestre:</strong>
+                    <ul>
+                        <li>Información básica del caso</li>
+                        <li>Observaciones del usuario</li>
+                        <li>Respuesta oficial final</li>
+                        <li>Archivos de respuesta</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; color: #666;">
+            <p><strong>Hospital Universitario del Valle - Evaristo García</strong></p>
+            <p>Sistema CROSS300 - Gestión de PQRSF</p>
+        </div>
+    </div>
+</body>
+</html>

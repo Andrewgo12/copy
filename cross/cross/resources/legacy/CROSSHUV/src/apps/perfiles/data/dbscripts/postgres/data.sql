@@ -1,0 +1,22 @@
+SET search_path = profiles, pg_catalog;
+-- Datos Base 
+INSERT INTO applications VALUES ('1', 'general', 'cross300 con Work Flow');
+INSERT INTO applications VALUES ('2', 'profiles', 'Aplicación de administración de usuarios');
+INSERT INTO profiles VALUES ('1', '1', 'Administrador','');
+INSERT INTO profiles VALUES ('1', '2', 'Administrador','');
+INSERT INTO profiles VALUES ('2','1','Público','Perfíl para el usuario público');
+INSERT INTO profiles VALUES ('3','1','Usuario Web','Perfíl para el usuario Web');
+INSERT INTO profiles VALUES ('4','1','Principal','Perfíl para usuarios principales que manejan el sistema.');
+INSERT INTO profiles VALUES ('5','1','Supervisor','Perfíl para personal asignan el trabajo.');
+INSERT INTO profiles VALUES ('6','1','Operativo',NULL);
+INSERT INTO auth VALUES ('Admin','secret','Admin','Admin','Admin','','2','1','es','1','A');
+INSERT INTO auth VALUES ('webuser','zpmqtgv','Usuario web','','','','1','1','es','3','A');
+INSERT INTO authschema (authusernams, schecodigon) VALUES ('Admin', '1');
+INSERT INTO "language" VALUES ('es', 'Español', '');
+INSERT INTO "language" VALUES ('en', 'Ingles', '');
+INSERT INTO schema VALUES (1,'profiles','postgres','full.2004',NULL); 
+INSERT INTO numerador VALUES ('schema','Secuencia para los schema',2);
+INSERT INTO style VALUES ('1', '1', 'estilos.css', '');
+INSERT INTO style VALUES ('1', '2', 'estilos.css', '');
+INSERT INTO style VALUES ('2', '2', 'estilos.css', '');
+INSERT INTO style VALUES ('2', '1', 'estilos.css', '');

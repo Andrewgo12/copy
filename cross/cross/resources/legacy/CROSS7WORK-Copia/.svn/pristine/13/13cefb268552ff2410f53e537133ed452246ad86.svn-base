@@ -1,0 +1,11 @@
+<?php
+class ProvitionalLog {
+    const FILE_ROUTE = "/var/www/html/provitional_log.txt";
+
+    public static function write_log($message){
+        $file = fopen(ProvitionalLog::FILE_ROUTE, "a"); 
+        fwrite($file, $message);
+        fclose($file);
+    }   
+}
+?>

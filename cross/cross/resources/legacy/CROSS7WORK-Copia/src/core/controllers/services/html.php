@@ -1,0 +1,133 @@
+<?php 
+class Html {
+	function serviceInfo() {
+		$rcinfo = array ("genCard" => "@copyright Copyright 2004 &copy; FullEngine<br>
+			  Toma un vector unidimensional con indices asociativos y retorna la cadena con el<br>
+			  Html de una ficha  <br>
+			 @param array \$rcDatos vector unidimensional con indices asociativos con los datos<br>
+			 @param array \$rcLabels Vector tipo lenguaje<br>
+			 @param array \$rcParams Parametros de visualizaci�<br>
+					['border'] => Borde de la tabla<br>
+				    ['cols'] => columnas de la ficha<br>
+				    ['size_label'] => Tama� en % del td de la etiqueta<br>
+				    ['size_table'] => Tama� en % de la tabla<br>
+			 @return string Cadena con el html<br>
+			 @author creyes <cesar.reyes@parquesoft.com><br>
+			 @date 21-sep-2004 10:25:30<br>
+			 @location Cali-Colombia");
+		echo "<table border=1>";
+		foreach ($rcinfo as $key => $data)
+			echo "<tr><td>$key</td><td>$data</td></td>";
+		echo "</table>";
+	}
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	*  Toma un vector unidimensional con indices asociativos y retorna la cadena con el
+	*  Html de una ficha  
+	* @param array $rcDatos vector unidimensional con indices asociativos con los datos
+	* @param array $rcLabels Vector tipo lenguaje
+	* @param array $rcParams Parametros de visualizaci� (opcional)
+	*		["border"] => Borde de la tabla
+	*		["cols"] => columnas de la ficha
+	*		["size_label"] => Tama� en % del td de la etiqueta
+	*		["size_table"] => Tama� en % de la tabla
+	*		["size_data"] => Tama� en % de la celda con la data
+	*		["size_puntos"] => Tama� en % de la celda con los :
+	*		["puntos"] => Si quieres tener sus dos puntos
+	* @return string Cadena con el html
+	* @author creyes <cesar.reyes@parquesoft.com>
+	* @date 21-sep-2004 10:25:30
+	* @location Cali-Colombia
+	* @modification cazapata 24-sep-2004 Agregar opciones
+	* @modificacion freina<freina@parquesoft.com> Se agregan el calculode los
+	* porcentajes de la tabla de acuerdo a el numero de columnas
+	*/
+	function genCard($rcDatos, $rcLabels, $rcParams = array ()) {
+		
+		settype($sbPorColum,"string");
+		settype($sbPorFin,"string");
+		settype($sbPorcenaje,"string");
+		settype($nuColumns,"integer");
+		settype($nuTamCol,"float");
+		settype($nuTamColFin,"float");
+		settype($nuCont,"integer");
+		
+		//se determinan los porcentajes de la celdas
+		$nuColumns = (int) $rcParams["cols"];
+		if(fmod($nuColumns,2)==0){
+			$nuTamCol = 100/$nuColumns;
+			$sbPorColum = (string) $nuTamCol;
+			$sbPorColum = $sbPorColum."%";
+			$sbPorFin = $sbPorColum;
+		}else{
+			$nuTamCol = 100/$nuColumns;
+			$nuTamCol = floor($nuTamCol);
+			$nuTamColFin = 100 - ($nuTamCol * $nuColumns);
+			$sbPorColum = (string) $nuTamCol;
+			$sbPorColum = $sbPorColum."%";
+			$sbPorFin = (string) $nuTamColFin;
+			$sbPorFin = $sbPorFin."%";
+		}
+		
+		if (!is_array($rcDatos))
+			return "";
+		if (!$rcParams["cols"])
+			$rcParams["cols"] = 1;
+		if (!$rcParams["border"])
+			$rcParams["border"] = 0;
+		if (!$rcParams["size_table"])
+			$rcParams["size_table"] = "";
+		if (!$rcParams["size_label"])
+			$rcParams["size_label"] = "";
+		if (!$rcParams["size_data"])
+			$rcParams["size_data"] = "";
+		if (!$rcParams["puntos"])
+			$rcParams["puntos"] = ":";
+		if (!$rcParams["align"])
+			$rcParams["align"] = "center";
+		if(!$rcParams["size_datos"]){
+			$rcParams["size_datos"]="";
+		}
+		//Divide la matriz en las columnas
+		$rcCard = array_chunk($rcDatos, $nuColumns, true);
+		$rcHtml[] = "<table border='".$rcParams["border"]."' width='".$rcParams["size_table"]."' align='".$rcParams["align"]."'>";
+		foreach ($rcCard as $rcReg) {
+			$nuCont = 0;
+			$rcHtml[] = "<tr>";
+			foreach ($rcReg as $key => $value) {
+				
+				if($nuCont==$nuColumns){
+					$sbPorcenaje = $sbPorColum; 
+				}else{
+					$sbPorcenaje = $sbPorFin;
+				}
+				
+				if (!$rcLabels[$key]["label"] && !$value) {
+					
+					$rcHtml[] = "<td valign=top width='".$sbPorcenaje."'><table width='".$rcParams["size_data"]."' border=0>
+					                     <tr><td width='".$rcParams["size_label"]."' valign=top>&nbsp;</td>
+					                     <td width='".$rcParams["size_puntos"]."' valign=top>&nbsp;</td>
+					                     <td width='".$rcParams["size_datos"]."'>&nbsp;</td>
+					                     </tr>
+					                     </table>
+					                     </td>";
+				} else {
+					$rcHtml[] = "<td valign=top width='".$sbPorcenaje."'><table width='".$rcParams["size_data"]."' border=0>
+					                    <tr><td width='".$rcParams["size_label"]."' valign=top>".$rcLabels[$key]["label"]."</td>
+					                    <td width='".$rcParams["size_puntos"]."' valign=top>".$rcParams["puntos"]."</td>
+					                    <td width='".$rcParams["size_datos"]."'>".$value."</td>
+					                    </tr>
+					                    </table>
+					                    </td>";
+				}
+				$nuCont ++;
+			}
+			$rcHtml[] = "</tr>";
+		}
+		$rcHtml[] = "</table>";
+		return implode("\n", $rcHtml);
+	}
+}
+
+?>

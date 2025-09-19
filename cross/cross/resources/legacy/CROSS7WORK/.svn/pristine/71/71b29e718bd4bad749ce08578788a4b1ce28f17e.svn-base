@@ -1,0 +1,75 @@
+<?php
+
+require_once "Web/WebRegistry.class.php";
+require_once "Web/WebSession.class.php";
+
+set_time_limit(0);
+
+class FrontController {
+
+    public static function execute() {
+		print("aaa");
+        $command = WebRegistry::getWebCommand();
+		print("AAAAA");
+        if (PEAR::isError($command)) {
+            // $view_name = WebRegistry::getErrorView();
+		    print("A2222");
+
+            echo "command not found";
+        }
+		print("A1");
+		
+        $result = $command->execute();
+		print("A2");
+		
+        if (PEAR::isError($result)) {
+		print("B");
+
+            echo $result->getMessage();
+        } else {
+		    print("C");
+
+            $view_name = WebRegistry::getWebCommandView($result);
+            
+            if (PEAR::isError($view_name)) {
+                echo $view_name->getMessage();
+		        print("D");
+                
+            } else {
+                $view = WebRegistry::getWebView($view_name);
+		        print("E");
+                
+                if (PEAR::isError($view)){
+                    echo $view->getMessage();
+                } else {
+                    $view->show();
+                }
+            }
+        }
+        
+        /*
+        // an error ??
+        if (!PEAR::isError($command)) {
+                $view_name = $command->execute();
+
+                $view =& Application::get_Web_View($_REQUEST["action"], $view_name);
+
+                // there is an error getting the command ??
+                if (!PEAR::isError($view)) {
+                    $view_name = $view->show();
+                }
+        // need to call a view
+        } else if (!isset($_REQUEST["view"])) {
+            $view =& Application::get_Web_View($_REQUEST["view"]);
+
+            // there is an error getting the command ??
+            if (!PEAR::isError($view)) {
+                $view_name = $view->show();
+            }
+        }
+        */
+    }
+
+}
+
+?>

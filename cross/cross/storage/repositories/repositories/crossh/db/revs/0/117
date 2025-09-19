@@ -1,0 +1,351 @@
+id: 1b3-2.0.r117/0
+type: file
+pred: 1b3-2.0.r116/1089
+count: 4
+text: 2 7106214 2984 13530 f67cebc0a1043b1cb262052a7595aacd ff5fd13f01dfbf18ff97c3a62d3df97db4297822 116-3a/_6
+props: 2 8815947 30 0 4160c74de5f4e580dc15660c798ff9fc
+cpath: /trunk/ASAP/applications/general/domain/FeGeCentroEmailManager.class.php
+copyroot: 0 /
+
+PLAIN
+K 36
+FeGeAdministerCacheManager.class.php
+V 23
+file 1ax-2.0.r2/8814255
+K 36
+FeGeAdministerEmailManager.class.php
+V 23
+file 1az-2.0.r2/8814603
+K 34
+FeGeAdministerPdfManager.class.php
+V 23
+file 1b0-2.0.r2/8814952
+K 27
+FeGeAutoCompletar.class.php
+V 23
+file 1b1-2.0.r2/8815297
+K 39
+FeGeCentroComunicacionManager.class.php
+V 23
+file 1b2-2.0.r2/8815637
+K 32
+FeGeCentroEmailManager.class.php
+V 19
+file 1b3-2.0.r117/0
+K 33
+FeGeComunicacionManager.class.php
+V 23
+file 1b4-2.0.r2/8816336
+K 33
+FeGeConfigarchivManager.class.php
+V 23
+file 1b5-2.0.r2/8816681
+K 33
+FeGeConfigforemaManager.class.php
+V 23
+file 1b6-2.0.r2/8817026
+K 33
+FeGeConfigformatManager.class.php
+V 23
+file 1b7-2.0.r2/8817371
+K 30
+FeGeDatabasesManager.class.php
+V 23
+file 1b8-2.0.r2/8817716
+K 33
+FeGeDetaconfformManager.class.php
+V 23
+file 1b9-2.0.r2/8818058
+K 34
+FeGeDiasInhabilesManager.class.php
+V 23
+file 1ba-2.0.r2/8818403
+K 30
+FeGeDimensionManager.class.php
+V 23
+file 1bb-2.0.r2/8818751
+K 26
+FeGeEmailManager.class.php
+V 23
+file 1bc-2.0.r2/8819095
+K 28
+FeGeEmpresaManager.class.php
+V 23
+file 1bd-2.0.r2/8819432
+K 37
+FeGeEnvConfigurationManager.class.php
+V 23
+file 1be-2.0.r2/8819772
+K 34
+FeGeEquivalenciasManager.class.php
+V 23
+file 1bf-2.0.r2/8820121
+K 26
+FeGeExcelManager.class.php
+V 23
+file 1bg-2.0.r2/8820468
+K 38
+FeGeFileConfigurationManager.class.php
+V 23
+file 1bh-2.0.r2/8820806
+K 33
+FeGeFormatocartaManager.class.php
+V 23
+file 1bi-2.0.r2/8821156
+K 33
+FeGeFormatoemailManager.class.php
+V 23
+file 1bj-2.0.r2/8821501
+K 33
+FeGeFormattoFileManager.class.php
+V 23
+file 1bk-2.0.r2/8821846
+K 30
+FeGeGetValuesManager.class.php
+V 23
+file 1bl-2.0.r2/8822193
+K 31
+FeGeIntegraLogManager.class.php
+V 23
+file 1bm-2.0.r2/8822535
+K 33
+FeGeLocalizacionManager.class.php
+V 23
+file 1bn-2.0.r2/8822880
+K 30
+FeGeNumeradorManager.class.php
+V 23
+file 1bo-2.0.r2/8823226
+K 27
+FeGeParamsManager.class.php
+V 23
+file 1bp-2.0.r2/8823567
+K 24
+FeGePdfManager.class.php
+V 23
+file 1bq-2.0.r2/8823906
+K 33
+FeGeRelatarepersManager.class.php
+V 23
+file 1br-2.0.r2/8824241
+K 29
+FeGeSendMailManager.class.php
+V 23
+file 1bs-2.0.r107/11998
+K 37
+FeGeSendMailManager.class.php-bck.php
+V 23
+file c-107.0.r107/12316
+K 33
+FeGeTablastipoleManager.class.php
+V 23
+file 1bt-2.0.r2/8824928
+K 32
+FeGeTipoarchivoManager.class.php
+V 23
+file 1bu-2.0.r2/8825273
+K 33
+FeGeTipolocalizaManager.class.php
+V 23
+file 1bv-2.0.r2/8825617
+K 41
+FeGeTransferdependenciesManager.class.php
+V 23
+file 1bw-2.0.r2/8825963
+END
+ENDREP
+id: 1aw-2.0.r117/2761
+type: dir
+pred: 1aw-2.0.r116/3850
+count: 10
+text: 117 324 2424 2424 28117ad0a13a6e39b98f10d71fc26c87
+cpath: /trunk/ASAP/applications/general/domain
+copyroot: 0 /
+
+PLAIN
+K 6
+config
+V 21
+dir 178-2.0.r108/4095
+K 4
+data
+V 21
+dir 196-2.0.r25/26134
+K 6
+domain
+V 21
+dir 1aw-2.0.r117/2761
+K 9
+index.php
+V 23
+file 1bx-2.0.r2/8828848
+K 2
+rs
+V 22
+dir 1by-2.0.r2/8829866
+K 11
+templates_c
+V 22
+dir 1c2-2.0.r2/8830332
+K 3
+tmp
+V 22
+dir 1c6-2.0.r2/8830496
+K 3
+web
+V 22
+dir 1c7-2.0.r2/9006472
+K 4
+xslt
+V 22
+dir 1or-2.0.r2/9008321
+END
+ENDREP
+id: 177-2.0.r117/3307
+type: dir
+pred: 177-2.0.r116/4397
+count: 13
+text: 117 2946 348 348 9da643ee07db7b3b387057adcf4a874c
+cpath: /trunk/ASAP/applications/general
+copyroot: 0 /
+
+PLAIN
+K 8
+cross300
+V 19
+dir 5-2.0.r115/5112
+K 9
+customers
+V 20
+dir ib-2.0.r106/3015
+K 7
+docunet
+V 21
+dir tx-2.0.r2/8603534
+K 9
+encuestas
+V 19
+dir uv-2.0.r82/2533
+K 7
+general
+V 21
+dir 177-2.0.r117/3307
+K 15
+human_resources
+V 22
+dir 1ox-2.0.r2/9103798
+K 8
+products
+V 22
+dir 1w7-2.0.r2/9134249
+K 8
+profiles
+V 19
+dir 1z4-2.0.r4/2534
+K 8
+schedule
+V 22
+dir 284-2.0.r2/9371298
+K 7
+storage
+V 22
+dir 2hf-2.0.r2/9489954
+K 8
+workflow
+V 22
+dir 2q6-2.0.r2/9577584
+END
+ENDREP
+id: 3-2.0.r117/3946
+type: dir
+pred: 3-2.0.r116/5036
+count: 87
+text: 117 3484 449 449 48bd7e5e079e1f1d45f1f7e3a3f62b13
+cpath: /trunk/ASAP/applications
+copyroot: 0 /
+
+PLAIN
+K 12
+applications
+V 19
+dir 3-2.0.r117/3946
+K 3
+lib
+V 21
+dir 2wx-2.0.r88/32139
+K 6
+system
+V 20
+dir 41h-2.0.r113/875
+END
+ENDREP
+id: 1-2.0.r117/4243
+type: dir
+pred: 1-2.0.r116/5333
+count: 115
+text: 117 4111 119 119 86bde4f072be9b6e9e1ae722c2990c93
+cpath: /trunk/ASAP
+copyroot: 0 /
+
+PLAIN
+K 4
+ASAP
+V 19
+dir 1-2.0.r117/4243
+K 6
+README
+V 24
+file 42x-2.0.r2/10071192
+K 7
+VERSION
+V 24
+file 42y-2.0.r2/10071480
+K 9
+index.php
+V 24
+file 42z-2.0.r2/10071768
+K 19
+provitional_log.php
+V 20
+file 1-79.0.r79/2270
+K 13
+set_config.sh
+V 24
+file 430-2.0.r2/10072058
+END
+ENDREP
+id: 0-1.0.r117/4674
+type: dir
+pred: 0-1.0.r116/5764
+count: 116
+text: 117 4396 265 265 3ff67abaeb60946d893488a6fccb8f3f
+cpath: /trunk
+copyroot: 0 /
+
+PLAIN
+K 8
+branches
+V 14
+dir 2-1.0.r1/0
+K 4
+tags
+V 15
+dir 3-1.0.r1/66
+K 5
+trunk
+V 19
+dir 0-1.0.r117/4674
+END
+ENDREP
+id: 0.0.r117/4937
+type: dir
+pred: 0.0.r116/6027
+count: 117
+text: 117 4822 102 102 36e6a470e7026add0dbe9f02c1538eac
+cpath: /
+copyroot: 0 /
+
+1b3-2.0.t116-3a modify-file true false /trunk/ASAP/applications/general/domain/FeGeCentroEmailManager.class.php
+
+
+4937 5076

@@ -1,0 +1,68 @@
+-- PROFILES -----------
+-- Tables
+CREATE TABLE "auth" (
+    "authusernams" varchar2(100) NOT NULL, -- Nombre de usuario
+    "authuserpasss" varchar2(100) NOT NULL, -- Clave
+    "authrealname" varchar2(100) NOT NULL, -- Nombres reales del usuario
+    "authrealape1" varchar2(100) DEFAULT NULL, -- Primer apellido real del usuario
+    "authrealape2" varchar2(100) DEFAULT NULL, -- Segundo apellido  real del usuario
+    "authemail" varchar2(100) DEFAULT NULL, -- Email
+    "applcodigos" varchar2(10) NOT NULL, -- Codigo de la aplicacion
+    "stylcodigos" varchar2(10) NOT NULL, --Codigo del estilo
+    "langcodigos" varchar2(10) NOT NULL, -- Codigo del lenuaje
+    "profcodigos" varchar2(10) NOT NULL, -- Codigo del perfil
+    "authestados" char(1) DEFAULT 'A' NOT NULL
+);
+
+CREATE TABLE "authschema" (
+    "authusernams" varchar2(100) NOT NULL, -- Nombre de usuario
+    "schecodigon" varchar2(30) NOT NULL
+);
+
+CREATE TABLE "profiles" (
+    "profcodigos" varchar2(10) NOT NULL, -- Codigo del perfil
+    "applcodigos" varchar2(10) NOT NULL, -- Codigo de la aplicacion
+    "profnombres" varchar2(100) NOT NULL, -- Nombre del perfil
+    "profdescrips" varchar2(4000 BYTE) -- Descripcion
+);
+
+CREATE TABLE "applications" (
+    "applcodigos" varchar2(10) NOT NULL, -- Codigo de la aplicacion
+    "applnombres" varchar2(100) NOT NULL, -- Nombre de la aplicaciï¿½n
+    "applobservas" varchar2(4000 BYTE) -- Descripcion
+);
+
+CREATE TABLE "style" (
+    "stylcodigos" varchar2(10) NOT NULL, --Codigo del estilo
+    "applcodigos" varchar2(10) NOT NULL, -- Codigo de la aplicacion
+    "stylnombres" varchar2(100) NOT NULL, -- Nombre del estilo
+    "stylobservas" varchar2(4000 BYTE) -- Descripcion
+);
+
+CREATE TABLE "language" (
+    "langcodigos" varchar2(10) NOT NULL, --Codigo del lenguaje
+    "langnombres" varchar2(100) NOT NULL, -- Nombre del lenguaje
+    "langobservas" varchar2(4000 BYTE) -- Descripcion
+);
+
+CREATE TABLE "permisions"(
+	"schecodigon" varchar2(30) NOT NULL, -- Código del schema
+	"profcodigos" varchar2(10) NOT NULL, -- Código del perfil
+	"applcodigos" varchar2(10) NOT NULL, -- Código de la aplicación
+	"commnombres" varchar2(100) NOT NULL -- Nombre del lenguaje	
+);
+
+CREATE TABLE "schema"(
+  "schecodigon" varchar2(30) NOT NULL,
+  "schenombres" varchar2(100) NOT NULL,
+  "schedbusers" varchar2(100) NOT NULL,
+  "schedbkeys" varchar2(100) NOT NULL,
+  "scheobservas" varchar2(4000 BYTE),
+  "scheestados" char(1) DEFAULT 'A'
+) ;
+
+-- CREATE TABLE "numerador" (
+--    "numecodigos" varchar2(10) NOT NULL,
+--    "numedescrips" varchar2(4000 BYTE),
+--    "numeproximon" number
+-- );

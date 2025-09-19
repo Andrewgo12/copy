@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClosedTickets - Sistema de Gestión</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .min-h-screen { min-height: 100vh; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .bg-white { background-color: white; }
+        .border-b { border-bottom-width: 1px; }
+        .border-gray-200 { border-color: #e5e7eb; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .bg-purple-100 { background-color: #f3e8ff; }
+        .text-purple-800 { color: #6b21a8; }
+        .text-purple-600 { color: #9333ea; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .p-8 { padding: 2rem; }
+        .text-center { text-align: center; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .font-bold { font-weight: 700; }
+        .mt-2 { margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const closedDocuments = [
+            { id: 1, codigo: "LAB001", reporte: "LABORATORIO CLINICO - Hemograma completo, glucosa, creatinina", cierre: "26-01-2024 08:30:15", estado: "VIGENTE" },
+            { id: 2, codigo: "RAD002", reporte: "RADIOLOGIA - Radiografía de tórax PA y lateral", cierre: "25-01-2024 14:20:30", estado: "VIGENTE" },
+            { id: 3, codigo: "CONS003", reporte: "CONSULTA ESPECIALIZADA - Cardiología, evaluación función ventricular", cierre: "24-01-2024 10:15:45", estado: "VIGENTE" },
+            { id: 4, codigo: "PROC004", reporte: "PROCEDIMIENTO QUIRURGICO - Cirugía laparoscópica, colecistectomía", cierre: "23-01-2024 16:45:20", estado: "PENDIENTE" }
+        ];
+
+        function ClosedTicketsStandalone() {
+            const [documents, setDocuments] = React.useState(closedDocuments);
+            const [selectedStatus, setSelectedStatus] = React.useState("todos");
+
+            const filteredDocuments = selectedStatus === "todos" 
+                ? documents 
+                : documents.filter(d => d.estado.toLowerCase() === selectedStatus.toLowerCase());
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    <div className="bg-white border-b border-gray-200 px-6 py-4">
+                        <div className="bg-purple-100 rounded-lg p-8 text-center">
+                            <h2 className="text-2xl font-bold text-purple-800">Documentos Cerrados</h2>
+                            <p className="text-purple-600 mt-2">Archivo y Gestión Documental</p>
+                        </div>
+                        
+                        <div style={{marginTop: '1rem'}}>
+                            <select 
+                                value={selectedStatus}
+                                onChange={(e) => setSelectedStatus(e.target.value)}
+                                style={{
+                                    padding: '0.5rem',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '0.375rem',
+                                    backgroundColor: 'white'
+                                }}
+                            >
+                                <option value="todos">Todos los estados</option>
+                                <option value="vigente">Vigente</option>
+                                <option value="pendiente">Pendiente</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style={{padding: '1.5rem'}}>
+                        <div style={{backgroundColor: 'white', borderRadius: '0.5rem', padding: '1.5rem', boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'}}>
+                            <h3 style={{fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem'}}>
+                                Documentos Archivados
+                            </h3>
+                            
+                            <div style={{display: 'grid', gap: '1rem'}}>
+                                {filteredDocuments.map(doc => (
+                                    <div key={doc.id} style={{
+                                        border: '1px solid #e5e7eb',
+                                        borderRadius: '0.5rem',
+                                        padding: '1rem',
+                                        backgroundColor: '#f9fafb'
+                                    }}>
+                                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.5rem'}}>
+                                            <h4 style={{fontWeight: '600', color: '#111827'}}>{doc.codigo}</h4>
+                                            <span style={{
+                                                padding: '0.25rem 0.5rem',
+                                                borderRadius: '9999px',
+                                                fontSize: '0.75rem',
+                                                fontWeight: '500',
+                                                backgroundColor: doc.estado === 'VIGENTE' ? '#f0fdf4' : '#fef2f2',
+                                                color: doc.estado === 'VIGENTE' ? '#16a34a' : '#dc2626'
+                                            }}>
+                                                {doc.estado}
+                                            </span>
+                                        </div>
+                                        <p style={{color: '#6b7280', marginBottom: '0.5rem'}}>{doc.reporte}</p>
+                                        <div style={{fontSize: '0.875rem', color: '#9ca3af'}}>
+                                            <span>📅 {doc.cierre}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<ClosedTicketsStandalone />);
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-11-05T05:16:08.348745Z
+K 7
+svn:log
+V 83
+Se quitan print y se arregla tílde en estados de los compromisos de las constantes
+END

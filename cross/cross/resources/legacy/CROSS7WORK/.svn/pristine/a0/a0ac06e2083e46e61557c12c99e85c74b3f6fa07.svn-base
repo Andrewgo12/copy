@@ -1,0 +1,180 @@
+<?php
+#!/bin/sh
+/**
+Cuando se modifiquen los valores de la configuracion se debe crear un archivo nuevo con los valores nuevos
+con el nombre concatenado con una fecha y hora [aaaa-mm-dd-hh-mm]EJ: SaveParams_2004-12-31-16-32.php para poder crear puntos de 
+restauracion. 
+*/
+$rcEntesPermisos = array();
+$rcPermisosPersonal = array();
+
+$Application_params = array (
+	0 => array( //parametros para la empresa (esquema 2)
+        "general" =>array(
+                    "horario_atencion"=>array("hora_ini"=>"","hora_fin"=>""),
+                    "email_server"=>"NOMBRE SERVIDOR DE CORREO", //Servidor de correo
+                    "empresa"=>array("emprnits"=>"NIT","emprnombres"=>"NOMBRE DE LA EMPRESA","emprdireccs"=>"DIRECCION DE LA EMPRESA Cali - Colombia.",
+                                     "emprtelefos"=>"","emprfaxs"=>"",
+                                     "emprnombreps"=>"REPRESENTANTE LEGAL","emprlogos"=>"logo_empresa.png","empremail"=>"EMAIL","email_pass"=>"PASS USUARIO SERVIDOR DE CORREO"),//datos de la empresa                    
+                    "dump_program"=>"/usr/bin/pg_dump",
+                    "MAXLENGTH_TEXTAREA" => 1000,
+					"MAXLENGTH_TEXTAREA_EXT" => 100000,
+                    'SPLASH_IMG'=>'splash_empresa.gif', //Imagen del splash
+                    'DOM_COL_DIN'=>array('orden'=>'ordenumeros','atencion'=>'acemnumeros',),//Dominios para almacenar los valores de las columnas dinamicas
+                    'SMS_WS_PATH'=>'http://www.fullengine.com/apps/171070501/ASAP/system/classes/WS/crossWS.php',
+                    ), 
+        "cross300" => array(
+                        "web_user_conf"=>array("user"=>"webuser","orgacodigos"=>"100","merecodigos"=>"2"),
+                        "dep_detalle"=>array(0=>''), //Dependencias que son tenidas en cuenta para el reporte detallado
+                        'MAXLENGTH_ORDENUMEROS' => 5, //Identifica la cantidad maxima de caracteres del codigo de orden
+                        'SUFIJO_ORDENUMEROS' => 'AT', //Sufijo de identificacion del codigo de orden
+                        'type_close' => '', //Tipos de caso prohibidos en el ingreso web
+                        'TYPES_CASE_PURSUIT'=>array("7"),
+                        'TYPES_CASE_DENUNCIA'=>array(), //TIPOS DE CASO EN LOS QUE EL SOLICITANTE ES REQUERIDO
+                        'DENUNCIA_TC'=>array(), //TIPOS DE CASO QUE DENOTAN DENUNCIA O DARN
+                        'TRACKING_ALLOWED_STATES'=>array(),  //Estados del caso en que es permitido realizar seguimientos
+                        'CLOSE_COMMITMENT_STATES'=>array(),  //Estados del caso en que es permitido realizar seguimientos
+                        'NO_CLOSE_COMMITMENT_STATES'=>array(),  //Estados del caso en que es permitido realizar seguimientos
+                        'TAREA_SEGUIMIENTO'=> array(),  //Tarea de seguimiento
+                        'TAREA_CC'=> '',  //Tarea de control y cierre, se parametriza para que no se considere en el reporte consolidado la dependencia que tiene esta tarea.
+                        'CANT_DIAS_ING'=>0,//cantidad de dias que se permiten de anterioridad como fecha de ingreso con respecto a la fecha de hoy
+                        'COD_LOCALIZ_CALI' => '76001',
+                        'TIP_CAS_WEB1'=>'',
+                        'TIP_CAS_WEB2'=>'',
+                        'TIP_CAS_WEB3'=>'', 
+                    	'USER_DOCUNET'=>'',
+                    	'DOCUNET_PATH'=>'',
+                    	'CANT_DIAS_ALERTA'=>'',
+                    	'EMAIL_ALERTA1'=>'',
+                    	'EMAIL_ALERTA2'=>'',
+                    ),
+        "customers" => array(
+                        "DEFAUL_CUSTOMER" => array("ticlcodigos" => "full","esclcodigos" => 1,"locacodigos" => "76001", "tiidcodigos" => "ASI","clienombres"=>"CROSS"), //Datos por defectos para crear un cliente automaticamente desde el ingreso de contratos
+                    ),
+        "human_resources" => array(
+                            "ORG_INACT" => array("2"), //Estados de entes organizacionales que se consideran no activos, no seran considerados en las consultas de ayuda o combos
+                            "ORG_INACT_DEFAULT" => '', //estado inactivo de la dependencia por defecto.
+                            "EST_GRUP_INA" => array("2"), //Estado Inactivos
+                            "acceso_total"=>array("100"),//entes que pueden ver toda la organizacion
+                            'permisos_entes' => $rcEntesPermisos, //Indica los permisos especiales navegaci�n de los entes con otros entes
+                            'permisos_personal' => $rcPermisosPersonal, //Indica los permisos especiales navegaci?n de los usuarios con el personal
+                            'ASAPPOINTS_DEFAULT' => array(), //Indica los entes encargados de asignar las citas web de los ciudadanos
+                    		'TIP_DEP_FISICA' => array(),//tipos de dependencia que la identifican como dependencia fisica.
+                    		'SERV_ORG'=>array(),//Dependencias consideradas servicios
+                            ),
+        "products" => array(
+        					'PARTE-INSUMO' => array('2','4'), //Indica los codigos de los tipos de producto parte o insumo
+                            ),
+        "storage" => array(
+                            ),
+        "workflow" => array(
+                        'PROC_HOURS'=>true, //Boolean: Determina si el tiempo de los procesos tienen horas, afecta las interfaces de proceso, ingreso de casos norma y web y el registro de atenciones
+                        'OPOSITE_ACTIVITIES'=>array(), //Array: Determina los grupos de actividades consideradas opuestas
+                        'DEFAULT_STATUS'=>array("2","3"),  //Estados de la tarea que permiten registrar atenciones sin que ocurra un cambio de tarea
+                            ),
+        "schedule" => array(
+     						//PARA MEDIACI�N
+                            "NIVELES_VIZ_ORDEN" => array("O","A","P"), //Estados de entes organizacionales que se consideran no activos, no seran considerados en las consultas de ayuda o combos
+                            ),
+        "encuestas" => array(
+                            'RESP_ABIERTA'=>'',
+                            'OBJ_PREG_ABIERTA'=>array(),
+                            'OBJ_PREG_CERRADA'=>array(),
+                            ),
+        'dimension' => array
+        				(
+        				'TIPOGRAPH_REPORT' => array(
+            				array('pie1','Pastel Sencillo'),
+            				array('pie2','Pastel 3D'),
+            				array('pie3','Pastel 3D con Piezas Separadas'),
+            				array('bar1','Barras con Marcas de Clase'),
+            				array('bar2','Barras Horizontales'),
+            				array('bar3','Barras con Ojiva de Frecuencias'),
+            				array('line1','L�neas con Marcas de Clase'),
+            				array('line2','L�neas Sin Marcas de Clase'),
+            				array('line3','Pir�mides'),
+            									),
+            				
+            				'TIPOGRAPH_REPORT_SATISF' => array(
+			            				array('bar1','Barras con Marcas de Clase'),
+			            				array('bar2','Barras Horizontales'),
+			            				array('bar3','Barras con Ojiva de Frecuencias'),
+			            				array('line1','L&iacute;neas con Marcas de Clase'),
+            						),
+        					'month'=>array(array('1','Enero'),
+                                             array('2','Febrero'),
+                                             array('3','Marzo'),
+                                             array('4','Abril'),
+                                             array('5','Mayo'),
+                                             array('6','Junio'),
+                                             array('7','Julio'),
+                                             array('8','Agosto'),
+                                             array('9','Septiembre'),
+                                             array('10','Octubre'),
+                                             array('11','Noviembre'),
+                                             array('12','Diciembre'),
+                                            ),
+                                             
+                             'period'=>array(array('1,12','Anual'),
+                                              array('1','Mensual'),
+                                              array('1,6','Primer semestre'),
+                                              array('7,12','Segundo semestre'),
+                                              array('1,3','Primer trimestre'),
+                                              array('4,6','Segundo trimestre'),
+                                              array('7,9','Tercer trimestre'),
+                                              array('10,12','Cuarto trimestre'),
+                                              array('1,2','Primer bimestre'),
+                                              array('3,4','Segundo bimestre'),
+                                              array('5,6','Tercer bimestre'),
+                                              array('7,8','Cuarto bimestre'),
+                                              array('9,10','Quinto bimestre'),
+                                              array('11,12','Sexto bimestre'),
+                                              ),
+                             'frequency'=>array(array('timetable','Horaria'),
+                                                  array('daily','Diaria'),
+                                                  array('dayweek','Por d�a de la semana'),                                                  
+                                                  array('weekly','Semanal'),
+                                                  array('monthly','Mensual'),),
+                             'sector' => array(
+                               			array("S","SUR"),
+										array("N","NORTE"),
+										array("W","OCCIDENTE"),
+										array("E","ORIENTE"),	
+										array("C","CENTRO"),	
+										array("R","RURAL"),	
+                                      ),	
+                              'si_no' => array(
+                               			array("01","SI"),
+										array("02","NO"),
+                             ),
+                             'idioma' => array(
+                               			array("01","ESPA�OL"),
+										array("02","INGLES"),
+                             ),	
+                             'estcivil' => array(
+                               			array("01","CASADO(A) "),
+										array("02","SOLTERO(A)"),
+										array("03","UNI�N LIBRE"),
+										array("04","VIUDO(A)"),
+										array("05","SEPARADO(A)"),
+                             ),
+                             'formapago' => array(
+                               			array("01","TARJETA DE CR�DITO"),
+										array("02","TARJETA D�BITO"),
+										array("03","EFECTIVO"),
+                             ), 
+                             
+    				),
+	    	),
+);
+
+$path = dirname(__FILE__)."/application.params.data";
+$fd = fopen($path,"w");
+if($fd){
+    fwrite($fd, serialize($Application_params));
+    fclose($fd);
+}else{
+    die("[GENERAL] params file ERROR\n");
+}
+die("[GENERAL] params file OK\n");
+?>

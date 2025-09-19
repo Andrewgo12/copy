@@ -1,0 +1,20 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2021-08-06T03:31:13.045413Z
+K 7
+svn:log
+V 309
+
+Se arregla el tema del charset de la interfaz de solicitante (dinámica)
+
+ASAP\applications\customers\web\js\encode.js
+ASAP\applications\customers\web\commands\FeCuCmdAddSolicitante.class.php
+ASAP\applications\customers\web\plugins\compiler.putjsfiles.php
+ASAP\applications\customers\web\js\jsSolicitante.js
+
+END

@@ -1,0 +1,7 @@
+index.php
+Portal_ID
+grid_publicaciones
+NAO
+cons
+grid_publicaciones
+LigMd5

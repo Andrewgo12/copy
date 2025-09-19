@@ -1,0 +1,227 @@
+id: ij-2.0.r95/0
+type: file
+pred: ij-2.0.r94/70
+count: 6
+text: 91 0 27 7905 9802f4a067090f5e01f57fc71a05a708 675cfd26c394d1c7a5e5a30d04c2e2509862d091 94-2o/_6
+props: 2 8443844 30 0 4160c74de5f4e580dc15660c798ff9fc
+cpath: /trunk/ASAP/applications/customers/config/config.solicitante.php
+copyroot: 0 /
+
+PLAIN
+K 25
+SaveConfigurationFile.php
+V 22
+file ie-2.0.r2/8442552
+K 20
+SaveConstantFile.php
+V 22
+file ig-2.0.r2/8442890
+K 22
+SaveNavigationFile.php
+V 19
+file ih-2.0.r18/318
+K 14
+config.inc.php
+V 22
+file ii-2.0.r2/8443560
+K 22
+config.solicitante.php
+V 17
+file ij-2.0.r95/0
+K 16
+dependencias.txt
+V 22
+file ik-2.0.r2/8444223
+K 8
+language
+V 19
+dir il-2.0.r25/4665
+END
+ENDREP
+id: ic-2.0.r95/671
+type: dir
+pred: ic-2.0.r94/743
+count: 11
+text: 95 301 357 357 311af4a86928aa5339f019ddeb23c729
+cpath: /trunk/ASAP/applications/customers/config
+copyroot: 0 /
+
+PLAIN
+K 6
+config
+V 18
+dir ic-2.0.r95/671
+K 4
+data
+V 19
+dir jp-2.0.r25/7742
+K 6
+domain
+V 19
+dir kl-2.0.r25/9555
+K 9
+index.php
+V 19
+file l7-2.0.r39/213
+K 2
+rs
+V 21
+dir l8-2.0.r2/8479862
+K 11
+templates_c
+V 21
+dir lc-2.0.r2/8480329
+K 3
+web
+V 19
+dir lg-2.0.r80/3342
+END
+ENDREP
+id: ib-2.0.r95/1121
+type: dir
+pred: ib-2.0.r94/1193
+count: 54
+text: 95 849 259 259 27586180fab1d09eb652c974c8da0880
+cpath: /trunk/ASAP/applications/customers
+copyroot: 0 /
+
+PLAIN
+K 8
+cross300
+V 18
+dir 5-2.0.r83/3812
+K 9
+customers
+V 19
+dir ib-2.0.r95/1121
+K 7
+docunet
+V 21
+dir tx-2.0.r2/8603534
+K 9
+encuestas
+V 19
+dir uv-2.0.r82/2533
+K 7
+general
+V 20
+dir 177-2.0.r92/3273
+K 15
+human_resources
+V 22
+dir 1ox-2.0.r2/9103798
+K 8
+products
+V 22
+dir 1w7-2.0.r2/9134249
+K 8
+profiles
+V 19
+dir 1z4-2.0.r4/2534
+K 8
+schedule
+V 22
+dir 284-2.0.r2/9371298
+K 7
+storage
+V 22
+dir 2hf-2.0.r2/9489954
+K 8
+workflow
+V 22
+dir 2q6-2.0.r2/9577584
+END
+ENDREP
+id: 3-2.0.r95/1753
+type: dir
+pred: 3-2.0.r94/1825
+count: 66
+text: 95 1294 446 446 fe4738be9b7bf205e370010275ef3080
+cpath: /trunk/ASAP/applications
+copyroot: 0 /
+
+PLAIN
+K 12
+applications
+V 18
+dir 3-2.0.r95/1753
+K 3
+lib
+V 21
+dir 2wx-2.0.r88/32139
+K 6
+system
+V 20
+dir 41h-2.0.r84/1870
+END
+ENDREP
+id: 1-2.0.r95/2046
+type: dir
+pred: 1-2.0.r94/2118
+count: 93
+text: 95 1915 118 118 fc30c618ab7bb031fe5a43ca3d76ee18
+cpath: /trunk/ASAP
+copyroot: 0 /
+
+PLAIN
+K 4
+ASAP
+V 18
+dir 1-2.0.r95/2046
+K 6
+README
+V 24
+file 42x-2.0.r2/10071192
+K 7
+VERSION
+V 24
+file 42y-2.0.r2/10071480
+K 9
+index.php
+V 24
+file 42z-2.0.r2/10071768
+K 19
+provitional_log.php
+V 20
+file 1-79.0.r79/2270
+K 13
+set_config.sh
+V 24
+file 430-2.0.r2/10072058
+END
+ENDREP
+id: 0-1.0.r95/2472
+type: dir
+pred: 0-1.0.r94/2544
+count: 94
+text: 95 2195 264 264 b4e01f8963385e9adbf89929a058cb35
+cpath: /trunk
+copyroot: 0 /
+
+PLAIN
+K 8
+branches
+V 14
+dir 2-1.0.r1/0
+K 4
+tags
+V 15
+dir 3-1.0.r1/66
+K 5
+trunk
+V 18
+dir 0-1.0.r95/2472
+END
+ENDREP
+id: 0.0.r95/2730
+type: dir
+pred: 0.0.r94/2802
+count: 95
+text: 95 2616 101 101 fc6a13abb7d837755f2a0fd9b926882e
+cpath: /
+copyroot: 0 /
+
+ij-2.0.t94-2o modify-file true false /trunk/ASAP/applications/customers/config/config.solicitante.php
+
+
+2730 2865

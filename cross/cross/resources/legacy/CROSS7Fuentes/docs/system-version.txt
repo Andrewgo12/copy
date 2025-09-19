@@ -1,0 +1,41 @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@                            DERECHOS DE AUTOR                                      @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+Copyright © 2020 CROSS7, FULLENGINE S.A. Todos los Derechos Reservados.
+
+Los derechos de propiedad intelectual sobre este SITIO y/o DIRECTORIO, son titularidad 
+de FULLENGINE S.A. El uso de cualquiera de los contenidos del SITIO no constituirá 
+en ningún momento una autorización ni licencia tácita o explícita para usar la propiedad 
+intelectual propiedad de FullEngine S.A. o de la cual ésta es usuaria autorizada, por 
+lo que su reproducción parcial o total no esta permitida. Corresponde a FullEngine S.A. 
+el ejercicio exclusivo de los derechos de explotación de los derechos referidos en 
+cualquier forma y, en especial, los derechos de su divulgación, publicación, reproducción, 
+distribución, comunicación pública y transformación. FULLENGINE S.A., no otorga permiso 
+para copiar, reproducir, ni distribuir el material de este SITIO. 
+
+Cualquier material contenido en el SITIO que se haya reproducido o impreso debera ser 
+destruido de manera inmediata. Tampoco puede EL USUARIO, sin el permiso de FULLENGINE S.A.,
+hacer réplicas en otro servidor de cualquier material contenido en este SITIO. Cualquier 
+uso no autorizado de cualquier material contenido en este SITIO puede constituir una 
+violación de las leyes de derechos de autor, de las leyes de Propiedad Industrial, de 
+las leyes de privacidad y publicidad y de las leyes y reglamentos de comunicaciones.
+CROSS y todos los logotipos, y todas las marcas, avisos comerciales, derechos de autor 
+y diseños que amparan productos y/o servicios de FULLENGINE S.A. en este SITIO son 
+registros de FULLENGINE S.A.
+
+sistemas@fullengine.com
+
+#############################################################
+# SOFTWARE DE GESTION DE PQRS  				    #
+# 							    #
+# NOMBRE		:	CROSS			    #
+# VERSION		:	5.2			    #
+# CLIENTE		:	SUNTIC S.A.S.               #
+# ID PRODUCTO           :	SCGC-H8U1V-A2020	    #
+# REPOSITORIO     	:	/repositorios/CROSS7        #
+# RELEASE		:	198    			    #
+# FECHA INSTAL         :	19/08/2021                  #
+#############################################################
+
+===================================================================================

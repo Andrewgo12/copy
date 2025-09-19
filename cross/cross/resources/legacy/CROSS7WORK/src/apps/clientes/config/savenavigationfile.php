@@ -1,0 +1,2127 @@
+<?php
+#!/bin/sh
+
+$Navigation_config = array (
+    'default_action' => 'FeCudefault',
+    'error_view' => 'error',
+    'login_view' => 'Login',
+    'commands' => array (
+        'FeCudefault' => array(
+            'class' => 'FeCuDefaultCommand',
+            'validated' => 'false',
+            'views' => array (
+                'success' => array(
+					'view' => 'Form_Menu',
+					'redirect' => 0
+				    ),
+				'fail' => array(
+					'view' => 'error',
+					'redirect' => 0
+				    )
+				)
+			),
+			
+			'CmdExit' => 
+		    array (
+		      'class' => 'CmdExit',
+		      'validated' => 'false',
+		      'views' => 
+		      array (
+		        'success' => 
+		        array (
+		          'view' => 'false',
+		          'redirect' => 0,
+		        ),
+		        'fail' => 
+		        array (
+		          'view' => 'false',
+		          'redirect' => 0,
+		        )
+		      )
+		    ),
+			
+           'FeCuCmdDefaultCliente' => array(
+                'class' => 'FeCuCmdDefaultCliente',
+                'validated' => 'false', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Cliente',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddCliente' => array(
+                'class' => 'FeCuCmdAddCliente',
+               'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Cliente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Cliente',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateCliente' => array(
+                'class' => 'FeCuCmdUpdateCliente',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Cliente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Cliente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteCliente' => array(
+                'class' => 'FeCuCmdDeleteCliente',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Cliente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Cliente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListCliente' => array(
+                'class' => 'FeCuCmdShowListCliente',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Cliente_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Cliente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdCliente' => array(
+                'class' => 'FeCuCmdShowByIdCliente',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Cliente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Cliente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListCliente' => array(
+                'class' => 'FeCuCmdCancelShowListCliente',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Cliente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Cliente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+           'FeCuCmdDefaultContrato' => array(
+                'class' => 'FeCuCmdDefaultContrato',
+                'validated' => 'false', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Contrato',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddContrato' => array(
+                'class' => 'FeCuCmdAddContrato',
+               'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contrato',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contrato',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateContrato' => array(
+                'class' => 'FeCuCmdUpdateContrato',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contrato',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contrato',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteContrato' => array(
+                'class' => 'FeCuCmdDeleteContrato',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contrato',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contrato',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListContrato' => array(
+                'class' => 'FeCuCmdShowListContrato',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contrato_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contrato',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdContrato' => array(
+                'class' => 'FeCuCmdShowByIdContrato',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contrato',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contrato',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListContrato' => array(
+                'class' => 'FeCuCmdCancelShowListContrato',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contrato',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contrato',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+           'FeCuCmdDefaultContratoprod' => array(
+                'class' => 'FeCuCmdDefaultContratoprod',
+                'validated' => 'true', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Contratoprod',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddContratoprod' => array(
+                'class' => 'FeCuCmdAddContratoprod',
+               'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contratoprod',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contratoprod',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateContratoprod' => array(
+                'class' => 'FeCuCmdUpdateContratoprod',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contratoprod',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contratoprod',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteContratoprod' => array(
+                'class' => 'FeCuCmdDeleteContratoprod',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contratoprod',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contratoprod',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListContratoprod' => array(
+                'class' => 'FeCuCmdShowListContratoprod',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contratoprod_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contratoprod',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdContratoprod' => array(
+                'class' => 'FeCuCmdShowByIdContratoprod',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contratoprod',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contratoprod',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListContratoprod' => array(
+                'class' => 'FeCuCmdCancelShowListContratoprod',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contratoprod',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contratoprod',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+           'FeCuCmdClearContratoprod' => array(
+                'class' => 'FeCuCmdClearContratoprod',
+				'validated' => 'false',
+				'desc' => 'Limpiar formulario Contratoprod',
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Contratoprod',
+                        'redirect' => 0
+                        )
+                      )
+                ),
+           'FeCuCmdDefaultEstadoclient' => array(
+                'class' => 'FeCuCmdDefaultEstadoclient',
+                'validated' => 'true', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Estadoclient',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddEstadoclient' => array(
+                'class' => 'FeCuCmdAddEstadoclient',
+               'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Estadoclient',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Estadoclient',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateEstadoclient' => array(
+                'class' => 'FeCuCmdUpdateEstadoclient',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Estadoclient',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Estadoclient',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteEstadoclient' => array(
+                'class' => 'FeCuCmdDeleteEstadoclient',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Estadoclient',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Estadoclient',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListEstadoclient' => array(
+                'class' => 'FeCuCmdShowListEstadoclient',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Estadoclient_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Estadoclient',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdEstadoclient' => array(
+                'class' => 'FeCuCmdShowByIdEstadoclient',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Estadoclient',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Estadoclient',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListEstadoclient' => array(
+                'class' => 'FeCuCmdCancelShowListEstadoclient',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Estadoclient',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Estadoclient',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+           'FeCuCmdDefaultFormapago' => array(
+                'class' => 'FeCuCmdDefaultFormapago',
+                'validated' => 'true', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Formapago',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddFormapago' => array(
+                'class' => 'FeCuCmdAddFormapago',
+               'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Formapago',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Formapago',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateFormapago' => array(
+                'class' => 'FeCuCmdUpdateFormapago',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Formapago',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Formapago',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteFormapago' => array(
+                'class' => 'FeCuCmdDeleteFormapago',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Formapago',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Formapago',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListFormapago' => array(
+                'class' => 'FeCuCmdShowListFormapago',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Formapago_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Formapago',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdFormapago' => array(
+                'class' => 'FeCuCmdShowByIdFormapago',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Formapago',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Formapago',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListFormapago' => array(
+                'class' => 'FeCuCmdCancelShowListFormapago',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Formapago',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Formapago',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDefaultGruposinteres' => array(
+                'class' => 'FeCuCmdDefaultGruposinteres',
+                'validated' => 'true', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Gruposinteres',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddGruposinteres' => array(
+                'class' => 'FeCuCmdAddGruposinteres',
+               'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Gruposinteres',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Gruposinteres',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateGruposinteres' => array(
+                'class' => 'FeCuCmdUpdateGruposinteres',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Gruposinteres',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Gruposinteres',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteGruposinteres' => array(
+                'class' => 'FeCuCmdDeleteGruposinteres',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Gruposinteres',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Gruposinteres',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListGruposinteres' => array(
+                'class' => 'FeCuCmdShowListGruposinteres',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Gruposinteres_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Gruposinteres',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdGruposinteres' => array(
+                'class' => 'FeCuCmdShowByIdGruposinteres',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Gruposinteres',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Gruposinteres',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListGruposinteres' => array(
+                'class' => 'FeCuCmdCancelShowListGruposinteres',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Gruposinteres',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Gruposinteres',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+			'FeCuCmdDefaultTipocliente' => array(
+                'class' => 'FeCuCmdDefaultTipocliente',
+                'validated' => 'true', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Tipocliente',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddTipocliente' => array(
+                'class' => 'FeCuCmdAddTipocliente',
+               'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipocliente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipocliente',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateTipocliente' => array(
+                'class' => 'FeCuCmdUpdateTipocliente',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipocliente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipocliente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteTipocliente' => array(
+                'class' => 'FeCuCmdDeleteTipocliente',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipocliente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipocliente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListTipocliente' => array(
+                'class' => 'FeCuCmdShowListTipocliente',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipocliente_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipocliente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdTipocliente' => array(
+                'class' => 'FeCuCmdShowByIdTipocliente',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipocliente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipocliente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListTipocliente' => array(
+                'class' => 'FeCuCmdCancelShowListTipocliente',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipocliente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipocliente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+           'FeCuCmdDefaultTipocontrato' => array(
+                'class' => 'FeCuCmdDefaultTipocontrato',
+                'validated' => 'true', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Tipocontrato',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddTipocontrato' => array(
+                'class' => 'FeCuCmdAddTipocontrato',
+               'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipocontrato',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipocontrato',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateTipocontrato' => array(
+                'class' => 'FeCuCmdUpdateTipocontrato',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipocontrato',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipocontrato',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteTipocontrato' => array(
+                'class' => 'FeCuCmdDeleteTipocontrato',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipocontrato',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipocontrato',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListTipocontrato' => array(
+                'class' => 'FeCuCmdShowListTipocontrato',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipocontrato_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipocontrato',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdTipocontrato' => array(
+                'class' => 'FeCuCmdShowByIdTipocontrato',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipocontrato',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipocontrato',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListTipocontrato' => array(
+                'class' => 'FeCuCmdCancelShowListTipocontrato',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipocontrato',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipocontrato',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+           'FeCuCmdDefaultTipoidentifi' => array(
+                'class' => 'FeCuCmdDefaultTipoidentifi',
+                'validated' => 'true', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Tipoidentifi',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddTipoidentifi' => array(
+                'class' => 'FeCuCmdAddTipoidentifi',
+               'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipoidentifi',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipoidentifi',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateTipoidentifi' => array(
+                'class' => 'FeCuCmdUpdateTipoidentifi',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipoidentifi',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipoidentifi',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteTipoidentifi' => array(
+                'class' => 'FeCuCmdDeleteTipoidentifi',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipoidentifi',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipoidentifi',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListTipoidentifi' => array(
+                'class' => 'FeCuCmdShowListTipoidentifi',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipoidentifi_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipoidentifi',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdTipoidentifi' => array(
+                'class' => 'FeCuCmdShowByIdTipoidentifi',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipoidentifi',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipoidentifi',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListTipoidentifi' => array(
+                'class' => 'FeCuCmdCancelShowListTipoidentifi',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipoidentifi',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipoidentifi',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+           'FeCuCmdDefaultTipomoneda' => array(
+                'class' => 'FeCuCmdDefaultTipomoneda',
+                'validated' => 'true', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Tipomoneda',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddTipomoneda' => array(
+                'class' => 'FeCuCmdAddTipomoneda',
+               'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipomoneda',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipomoneda',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateTipomoneda' => array(
+                'class' => 'FeCuCmdUpdateTipomoneda',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipomoneda',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipomoneda',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteTipomoneda' => array(
+                'class' => 'FeCuCmdDeleteTipomoneda',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipomoneda',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipomoneda',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListTipomoneda' => array(
+                'class' => 'FeCuCmdShowListTipomoneda',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipomoneda_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipomoneda',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdTipomoneda' => array(
+                'class' => 'FeCuCmdShowByIdTipomoneda',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipomoneda',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipomoneda',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListTipomoneda' => array(
+                'class' => 'FeCuCmdCancelShowListTipomoneda',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipomoneda',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipomoneda',
+                       'redirect' => 0
+                       )
+                    )
+                ),    		       
+           'FeCuCmdDefaultContacto' => array(
+                'class' => 'FeCuCmdDefaultContacto',
+                'validated' => 'false', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Contacto',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'Form_Contacto',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddContacto' => array(
+                'class' => 'FeCuCmdAddContacto',
+               'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contacto',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contacto',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateContacto' => array(
+                'class' => 'FeCuCmdUpdateContacto',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contacto',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contacto',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteContacto' => array(
+                'class' => 'FeCuCmdDeleteContacto',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contacto',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contacto',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListContacto' => array(
+                'class' => 'FeCuCmdShowListContacto',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contacto_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contacto',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdContacto' => array(
+                'class' => 'FeCuCmdShowByIdContacto',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contacto',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contacto',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListContacto' => array(
+                'class' => 'FeCuCmdCancelShowListContacto',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Contacto',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Contacto',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+              'FeCuCmdTreeHelp' => array (
+					'class' => 'FeCuCmdTreeHelp',
+      				'views' =>array (
+						'success' =>array (
+							'view' => 'Form_TreeHelp',
+          					'redirect' => 0,
+          					),
+        				'fail' =>array (
+							'view' => 'Form_TreeHelp',
+          					'redirect' => 0,
+          					),
+      					),
+    				),
+            'FeCuCmdDefaultCencoclientes' => array(
+                'class' => 'FeCuCmdDefaultCencoclientes',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Cencoclientes',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Cencoclientes',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDefaultFichas' => array(
+                'class' => 'FeCuCmdDefaultFichas',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Fichas',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Fichas',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDefaultFichaProducto' => array(
+                'class' => 'FeCuCmdDefaultFichaProducto',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_FichaProducto',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_FichaProducto',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+    		'FeCuCmdDefaultHeadFicha' => array (
+				'class' => 'FeCuCmdDefaultHeadFicha',
+				'views' => array (
+			        'success' => array (
+						'view' => 'Form_HeadFicha',
+          				'redirect' => 0,
+        				),
+			        'fail' => array (
+          				'view' => 'Form_HeadFicha',
+          				'redirect' => 0,
+        				),
+      			),
+    		),
+            'FeCuCmdDefaultProductoImage' => array(
+                'class' => 'FeCuCmdDefaultProductoImage',
+				'validated' => 'false',
+				'desc' => '',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_ProductoImage',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdLstHelp' => 
+			    array (
+			      'class' => 'FeCuCmdLstHelp',
+			      'views' => 
+			      array (
+			        'success' => 
+			        array (
+			          'view' => 'Form_LstHelp',
+			          'redirect' => 0,
+			        ),
+			        'fail' => 
+			        array (
+			          'view' => 'Form_LstHelp',
+			          'redirect' => 0,
+			        ),
+			      ),
+			    ),
+			    
+		'FeCuCmdDefaultInfractor' => array(
+                'class' => 'FeCuCmdDefaultInfractor',
+                'validated' => 'false', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Infractor',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'Form_Infractor',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddInfractor' => array(
+                'class' => 'FeCuCmdAddInfractor',
+               'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Infractor',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Infractor',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateInfractor' => array(
+                'class' => 'FeCuCmdUpdateInfractor',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Infractor',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Infractor',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteInfractor' => array(
+                'class' => 'FeCuCmdDeleteInfractor',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Infractor',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Infractor',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListInfractor' => array(
+                'class' => 'FeCuCmdShowListInfractor',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Infractor_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Infractor',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdInfractor' => array(
+                'class' => 'FeCuCmdShowByIdInfractor',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Infractor',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Infractor',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListInfractor' => array(
+                'class' => 'FeCuCmdCancelShowListInfractor',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Infractor',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Infractor',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDefaultImportarLeads' => array(
+                'class' => 'FeCuCmdDefaultImportarLeads',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Importar',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Importar',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdAddImportarLeads' => array(
+                'class' => 'FeCuCmdAddImportarLeads',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Importar',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Importar',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDefaultAutoreference' => 
+		    array (
+		      'class' => 'FeCuCmdDefaultAutoreference',
+		      'validated' => 'false',
+		      'views' => 
+		      array (
+		        'success' => 
+		        array (
+		          'view' => 'false',
+		          'redirect' => 0,
+		        ),
+		        'fail' => 
+		        array (
+		          'view' => 'false',
+		          'redirect' => 0,
+		        )
+		      )
+		    ),
+		    'FeCuCmdDefaultSegurisocial' => array(
+                'class' => 'FeCuCmdDefaultSegurisocial',
+                'validated' => 'true', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Segurisocial',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddSegurisocial' => array(
+                'class' => 'FeCuCmdAddSegurisocial',
+               'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Segurisocial',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Segurisocial',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateSegurisocial' => array(
+                'class' => 'FeCuCmdUpdateSegurisocial',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Segurisocial',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Segurisocial',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteSegurisocial' => array(
+                'class' => 'FeCuCmdDeleteSegurisocial',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Segurisocial',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Segurisocial',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListSegurisocial' => array(
+                'class' => 'FeCuCmdShowListSegurisocial',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Segurisocial_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Segurisocial',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdSegurisocial' => array(
+                'class' => 'FeCuCmdShowByIdSegurisocial',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Segurisocial',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Segurisocial',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListSegurisocial' => array(
+                'class' => 'FeCuCmdCancelShowListSegurisocial',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Segurisocial',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Segurisocial',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDefaultCondiusuario' => array(
+                'class' => 'FeCuCmdDefaultCondiusuario',
+                'validated' => 'true', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Condiusuario',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddCondiusuario' => array(
+                'class' => 'FeCuCmdAddCondiusuario',
+               'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Condiusuario',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Condiusuario',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateCondiusuario' => array(
+                'class' => 'FeCuCmdUpdateCondiusuario',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Condiusuario',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Condiusuario',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteCondiusuario' => array(
+                'class' => 'FeCuCmdDeleteCondiusuario',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Condiusuario',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Condiusuario',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListCondiusuario' => array(
+                'class' => 'FeCuCmdShowListCondiusuario',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Condiusuario_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Condiusuario',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdCondiusuario' => array(
+                'class' => 'FeCuCmdShowByIdCondiusuario',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Condiusuario',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Condiusuario',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListCondiusuario' => array(
+                'class' => 'FeCuCmdCancelShowListCondiusuario',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Condiusuario',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Condiusuario',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDefaultTipoexamen' => array(
+                'class' => 'FeCuCmdDefaultTipoexamen',
+                'validated' => 'true', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Tipoexamen',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddTipoexamen' => array(
+                'class' => 'FeCuCmdAddTipoexamen',
+               'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipoexamen',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipoexamen',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateTipoexamen' => array(
+                'class' => 'FeCuCmdUpdateTipoexamen',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipoexamen',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipoexamen',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteTipoexamen' => array(
+                'class' => 'FeCuCmdDeleteTipoexamen',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipoexamen',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipoexamen',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListTipoexamen' => array(
+                'class' => 'FeCuCmdShowListTipoexamen',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipoexamen_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipoexamen',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdTipoexamen' => array(
+                'class' => 'FeCuCmdShowByIdTipoexamen',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipoexamen',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipoexamen',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListTipoexamen' => array(
+                'class' => 'FeCuCmdCancelShowListTipoexamen',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Tipoexamen',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Tipoexamen',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDefaultIpsservicio' => array(
+                'class' => 'FeCuCmdDefaultIpsservicio',
+                'validated' => 'true', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Ipsservicio',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'error',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddIpsservicio' => array(
+                'class' => 'FeCuCmdAddIpsservicio',
+               'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Ipsservicio',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Ipsservicio',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdateIpsservicio' => array(
+                'class' => 'FeCuCmdUpdateIpsservicio',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Ipsservicio',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Ipsservicio',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeleteIpsservicio' => array(
+                'class' => 'FeCuCmdDeleteIpsservicio',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Ipsservicio',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Ipsservicio',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListIpsservicio' => array(
+                'class' => 'FeCuCmdShowListIpsservicio',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Ipsservicio_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Ipsservicio',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdIpsservicio' => array(
+                'class' => 'FeCuCmdShowByIdIpsservicio',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Ipsservicio',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Ipsservicio',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListIpsservicio' => array(
+                'class' => 'FeCuCmdCancelShowListIpsservicio',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Ipsservicio',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Ipsservicio',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+           'FeCuCmdDefaultPaciente' => array(
+                'class' => 'FeCuCmdDefaultPaciente',
+                'validated' => 'false', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Paciente',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'Form_Paciente',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+            'FeCuCmdAddPaciente' => array(
+                'class' => 'FeCuCmdAddPaciente',
+               'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Paciente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Paciente',
+                       'redirect' => 0
+                       )
+                    )
+			    ),
+            'FeCuCmdUpdatePaciente' => array(
+                'class' => 'FeCuCmdUpdatePaciente',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Paciente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Paciente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdDeletePaciente' => array(
+                'class' => 'FeCuCmdDeletePaciente',
+                'validated' => 'true',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Paciente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Paciente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowListPaciente' => array(
+                'class' => 'FeCuCmdShowListPaciente',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Paciente_Consult',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Paciente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdShowByIdPaciente' => array(
+                'class' => 'FeCuCmdShowByIdPaciente',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Paciente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Paciente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+            'FeCuCmdCancelShowListPaciente' => array(
+                'class' => 'FeCuCmdCancelShowListPaciente',
+                'validated' => 'false',
+                'views' => array (
+                    'success' => array(
+                       'view' => 'Form_Paciente',
+                       'redirect' => 0
+                       ),
+                    'fail' => array(
+                       'view' => 'Form_Paciente',
+                       'redirect' => 0
+                       )
+                    )
+                ),
+		    'FeCuCmdDefaultSolicitante' => array(
+                'class' => 'FeCuCmdDefaultSolicitante',
+                'validated' => 'false', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_Solicitante',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'Form_Solicitante',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+		    'FeCuCmdDefaultSolicitantePub' => array(
+                'class' => 'FeCuCmdDefaultSolicitantePub',
+                'validated' => 'false', 
+                'views' => array (
+                    'success' => array(
+                        'view' => 'Form_SolicitantePub',
+                        'redirect' => 0
+                        ),
+                    'fail' => array(
+                        'view' => 'Form_SolicitantePub',
+                        'redirect' => 0
+                        )
+                    )
+                ),
+           'FeCuCmdAddSolicitante' => array (
+      			'class' => 'FeCuCmdAddSolicitante',
+      			'validated' => 'false',
+      			'views' => 
+      				array (
+        			'success' => 
+        				array (
+          					'view' => '',
+          					'redirect' => 0,
+        				),
+        			'fail' => 
+        				array (
+          					'view' => '',
+          					'redirect' => 0,
+        				),
+      				),
+    		),
+           'FeCuCmdDrawTypeSol' => 
+    		array (
+      			'class' => 'FeCuCmdDrawTypeSol',
+      			'validated' => 'false',
+      			'views' => 
+      				array (
+        			'success' => 
+        				array (
+          					'view' => '',
+          					'redirect' => 0,
+        				),
+        			'fail' => 
+        				array (
+          					'view' => '',
+          					'redirect' => 0,
+        				),
+      				),
+    		),
+           'FeCuCmdDrawTypeSolPub' => 
+    		array (
+      			'class' => 'FeCuCmdDrawTypeSolPub',
+      			'validated' => 'false',
+      			'views' => 
+      				array (
+        			'success' => 
+        				array (
+          					'view' => '',
+          					'redirect' => 0,
+        				),
+        			'fail' => 
+        				array (
+          					'view' => '',
+          					'redirect' => 0,
+        				),
+      				),
+    		),
+    	'FeCuCmdLoadSolicitante' =>
+    		array (
+      			'class' => 'FeCuCmdLoadSolicitante',
+      			'validated' => 'false',
+      			'views' => 
+      				array (
+        			'success' => 
+        				array (
+          					'view' => '',
+          					'redirect' => 0,
+        				),
+        			'fail' => 
+        				array (
+          					'view' => '',
+          					'redirect' => 0,
+        				),
+      				),
+    		),
+    	'FeCuCmdLoadSolicitantepub' =>
+    		array (
+      			'class' => 'FeCuCmdLoadSolicitantepub',
+      			'validated' => 'false',
+      			'views' => 
+      				array (
+        			'success' => 
+        				array (
+          					'view' => '',
+          					'redirect' => 0,
+        				),
+        			'fail' => 
+        				array (
+          					'view' => '',
+          					'redirect' => 0,
+        				),
+      				),
+    		),
+    		'FeCuCmdLoadPaciente' =>
+    		array (
+      			'class' => 'FeCuCmdLoadPaciente',
+      			'validated' => 'false',
+      			'views' => 
+      				array (
+        			'success' => 
+        				array (
+          					'view' => '',
+          					'redirect' => 0,
+        				),
+        			'fail' => 
+        				array (
+          					'view' => '',
+          					'redirect' => 0,
+        				),
+      				),
+    		),
+ 	    ),
+ 	    
+	'views' => array(
+        'Form_Menu'=> array (
+            'template' => 'Form_Menu.tpl'
+            ),
+        'Form_Cliente' => array (
+            'template' => 'Form_Cliente.tpl'
+            ),
+        'Form_Cliente_Consult' => array (
+            'template' => 'Form_Cliente_Consult.tpl'
+            ),
+        'Form_Contrato' => array (
+            'template' => 'Form_Contrato.tpl'
+            ),
+        'Form_Contrato_Consult' => array (
+            'template' => 'Form_Contrato_Consult.tpl'
+            ),
+        'Form_Contratoprod' => array (
+            'template' => 'Form_Contratoprod.tpl'
+            ),
+        'Form_Contratoprod_Consult' => array (
+            'template' => 'Form_Contratoprod_Consult.tpl'
+            ),
+        'Form_Estadoclient' => array (
+            'template' => 'Form_Estadoclient.tpl'
+            ),
+        'Form_Estadoclient_Consult' => array (
+            'template' => 'Form_Estadoclient_Consult.tpl'
+            ),
+        'Form_Formapago' => array (
+            'template' => 'Form_Formapago.tpl'
+            ),
+        'Form_Formapago_Consult' => array (
+            'template' => 'Form_Formapago_Consult.tpl'
+            ),
+        'Form_Tipocliente' => array (
+            'template' => 'Form_Tipocliente.tpl'
+            ),
+        'Form_Tipocliente_Consult' => array (
+            'template' => 'Form_Tipocliente_Consult.tpl'
+            ),
+        'Form_Tipocontrato' => array (
+            'template' => 'Form_Tipocontrato.tpl'
+            ),
+        'Form_Tipocontrato_Consult' => array (
+            'template' => 'Form_Tipocontrato_Consult.tpl'
+            ),
+        'Form_Tipoidentifi' => array (
+            'template' => 'Form_Tipoidentifi.tpl'
+            ),
+        'Form_Tipoidentifi_Consult' => array (
+            'template' => 'Form_Tipoidentifi_Consult.tpl'
+            ),
+        'Form_Tipomoneda' => array (
+            'template' => 'Form_Tipomoneda.tpl'
+            ),
+        'Form_Tipomoneda_Consult' => array (
+            'template' => 'Form_Tipomoneda_Consult.tpl'
+            ),
+	    'Form_Head' => array (
+			'template' => 'Form_Head.tpl',
+			),
+        'Form_Contacto' => array (
+            'template' => 'Form_Contacto.tpl'
+            ),
+        'Form_Contacto_Consult' => array (
+            'template' => 'Form_Contacto_Consult.tpl'
+            ),
+         'Form_TreeHelp' => array (
+      			'template' => 'Form_TreeHelp.tpl',
+    		),
+        'Form_Cencoclientes' => array (
+            'template' => 'Form_Cencoclientes.tpl'
+            ),
+        'Form_Fichas' => array (
+            'template' => 'Form_Fichas.tpl'
+            ),
+	    'Form_HeadFicha' => array (
+      		'template' => 'Form_HeadFicha.tpl',
+    		), 
+        'Form_FichaProducto' => array (
+            'template' => 'Form_FichaProducto.tpl'
+            ),    		                         		
+        'Form_ProductoImage' => array (
+            'template' => 'Form_ProductoImage.tpl'
+            ),
+	    'Form_LstHelp' => array (
+	      	'template' => 'Form_LstHelp.tpl',
+	    	),
+        'Form_Infractor' => array (
+            'template' => 'Form_Infractor.tpl'
+            ),
+        'Form_Infractor_Consult' => array (
+            'template' => 'Form_Infractor_Consult.tpl'
+            ),
+        'Form_Importar' => array (
+            'template' => 'Form_Importar.tpl'
+            ),
+	    'Form_Tipoexamen' => 	    array (
+	      'template' => 'Form_Tipoexamen.tpl',
+			),
+	    'Form_Tipoexamen_Consult' => 	    array (
+	      'template' => 'Form_Tipoexamen_Consult.tpl',
+			),
+        'Form_Solicitante'  =>         array (
+            'template' => 'Form_Solicitante.tpl'
+            ),
+        'Form_SolicitantePub'  =>         array (
+            'template' => 'Form_SolicitantePub.tpl'
+            ),
+        'Form_Gruposinteres'  =>         array (
+            'template' => 'Form_Gruposinteres.tpl'
+            ),			
+	    'Form_Gruposinteres_Consult' => 	    array (
+	      'template' => 'Form_Gruposinteres_Consult.tpl',
+			),
+        )
+    );
+
+$path = dirname(__FILE__)."/web.conf.data";
+$fd = fopen($path,"w");
+if($fd){
+    fwrite($fd, serialize($Navigation_config));
+    fclose($fd);
+}else{
+    die("[[CUSTOMERS]] navigation file ERROR\n");
+}
+die("[CUSTOMERS] navigation file OK\n");
+?>

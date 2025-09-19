@@ -1,0 +1,35 @@
+<?php
+    $rcmessages[0] = "Los campos con * son obligatorios.";
+    $rcmessages[1] = "El registro ya existe.";
+    $rcmessages[2] = "El registro no existe o no es accesible.";
+    $rcmessages[3] = "Operaci&oacute;n realizada con &eacute;xito.";
+    $rcmessages[4] = "Autenticaci&oacute;n Inv&aacute;lida.";
+    $rcmessages[5] = "Error de base de datos.";
+    $rcmessages[6] = "Para esta acci&oacute;n es necesario determinar la aplicaci&oacute;n.";
+    $rcmessages[7] = "No ha digitado datos.";
+    $rcmessages[8] = "Prohibido el acceso, Usuario inactivo.";
+	$rcmessages[9] = "El nombre de usuario o la clave no deben ser menores de cuatro caracteres.";
+	$rcmessages[10] = "El nombre de usuario o la clave s&oacute;lo permiten los siguientes caracteres [A-Z][a-z][0-9], punto (.), gui&oacute;n (-) o gui&oacute;n bajo (_)";
+    $rcmessages[11] = 'Seguro desea modificar el registro?.';
+    $rcmessages[12] = 'Seguro desea eliminar el registro?.';
+    $rcmessages[13] = "La direcci&oacute;n de e-mail no es v&aacute;lida.";
+    $rcmessages[14] = "Operaci&oacute;n realizada con &eacute;xito, contexto ingresado con el n&uacute;mero [VAR0].";
+    $rcmessages[15] = "No se pudo realizar la operaci&oacute;n, existen usuarios asociados a este contexto.";
+    $rcmessages[16] = "No se pudo realizar la operaci&oacute;n, existen tipos de caso asociados a este contexto.";
+    $rcmessages[17] = "Acceso negado, el contexto asociado a su usuario est&aacute; inactivo.";
+    $rcmessages[18] = "La informaci&oacute;n de la campa&ntilde;a no est&aacute; completa, modifique la informaci&oacute;n e int&eacute;ntelo nuevamente.";
+    $rcmessages[19] = "No se tiene informaci&oacute;n de la plantilla de los esquemas, corrija esta situaci&oacute;n e int&eacute;ntelo nuevamente.";
+    $rcmessages[20] = "No se tiene  informaci&oacute;n sobre los permisos de usuario por defecto, corrija esta situaci&oacute;n e int&eacute;ntelo nuevamente.";
+    $rcmessages[21] = "La informaci&oacute;n de personal no existe o est&aacute; incompleta, modifique la informaci&oacute;n e int&eacute;ntelo nuevamente.";
+    $rcmessages[22] = "La informaci&oacute;n de usuarios a crear en el sistema no est&aacute; completa, modifique la informaci&oacute;n e int&eacute;ntelo nuevamente.";
+    $rcmessages[23] = "No existe una dependencia l&iacute;der a quien asignarle el proceso est&aacute;ndar, modifique la informaci&oacute;n e int&eacute;ntelo nuevamente.";
+    $rcmessages[24] = "La informaci&oacute;n para la configuraci&oacute;n de datos din&aacute;micos no existe o esta incompleta,  modifique la informaci&oacute;n e int&eacute;ntelo nuevamente.";
+    $rcmessages[25] = "Fallo al actualizar el archivo plantilla de los esquemas, consulte con el administrador del sistema.";
+    $rcmessages[26] = "La informaci&oacute;n de los m&oacute;dulos del sistema no existe o est&aacute; incompleta,  consulte con el administrador del sistema.";
+    $rcmessages[27] = "Fallo al actualizar la informaci&oacute;n de los m&oacute;dulos del sistema, consulte con el administrador del sistema.";
+  	$rcmessages[28] = "Fallo al crear el archivo de permisos, consulte con el administrador del sistema.";  
+    $rcmessages[100] = "No se pudo realizar la operaci&oacute;n.";
+    $rcmessages[101] = "El nombre del perfil ya existe.";
+    $rcmessages[102] = "La sesi&oacute;n ha expirado, ingrese nuevamente al sistema.";
+    $rcmessages[103] = "No tiene los permisos de acceso para ejecutar esta operaci&oacute;n, consulte con el administrador del sistema.";
+?>

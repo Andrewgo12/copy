@@ -1,0 +1,41 @@
+<?php
+
+/*
+ This is the language's file to the  Orden table
+*/
+$rclabels = array("title"=>"Listado de compromisos",
+				  "consulttitle"=>"Seguimientos",
+				  "context_help"=>"El listado de compromisos toma los datos digitados para hacer la consulta.",
+"ordenumeros"=>array("label"=>"N&uacute;mero del caso","accesskey"=>true,"commentary"=>""),
+"proccodigos"=>array("label"=>"Proceso","accesskey"=>true,"commentary"=>""),
+"ordesitiejes"=>array("label"=>"Direcci&oacute;n/Sitio","accesskey"=>true,"commentary"=>""),
+"usuacodigos"=>array("label"=>"Usuario de registro","accesskey"=>true,"commentary"=>""),
+"ordeestaacs"=>array("label"=>"Estado","accesskey"=>false,"commentary"=>""),
+"ordeobservs"=>array("label"=>"Observaciones","accesskey"=>true,"commentary"=>""),
+"accoobservas"=>array("label"=>"Observaciones","accesskey"=>true,"commentary"=>""),
+"ordefecingd"=>array("label"=>"Ingreso","accesskey"=>true,"commentary"=>"AAAA/MM/DD"),
+"ordefecregd"=>array("label"=>"Fecha de registro de caso","accesskey"=>true,"commentary"=>"AAAA/MM/DD"),
+"ordefecvend"=>array("label"=>"Vencimiento","accesskey"=>true,"commentary"=>"AAAA/MM/DD"),
+"ordefecfinad"=>array("label"=>"Finalizaci&oacute;n","accesskey"=>true,"commentary"=>"AAAA/MM/DD"),
+"ordefecentn"=>array("label"=>"Entrega","accesskey"=>true,"commentary"=>"AAAA/MM/DD"),
+"contidentis"=>array("label"=>"Solicitante/Denunciante","accesskey"=>true,"commentary"=>""),
+"priocodigos"=>array("label"=>"Prioridad","accesskey"=>true,"commentary"=>""),
+"tiorcodigos"=>array("label"=>"Tipo de Caso","accesskey"=>true,"commentary"=>""),
+"evencodigos"=>array("label"=>"Clasificaci&oacute;n","accesskey"=>true,"commentary"=>""),
+"causcodigos"=>array("label"=>"Subclasificaci&oacute;n","accesskey"=>true,"commentary"=>""),
+"orgacodigos"=>array("label"=>"Dependencia","accesskey"=>true,"commentary"=>""),
+"merecodigos"=>array("label"=>"Medio recepci&oacute;n","accesskey"=>true,"commentary"=>""),
+"locacodigos"=>array("label"=>"Localizaci&oacute;n","accesskey"=>true,"commentary"=>""),
+"oremanexos"=>array("label"=>"Anexos","accesskey"=>true,"commentary"=>""),
+"oremradicas"=>array("label"=>"Radicaci&oacute;n","accesskey"=>true,"commentary"=>""),
+"ordenamiento"=>array("label"=>"Ordenar por &iacute;tem","accesskey"=>true,"commentary"=>"Sep. por ','"),
+"action"=>array("label"=>"Acciones","accesskey"=>true,"commentary"=>"Sep. por ','"),
+"actaestacts"=>array("label"=>"Estado de tarea","accesskey"=>true,"commentary"=>""),
+"total"=>array("label"=>"Cantidad de casos encontrados : ","accesskey"=>false,"commentary"=>""),
+"infrcodigos"=>array("label"=>"Persona / Entidad infractora","accesskey"=>true,"commentary"=>""),
+"compcodigos"=>array("label"=>"Compromiso","accesskey"=>true,"commentary"=>""),
+"accofecrevn"=>array("label"=>"Vencimiento de compromisos","accesskey"=>true,"commentary"=>""),
+"accoactivas"=>array("label"=>"Estado del compromiso","accesskey"=>true,"commentary"=>""),
+"acciones"=>array("label"=>"Acciones","accesskey"=>false,"commentary"=>""),
+);
+?>

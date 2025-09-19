@@ -1,0 +1,438 @@
+<?php
+class FeGeArchivosManager{
+	function FeGeArchivosManager(){
+
+		settype($objManager, "object");
+		settype($rcUser, "array");
+
+		//inicializa las constantes
+		$objManager = Application :: getDomainController('NumeradorManager');
+		$this->nuAraulinean = $objManager->fncgetByIdNumerador("thread"); //hilo del  proceso
+		$this->sbStatusP = Application :: getConstant("ARCH_P");
+		$this->sbStatusF = Application :: getConstant("ARCH_F");
+		$this->sbPath = Application :: getConstant("ANEXOS");
+		$this->objGateway = Application::getDataGateway("archivos");
+		$this->objGatewayAux = Application::getDataGateway("archivoaux");
+		$this->objDate = Application :: loadServices("DateController");
+		$rcUser = Application :: getUserParam();
+		$this->sbUser = $rcUser["username"];
+		$this->executeSql = true;
+	}
+
+	function setData($rcData){
+		$this->rcData = $rcData;
+	}
+
+	function getResult(){
+		return $this->rcResult;
+	}
+
+	function getThread(){
+		return $this->nuAraulinean;
+	}
+
+	function setThread($sbThread){
+		$this->nuAraulinean = $sbThread;
+	}
+
+	/**
+	 * @Copyright 2014 Parquesoft
+	 *
+	 * Metodo para adicionar datos a la tabla: archivos
+	 * @author freina
+	 * @location Cali - Colombia
+	 */
+	function addArchivos($archcodigon,$archidrefes,$archreferes,$archnombres,$archmimetys,$archtamanon,
+	$archcontens,$archextensis,$archtipdocs=null,$archobservas=null){
+
+		settype($sbResult, "string");
+
+		//se registra la informacion del archivo
+		$this->nuAchcodigon = $archcodigon;
+		$this->sbSignal = 1;
+		$this->executeSql = true;
+		$this->addArchivoaux();
+
+		$sbResult = $this->objGateway->addArchivos($archcodigon,$archidrefes,$archreferes,$archnombres,$archmimetys,$archtamanon,
+		$archcontens,$archextensis,$archtipdocs,$archobservas);
+
+		if($sbResult){
+			//se actualiza las operaciones
+			$this->setArchivoaux();
+		}
+		return  $sbResult;
+	}
+
+	/**
+	 * @Copyright 2014 Parquesoft
+	 *
+	 * Metodo para eliminar datos de la tabla: archivos
+	 * @author freina
+	 * @location Cali - Colombia
+	 */
+	function deleteArchivos($archcodigon){
+
+		settype($sbResult, "string");
+
+		//se registra la informacion del archivo
+		$this->nuAchcodigon = $archcodigon;
+		$this->sbSignal = 2;
+		$this->executeSql = true;
+		$this->addArchivoaux();
+
+		$sbResult = $this->objGateway->deleteArchivos($archcodigon);
+
+		if($sbResult){
+			//se actualiza las operaciones
+			$this->setArchivoaux();
+		}
+
+		return  $sbResult;
+	}
+
+	/**
+	 * @Copyright 2014 Parquesoft
+	 *
+	 * Metodo para consultar por campo(s) clave(s) y obtener todas las columnas de la tabla: archivos
+	 * @author Freina
+	 * @location Cali - Colombia
+	 */
+	function getByIdArchivos($archcodigon){
+
+		settype($rcResult,"array");
+		settype($sbPath, "string");
+		settype($sbPoint, "string");
+
+		if($archcodigon){
+			$rcResult = $this->objGateway->getByIdArchivos($archcodigon);
+
+			if(is_array($rcResult) && $rcResult){
+				$sbPath = $this->sbPath."/".$archcodigon;
+				if(file_exists($sbPath)){
+					$sbPoint = fopen($sbPath, "r");
+					$rcResult[0]["archcontens"] = fgets($sbPoint);
+					fclose($sbPoint);
+					if($rcResult[0]["archcontens"]===false){
+						$rcResult = null;
+					}	
+				}
+			}
+		}
+
+		return $rcResult;
+
+	}
+	
+	/**
+	 * @Copyright 2014 Parquesoft
+	 *
+	 * Obtiene el registro de archivos de acuerdo a los parametros
+	 * @author freina
+	 * @location Cali - Colombia
+	 */
+	function getArchivos(){
+		
+		settype($rcResult, "array");
+		settype($rcTmp, "array");
+		settype($sbPath, "string");
+		settype($sbPoint, "string");
+		settype($nuCont, "integer");
+		
+		$this->objGateway->setData($this->rcData);
+		$this->objGateway->getArchivos();
+		$rcResult = $this->objGateway->getResult();
+		
+		if(is_array($rcResult) && $rcResult){
+			foreach($rcResult as $nuCont=>$rcTmp){
+				clearstatcache();
+				$sbPath = $this->sbPath."/".$rcTmp["archcodigon"];
+				if(file_exists($sbPath)){
+					$sbPoint = fopen($sbPath, "r");
+					$rcResult[$nuCont]["archcontens"] = fgets($sbPoint);
+					fclose($sbPoint);	
+				}
+			}	
+		}
+		
+		$this->rcResult = $rcResult;
+	}
+	
+	//------------------------------------------
+	/**
+	 * @Copyright 2014 Parquesoft
+	 *
+	 * Metodo para actualizar los datos a la tabla: archivos
+	 * @author freina
+	 * @location Cali - Colombia
+	 */
+	function updateArchivos($archcodigon,$archidrefes,$archreferes,$archnombres,$archmimetys,$archtamanon,$archcontens,$archextensis){
+		
+		settype($sbResult, "string");
+		
+		//se registra la informacion del archivo
+		$this->nuAchcodigon = $archcodigon;
+		$this->executeSql = true;
+		$this->sbSignal = 2;
+		$this->addArchivoaux();
+		$this->sbSignal = 1;
+		$this->addArchivoaux();
+		
+		$sbResult = $this->objGateway->updateArchivos($archcodigon,$archidrefes,$archreferes,$archnombres,$archmimetys,$archtamanon,$archcontens,$archextensis);
+		
+		if($sbResult){
+			 
+			//se actualiza las operaciones
+			$this->setArchivoaux();
+			
+		}
+		
+		return $sbResult;
+		
+	}
+	//-------------------------------------------
+
+	/**
+	 * @Copyright 2014 Parquesoft
+	 *
+	 * Metodo para consultar por las referencias
+	 * @author Ingravity 0.0.9
+	 * @location Cali - Colombia
+	 */
+	function getByRefArchivos($archidrefes,$archreferes){
+
+		settype($rcResult, "array");
+		settype($rcTmp, "array");
+
+		if($archidrefes && $archreferes){
+			$rcTmp = $this->objGateway->getByRefArchivos($archidrefes,$archreferes);
+
+			if(is_array($rcTmp) && $rcTmp){
+				$rcResult = $rcTmp;
+			}
+		}
+
+		return $rcResult;
+	}
+
+	/**
+	 * @Copyright 2014 Parquesoft
+	 *
+	 * Metodo para consultar por el(los) campo(s) llave(s) y obtener la columna Archcodigon de la tabla: archivos
+	 * @author Ingravity 0.0.9
+	 * @location Cali - Colombia
+	 */
+	function getDescArchivo($archidrefes,$archreferes){
+
+		settype($rcResult, "array");
+		settype($rcTmp, "array");
+
+		if($archidrefes && $archreferes){
+			$rcTmp = $this->objGateway->getDescArchivo($archidrefes,$archreferes);
+
+			if(is_array($rcTmp) && $rcTmp){
+				$rcResult = $rcTmp;
+			}
+		}
+
+		return $rcResult;
+	}
+
+	/**
+	 * @Copyright 2014 Parquesoft
+	 *
+	 * Metodo para adicionar datos a la tabla: archivos
+	 * @author freina
+	 * @location Cali - Colombia
+	 */
+	function addSqlArchivos($archcodigon,$archidrefes,$archreferes,$archnombres,$archmimetys,$archtamanon,
+	$archcontens,$archextensis,$archtipdocs=null,$archobservas=null){
+
+		settype($rcSql, "array");
+
+		//se registra la informacion del archivo
+		$this->nuAchcodigon = $archcodigon;
+		$this->sbSignal = 1;
+		$this->executeSql = false;
+		$this->addArchivoaux();
+		
+		$rcSql = $this->objGateway->addSqlArchivos($archcodigon,$archidrefes,$archreferes,$archnombres,$archmimetys,$archtamanon,
+							$archcontens,$archextensis,$archtipdocs,$archobservas);
+		
+		if(is_array($rcSql) && $rcSql){
+			if(is_array($this->_rcSql) && $this->_rcSql){
+				$rcSql = array_merge($rcSql,$this->_rcSql);
+			}
+		}
+
+		return $rcSql;
+
+	}
+	
+	/**
+	 * @Copyright 2014 Parquesoft
+	 *
+	 * Metodo para eliminar datos de la tabla: archivos
+	 * @author freina
+	 * @location Cali - Colombia
+	 */
+	function deleteSqlArchivos($sbArchidrefes,$sbArchreferes,$rcArchcodigon){
+		
+		settype($rcTmp, "array");
+		settype($rcRow, "array");
+		settype($rcSql, "array");
+		settype($sbResult, "string");
+		settype($sbSql, "string");
+		
+		$this->sbSignal = 2;
+		$this->executeSql = false;
+		
+		//se obtiene el sql de que elimina los archivos
+		$sbSql = $this->objGateway->deleteSqlArchivos($sbArchidrefes,$sbArchreferes,$rcArchcodigon);
+		
+		if($sbSql){
+			$rcSql[0] = $sbSql;
+			
+			//se obtienen los registros de los archivos para armar las sentencias de borrado en disco
+			$this->objGatewayAux->setData(array("archidrefes"=>$sbArchidrefes,"archreferes"=>$sbArchreferes,"not_in"=>$rcArchcodigon));
+			$this->objGatewayAux->getArchivos();
+			$rcTmp = $this->objGatewayAux->getResult();
+			
+			if(is_array($rcTmp) && $rcTmp){
+				foreach ($rcTmp  as $rcRow) {
+					//se registra la informacion del archivo
+					$this->nuAchcodigon = $rcRow["archcodigon"];
+					$this->addArchivoaux();
+
+					if(is_array($this->_rcSql) && $this->_rcSql){
+						$rcTmp = array_merge($rcTmp,$this->_rcSql);
+					}
+				}
+			}
+		}
+		
+		return $rcSql;
+		
+		
+	}
+
+	/**
+	 * @Copyright 2014 Parquesoft
+	 *
+	 * registra el hilo del archivo
+	 * @author freina
+	 * @location Cali - Colombia
+	 */
+	function addArchivoaux(){
+
+		settype($objManager, "object");
+		settype($sbResult, "string");
+		settype($sbResult, "string");
+		settype($nuaAraucodigon, "integer");
+
+		$sbResult = false;
+
+		if($this->nuAraulinean && $this->nuAchcodigon){
+			
+			$objManager = Application :: getDomainController('NumeradorManager');
+			$nuaAraucodigon = $objManager->fncgetByIdNumerador("archivoaux"); //hilo del  proceso
+
+			if(!$this->executeSql){
+				$this->objGatewayAux->setExecuteSql(false);
+			}
+
+			$this->objGatewayAux->setData(array("araucodigon"=>$nuaAraucodigon,"araulinean"=>$this->nuAraulinean,"archcodigon"=>$this->nuAchcodigon,
+			"araufecregn"=>$this->objDate->fncintdatehour(),"usuacodigos"=>$this->sbUser,"araucruds"=>$this->sbSignal,"arauestados"=>$this->sbStatusP,));
+
+			$this->objGatewayAux->addArchivoaux();
+
+			if(!$this->executeSql){
+				$this->_rcSql = $this->objGatewayAux->getSql();
+			}else{
+				$sbResult = $this->objGatewayAux->getConsult();
+			}
+		}
+		$this->rcResult["result"] = $sbResult;
+	}
+
+	/**
+	 * @Copyright 2014 Parquesoft
+	 *
+	 * Actualiza los registros de archivos
+	 * @author freina
+	 * @location Cali - Colombia
+	 */
+	function setArchivoaux(){
+
+		settype($rcTmp,"array");
+		settype($rcRow,"array");
+		settype($rcFile,"array");
+		settype($sbResult,"string");
+		settype($sbPoint, "string");
+		settype($sbPath, "string");
+		settype($nuCont, "integer");
+
+		$sbResult = true;
+
+		if($this->nuAraulinean){
+
+			//se obtiene la informacion relacionada al id
+			$this->objGatewayAux->setData(array("araulinean"=>$this->nuAraulinean,"arauestados"=>$this->sbStatusP,"order_by"=>'araufecregn'));
+			$this->objGatewayAux->getArchivoaux();
+			$rcTmp = $this->objGatewayAux->getResult();
+
+			if(is_array($rcTmp) && $rcTmp){
+				//se recorre el arreglo y de acuerdo a la señal se actualiza el archivo en disco y su registro de BD
+				foreach($rcTmp as $nuCont=>$rcRow){
+					switch($rcRow["araucruds"]){
+						case '1':
+							//obtiene el serializado del archivo en la base de datos y lo pone en disco
+							$rcFile = $this->objGateway->getByIdArchivos($rcRow["archcodigon"]);
+							if(is_array($rcFile) && $rcFile){
+								$rcFile = $rcFile[0];
+								//pone el archivo en el disco duro
+								clearstatcache();
+								$sbPath = $this->sbPath."/".$rcFile["archcodigon"];
+								$sbPoint = fopen($sbPath, "a");
+								fwrite ($sbPoint,$rcFile["archcontens"]);
+								fclose($sbPoint);
+								if(file_exists($sbPath)){
+									//se actualiza el registro del archivo y se actualiza el registro del enlace
+									$this->objGatewayAux->setData(array("archcodigon"=>$rcFile["archcodigon"],"archcontens"=>null));
+									$this->objGatewayAux->setArchivos();
+
+									if($this->objGatewayAux->getConsult()){
+
+										$this->objGatewayAux->setData(array("araucodigon"=>$rcRow["araucodigon"],"arauestados"=>$this->sbStatusF));
+										$this->objGatewayAux->setArchivoaux();
+
+									}
+								}
+							}else{
+								$sbResult = false;
+							}
+							break;
+						case '2':
+							//elimina el archivo del disco
+							$sbPath = $this->sbPath."/".$rcRow["archcodigon"];
+							if(file_exists($sbPath)){
+								if(unlink($sbPath)){
+									$this->objGatewayAux->setData(array("araucodigon"=>$rcRow["araucodigon"],"arauestados"=>$this->sbStatusF));
+									$this->objGatewayAux->setArchivoaux();
+								}else{
+									$sbResult = false;
+								}
+							}
+							break;
+					}
+				}
+			}else{
+				$sbResult = false;
+			}
+		}else{
+			$sbResult = false;
+		}
+
+		$this->rcResult["result"] = $sbResult;
+	}
+}
+?>

@@ -1,0 +1,1 @@
+{view_producto_image}

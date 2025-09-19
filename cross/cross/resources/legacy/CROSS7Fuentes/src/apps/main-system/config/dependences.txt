@@ -1,0 +1,33 @@
+DEPENDENCIAS DEL Mï¿½DULO DE CROSS300
+
+- MODULO DE human_resources 
+	Servicio: Human_resources
+	Funcionalidad: Forma de adminitraciï¿½n de tareas en la lista desplegable de entes organizacionales para cargar los entes y sus hijos. 
+	plug-in: select_entes
+
+	- MODULO DE general
+	Servicio: General
+	Funcionalidad: Forma de ingreso de requerimientos para cargar las localidades.
+	plug-in: select_dataservices
+	Funcionalidad: Reporte de tiempos de ejecución para traer la lista de dias inhabiles
+	manager: FeCrRepoTiemposEjecManager
+	
+	- MODULO DE customers
+	Servicio: Customers
+	Funcionalidad: Forma de ingreso de requerimientos para cargar los contratos
+	plug-in: select_dataservices
+	
+ 	-MODULO DE workflow
+ 	Servicio: Workflow
+ 	Funcionalidad: Forma del administrador de tareas en el listado de actas asignadas a un ente organizacional
+ 	Plug-in: function.viewtareas
+ 	Funcionalidad: Forma de atención de actas en la lista desplegable de estados de actas
+ 	Plug-in: function.select_dataservices 
+ 	Funcionalidad: Al grabar las atencion a las actas para consultar los datos del acta
+ 	Comando: CmdAddActaempresa.class.php
+ 	
+	- MODULO NO
+	Servicio: DateController
+	Funcionalidad: Es usado para el manejo de fechas.	
+	Serviccio: Html
+	Funcionalidad: Usado para convertir a HTML

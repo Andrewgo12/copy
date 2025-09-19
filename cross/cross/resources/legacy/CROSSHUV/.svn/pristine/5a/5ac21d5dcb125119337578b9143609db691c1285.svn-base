@@ -1,0 +1,38 @@
+SET search_path = profiles, pg_catalog;
+SET
+ALTER TABLE ONLY auth  ADD CONSTRAINT auth_pkey PRIMARY KEY (authusernams);
+ALTER TABLE
+ALTER TABLE ONLY authschema  ADD CONSTRAINT authschema_pkey PRIMARY KEY (authusernams,schecodigon);
+ALTER TABLE
+ALTER TABLE ONLY profiles  ADD CONSTRAINT profiles_pkey PRIMARY KEY (profcodigos,applcodigos);
+ALTER TABLE
+ALTER TABLE ONLY applications  ADD CONSTRAINT applications_pkey PRIMARY KEY (applcodigos);
+ALTER TABLE
+ALTER TABLE ONLY style  ADD CONSTRAINT style_pkey PRIMARY KEY (stylcodigos,applcodigos);
+ALTER TABLE
+ALTER TABLE ONLY language  ADD CONSTRAINT language_pkey PRIMARY KEY (langcodigos);
+ALTER TABLE
+ALTER TABLE ONLY permisions  ADD CONSTRAINT permisions_pkey PRIMARY KEY (schecodigon,profcodigos, applcodigos,commnombres);
+ALTER TABLE
+ALTER TABLE ONLY schema ADD CONSTRAINT schema_pkey PRIMARY KEY (schecodigon);
+ALTER TABLE
+ALTER TABLE ONLY numerador ADD CONSTRAINT numerador_pkey PRIMARY KEY (numecodigos);
+ALTER TABLE
+ALTER TABLE ONLY authschema ADD CONSTRAINT authschema_fkey FOREIGN KEY (authusernams) REFERENCES auth(authusernams) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE
+ALTER TABLE ONLY authschema ADD CONSTRAINT authschema_fkey1 FOREIGN KEY (schecodigon) REFERENCES schema(schecodigon) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE
+ALTER TABLE ONLY auth ADD CONSTRAINT auth_fkey FOREIGN KEY (profcodigos,applcodigos) REFERENCES profiles(profcodigos,applcodigos) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE
+ALTER TABLE ONLY auth ADD CONSTRAINT auth_fkey1 FOREIGN KEY (stylcodigos,applcodigos) REFERENCES style(stylcodigos,applcodigos) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE
+ALTER TABLE ONLY auth ADD CONSTRAINT auth_fkey2 FOREIGN KEY (langcodigos) REFERENCES language(langcodigos) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE
+ALTER TABLE ONLY permisions ADD CONSTRAINT permisions_fkey FOREIGN KEY (profcodigos,applcodigos) REFERENCES profiles(profcodigos,applcodigos) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE
+ALTER TABLE ONLY permisions ADD CONSTRAINT permisions1_fkey FOREIGN KEY (schecodigon) REFERENCES schema(schecodigon) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE
+ALTER TABLE ONLY profiles ADD CONSTRAINT profiles_fkey FOREIGN KEY (applcodigos) REFERENCES applications(applcodigos) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE
+ALTER TABLE ONLY style ADD CONSTRAINT style_fkey FOREIGN KEY (applcodigos) REFERENCES applications(applcodigos) ON UPDATE NO ACTION ON DELETE NO ACTION;
+ALTER TABLE

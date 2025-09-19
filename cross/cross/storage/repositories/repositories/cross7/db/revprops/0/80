@@ -1,0 +1,25 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-10-26T22:21:33.968573Z
+K 7
+svn:log
+V 1823
+Observaciones : Puntos de acceso al sistema en el portal corporativo. En la implementación definida en el Manual 3.0 de GEL, se requiere que exista un punto de acceso único para Quejas y Reclamos desde el portal, por lo cual se debe modificar la interfaz para que solo cargue los valores relacionados a estos procesos de atención. Así mismo desde otro punto del portal, se deberá acceder a los otros procesos como Derechos de petición, sugerencias, elogios, tutelas, etc. Finalmente los casos relacionados con soporte técnico.
+R/
+Se modifica la consulta de tipos de caos que carga los valores en la interfaz web para que tenga en cuenta la variable pasada "pto". Esta variable es pasada por el REQUEST en el enlace que desplega la forma.
+La variable tiene 3 valores:
+a)pto=1 cuando se quiera que la interfaz en el campo Tipo de orden cargue solo los valores de Quejas, Reclamos.
+b)pto=2 cuando se quiera que en el campo Tipo de orden de la interfaz de registro de casos pública, muestre los tipos de caso Derechos de Petición, elogio, Sugerencias, Tutelas, etc. c)pto=3 debe mostrar el tipo de caso soporte técnico.
+Además se crean 3 parámetros:
+*TIP_CAS_WEB1 llamado Tipos de caso considerados como quejas y reclamos que almacena los tipos que se despliegan cuando pto=1
+*TIP_CAS_WEB2 llamado Tipos de caso que no son considerados como quejas y reclamos o trámites ambientales que almacena los tipos que se despliegan cuando pto=2
+*TIP_CAS_WEB3 llamado Tipos de caso considerados como trámites ambientales� que almacena los tipos que se despliegan cuando pto=3
+
+En caso de que la variable pto no estuviera presente se cargaran los tipos de caso que no estén configurados en el parámetro  type_close "Tipos de caso" y si este parámetro no está configurado entonces se cargarán todos los tipos de caso.
+
+END

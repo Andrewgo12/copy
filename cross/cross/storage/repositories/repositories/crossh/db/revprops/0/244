@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2021-08-07T01:24:56.008232Z
+K 7
+svn:log
+V 85
+Se eliminan archivos basura, y se arregla el charset del solicitante que es dinámico
+END

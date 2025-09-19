@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-11-03T02:51:16.018961Z
+K 7
+svn:log
+V 158
+se termina de pulir eliminando registros de grupos de interes en el módulo de customers y limpiando los cambios al listado cuando ese campo era del contacto.
+END

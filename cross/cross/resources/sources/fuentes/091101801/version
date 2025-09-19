@@ -1,0 +1,523 @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@                            DERECHOS DE AUTOR                                      @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+Copyright © 2010 CROSS, FULLENGINE S.A. Todos los Derechos Reservados.
+
+Los derechos de propiedad intelectual sobre este SITIO y/o DIRECTORIO, son titularidad 
+de FullEngine SA. El uso de cualquiera de los contenidos del SITIO no constituirá 
+en ningún momento una autorización ni licencia tácita o explícita para usar la propiedad 
+intelectual propiedad de FullEngine S.A. o de la cual ésta es usuaria autorizada, por 
+lo que su reproducción parcial o total no esta permitida. Corresponde a FullEngine S.A. 
+el ejercicio exclusivo de los derechos de explotación de los derechos referidos en 
+cualquier forma y, en especial, los derechos de su divulgación, publicación, reproducción, 
+distribución, comunicación pública y transformación. FullEngine S.A. no otorga permiso 
+para copiar, reproducir, ni distribuir el material de este SITIO. 
+
+Cualquier material contenido en el SITIO que se haya reproducido o impreso debera ser 
+destruido de manera inmediata. Tampoco puede EL USUARIO, sin el permiso de FullEngine S.A.,
+hacer réplicas en otro servidor de cualquier material contenido en este SITIO. Cualquier 
+uso no autorizado de cualquier material contenido en este SITIO puede constituir una 
+violación de las leyes de derechos de autor, de las leyes de Propiedad Industrial, de 
+las leyes de privacidad y publicidad y de las leyes y reglamentos de comunicaciones.
+CROSS y todos los logotipos, y todas las marcas, avisos comerciales, derechos de autor 
+y diseños que amparan productos y/o servicios de FULLENGINE S.A. en este SITIO son 
+registros de FullEngine S.A.
+
+FULLENGINE S.A.
+
+gerencia@fullengine.com
+
+#############################################################
+# SOFTWARE DE FULLENGINE S.A. 								#
+# 															#
+# NOMBRE		:	CROSS									#
+# VERSION		:	5.1										#
+# CLIENTE		:	Hospital Universitario del Valle - HUV	#
+# ID PRODUCTO	:	SCGC-H8U1V-A2012						#
+# REPOSITORIO	:	/svn/customers/SCSAAS/branches/SCHUV	#
+# RELEASE		:	567 									#
+# FECHA INSTAL  :	27/06/2014								#
+#############################################################
+
+===================================================================================
+
+ 
+Revision: 570
+Author: freina
+Date: 03:08:23 p.m., jueves, 17 de julio de 2014
+Message:
+ported r569 (ported r568 (Número de Caso 	: 0001522014
+Observaciones : Listado de casos no permite generar reportes por clasificación y subclasificación.
+R/
+Se modifica la forma en que se borran las tablas temporales, se habilita el método de borrado para que si se pasa el nombre de la tabla la borre o si no entonces se consultan las tablas creadas en días anteriores  al actual y se borran.
+Se crea la tabla actatmp en donde se almacena la fecha de creación de la tablas temporales, con la información de esta tabla es que el método de borrado elimina las tablas temporales.
+La estructura de la tabla es la siguiente:
+CREATE TABLE "actatmp" (
+    "actmcodigos" varchar(30) NOT NULL,
+    "actmnombres" varchar(100),
+    "actmfechregn" integer,
+    "usuacodigos" varchar(30),
+    "actmactivas" varchar(1) DEFAULT 'A'::varchar
+);
+ALTER TABLE ONLY "actatmp" ADD CONSTRAINT actatmp_pkey PRIMARY KEY ("actmcodigos");
+
+Este nuevo manejo impacta los siguientes componentes:
+•	Listado de casos.
+•	 Reporte consolidado.
+•	Reporte detallado.
+•	Ficha de caso.
+•	Ficha de seguimiento.
+•	Asignación de dependencias a través de las atenciones.
+•	Mover dependencias.
+) from trunk.) from branches/4.0.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlConsolidado.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlDetallado.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlOrdenempresaExtended.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlSqlExtended.class.php
+Modified : /branches/SCHUV/ASAP/applications/general/data/dbscripts/oracle9i/oracleconst.txt
+Modified : /branches/SCHUV/ASAP/applications/general/data/dbscripts/oracle9i/oracledb.txt
+Modified : /branches/SCHUV/ASAP/applications/general/data/dbscripts/postgres/constraint.sql
+Modified : /branches/SCHUV/ASAP/applications/general/data/dbscripts/postgres/tablas.sql
+Modified : /branches/SCHUV/ASAP/applications/profiles/data/dbscripts/templates/constraint.sql
+Modified : /branches/SCHUV/ASAP/applications/profiles/data/dbscripts/templates/tablas.sql
+Modified : /branches/SCHUV/ASAP/applications/workflow/data/Pgsql/FeWFPgsqlActaExtended.class.php
+Modified : /branches/SCHUV/ASAP/applications/workflow/data/Pgsql/FeWFPgsqlActatmp.class.php
+ 
+Revision: 573
+Author: freina
+Date: 02:47:37 p.m., sábado, 26 de julio de 2014
+Message:
+ported r572 (ported r571 (Número de Caso 	: 0001602014
+Observaciones : Existe un problema con el reporte detallado. Si se configura el parámetro de Tarea de Control y Cierre, excluye casos cerrados, pero sin o se hace, los agrupa todos en la dependencia de Quejas y Reclamos que es la que es responsable de la tarea de Control y Cierre.
+R/
+Se determina que el problema radica en que el parámetro de tarea control y cierre se está usando de forma incorrecta en las consulta SQL. Este parámetro debe aplicarse para obtener la última acta de un caso y no como parte de la consulta final ya que ahí disminuye la cantidad de registros.) from trunk.) from branches/4.0.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlAreacausante.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlConsolidado.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlDetallado.class.php
+Modified : /branches/SCHUV/ASAP/applications/workflow/data/Pgsql/FeWFPgsqlActatmp.class.php
+ 
+Revision: 576
+Author: freina
+Date: 04:09:51 p.m., viernes, 01 de agosto de 2014
+Message:
+ported r575 (ported r574 (Número de Caso 	: 0001622014
+Observaciones : Se solicita que el listado de casos este en capacidad de generar consultas en las cuales se excluya la tarea de control y cierre.
+R/
+Se modifica el listado de casos para que por demanda se excluya la tarea de control y cierre en las consultas.
+Para excluir la tarea de control y cierre de sebe seleccionar la caja de chequeo que está en  la parte inferior de los parámetros de consulta con la etiqueta “Excluir tarea de control y cierre”) from trunk.) from branches/4.0.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/language/es/es.listadoorden.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlSqlExtended.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/domain/FeCrListadoOrdenManager.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.listadoorden.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_ListadoOrden.tpl
+Modified : /branches/SCHUV/ASAP/applications/general/data/dbscripts/oracle9i/oracleconst.txt
+Modified : /branches/SCHUV/ASAP/applications/general/data/dbscripts/postgres/constraint.sql
+Modified : /branches/SCHUV/ASAP/applications/profiles/data/dbscripts/templates/constraint.sql
+Modified : /branches/SCHUV/ASAP/applications/workflow/data/Pgsql/FeWFPgsqlActatmp.class.php
+ 
+Revision: 579
+Author: freina
+Date: 04:33:50 p.m., jueves, 23 de octubre de 2014
+Message:
+ported r578 (ported r577 (Número de Caso 	: 0001712014
+Observaciones : Se debe realizar una validación a la sesión para que en el momento que expire, se solicite nuevamente que se loguee. En lo posible colocar mensaje para que el usuario sepa que fue por inactividad que la sesión se cerró.
+R/
+Se realizan los cambios solicitados.) from trunk.) from branches/4.0.
+----
+Added : /branches/SCHUV/ASAP/applications/cross300/config/language/es/es.acta.php(Copy from path: /branches/4.0/ASAP/applications/cross300/config/language/es/es.acta.php, Revision, 578
+Modified : /branches/SCHUV/ASAP/applications/cross300/index.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/commands/CmdExit.class.php
+Modified : /branches/SCHUV/ASAP/applications/customers/index.php
+Modified : /branches/SCHUV/ASAP/applications/customers/web/commands/CmdExit.class.php
+Modified : /branches/SCHUV/ASAP/applications/encuestas/config/SaveNavigationFile.php
+Modified : /branches/SCHUV/ASAP/applications/encuestas/index.php
+Added : /branches/SCHUV/ASAP/applications/encuestas/web/commands/CmdExit.class.php(Copy from path: /branches/4.0/ASAP/applications/encuestas/web/commands/CmdExit.class.php, Revision, 578
+Modified : /branches/SCHUV/ASAP/applications/general/index.php
+Modified : /branches/SCHUV/ASAP/applications/general/web/commands/CmdExit.class.php
+Modified : /branches/SCHUV/ASAP/applications/human_resources/index.php
+Modified : /branches/SCHUV/ASAP/applications/human_resources/web/commands/CmdExit.class.php
+Modified : /branches/SCHUV/ASAP/applications/products/index.php
+Modified : /branches/SCHUV/ASAP/applications/products/web/commands/CmdExit.class.php
+Modified : /branches/SCHUV/ASAP/applications/profiles/config/language/es/es.messages.php
+Modified : /branches/SCHUV/ASAP/applications/profiles/web/commands/CmdExit.class.php
+Modified : /branches/SCHUV/ASAP/applications/profiles/web/plugins/compiler.loadlabels.php
+Added : /branches/SCHUV/ASAP/applications/profiles/web/plugins/function.new_message.php(Copy from path: /branches/4.0/ASAP/applications/profiles/web/plugins/function.new_message.php, Revision, 578
+Modified : /branches/SCHUV/ASAP/applications/profiles/web/templates/Form_Login.tpl
+Modified : /branches/SCHUV/ASAP/applications/schedule/index.php
+Added : /branches/SCHUV/ASAP/applications/schedule/web/commands/CmdExit.class.php(Copy from path: /branches/4.0/ASAP/applications/schedule/web/commands/CmdExit.class.php, Revision, 578
+Modified : /branches/SCHUV/ASAP/applications/storage/index.php
+Modified : /branches/SCHUV/ASAP/applications/storage/web/commands/CmdExit.class.php
+Modified : /branches/SCHUV/ASAP/applications/workflow/index.php
+Modified : /branches/SCHUV/ASAP/applications/workflow/web/commands/CmdExit.class.php
+Modified : /branches/SCHUV/ASAP/system/classes/Application.class.php
+Modified : /branches/SCHUV/ASAP/system/classes/Web/WebRegistry.class.php
+ 
+Revision: 582
+Author: freina
+Date: 02:10:33 p.m., viernes, 05 de diciembre de 2014
+Message:
+ported r581 (ported r580 (Número de Caso 	: 0001712014
+Observaciones : Se debe realizar una validación a la sesión para que en el momento que expire, se solicite nuevamente que se loguee. En lo posible colocar mensaje para que el usuario sepa que fue por inactividad que la sesión se cerró.
+R/
+Se modifica la clase para que tenga en cuenta las url publicas.) from trunk.) from branches/4.0.
+----
+Modified : /branches/SCHUV/ASAP/system/classes/Web/WebRegistry.class.php
+ 
+Revision: 590
+Author: freina
+Date: 07:20:12 p.m., jueves, 03 de septiembre de 2015
+Message:
+ported r589 (ported r588 (Caso numero: 0001922015
+Observaciones: Es necesario revisar el reporte consolidado en el cliente HUV ya que al realizar el reporte se crea una gran cantidad de tablas temporales, lo que afecta el desempeño del mismo.
+R/ 
+Se optimiza el reporte para que solo se creen tablas temporales al instanciar la compuerta del reporte y no al llamdo de la funcion principal del mismo.) from trunk.) from branches/4.0.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlConsolidado.class.php
+ 
+
+ 
+Revision: 595
+Author: freina
+Date: 02:28:47 p.m., miÃ©rcoles, 30 de septiembre de 2015
+Message:
+NÃºmero de Caso 	: 0000042015
+Observaciones : Buenos días OK, ya revisamos la nueva estructura de dependencias del cross y esta bien. tenemos tres solicitudes: 1- Es posible empezar el 1 de octubre de 2015??? 2- Se requiere que, cuando una dependencia con clave para ingresar al cross, en administración de tareas al desplegar las dependencias, solamente este la dependencia madres y no sus hijos. O que las dependencias madres esten de primeras en la lista al desplegar. 3- Las dependencias con clave para ingresar al cross, no tienen el menú que debe estar en la parte izquierda para sacar informes, consultar casos, consolidados.... En espera de su acostumbrada colaboración y apoyo, nos de las indicaciones para arrancar el 1 de octubre de 2015 Cualquier inquietud, favor comunicarse al teléfono 6206000 ext. 1220 o al celular 3103756321 Gracias Luis G
+
+R/
+
+Se realiza el pluguin solicitado, este plugin presenta de forma jerarquica las dependencias a cargo de el empleado logueado y en forma de lista las dependencias sobre las cuales tiene permiso
+
+el pluguin esta presenta en las siguientes formas:
+
+Casos 
+
+=> Registro de casos 
+
+Administración de tareas
+Registro de Casos
+Seguminentos
+
+=> Reportes
+Consolidado
+Listado de casos
+
+General
+Equivalencias CROSS-DOCUNET
+Relación tarea persona
+
+Agenda
+Listado de citas - interno.
+
+
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/SaveNavigationFile.php
+Added : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdTreeHelpEsp.class.php
+Added : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.select_entes_esp.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_AdminTareas.tpl
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_Consolidado.tpl
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_ListadoOrden.tpl
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_Orden.tpl
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_Pursuit_Report.tpl
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_Seguimiento.tpl
+Added : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_TreeHelpEsp.tpl
+Modified : /branches/SCHUV/ASAP/applications/general/config/SaveNavigationFile.php
+Added : /branches/SCHUV/ASAP/applications/general/web/commands/FeGeCmdTreeHelpEsp.class.php
+Added : /branches/SCHUV/ASAP/applications/general/web/plugins/function.consult_treehelp_esp.php
+Added : /branches/SCHUV/ASAP/applications/general/web/plugins/function.select_entes_esp.php
+Modified : /branches/SCHUV/ASAP/applications/general/web/templates/Form_CentroEmailConsult.tpl
+Modified : /branches/SCHUV/ASAP/applications/general/web/templates/Form_Equivalencias.tpl
+Modified : /branches/SCHUV/ASAP/applications/general/web/templates/Form_RelacionTarea_Persona.tpl
+Added : /branches/SCHUV/ASAP/applications/general/web/templates/Form_TreeHelpEsp.tpl
+Modified : /branches/SCHUV/ASAP/applications/schedule/config/SaveNavigationFile.php
+Added : /branches/SCHUV/ASAP/applications/schedule/web/commands/FeScCmdTreeHelpEsp.class.php
+Added : /branches/SCHUV/ASAP/applications/schedule/web/plugins/function.select_entes_esp.php
+Modified : /branches/SCHUV/ASAP/applications/schedule/web/templates/Form_ShowListSchedule.tpl
+Added : /branches/SCHUV/ASAP/applications/schedule/web/templates/Form_TreeHelpEsp.tpl
+ 
+Revision: 596
+Author: freina
+Date: 02:24:21 p.m., domingo, 13 de diciembre de 2015
+Message:
+00112015
+Observacioes: Al sacar el Reporte de casos por empresa aseguradora de salud , el reporte sale sin la fecha o el periodo que se esta reportando. 
+R/
+Se modifica los parámetros de entrada del reporte para que las fechas de registro sean obligatorias. Se muestra las fechas ingresadas junto al resultado del reporte.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/language/es/es.reqeps.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.reqeps.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_BodyReqeps.tpl
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_Reqeps.tpl
+ 
+Revision: 599
+Author: freina
+Date: 04:40:59 p.m., domingo, 13 de diciembre de 2015
+Message:
+ported r598 (ported r597 (Número de Caso: 00122015
+Observaciones: Al ingresar un caso, se toma la opción medio de recepción, por ejemplo: personal, pero luego de subir un archivo, el sistema automáticamente toma como medio de recepción : telefónico, y siempre debemos regresarnos a cambiar nuevamente a personal, y muchas veces por agilidad de grabar, se olvida de verificar esta parte y salen como telefónicos. 
+R/
+Se modifica el  plugin select_row_mediorecepcion ya que no estaba actualizando de forma correcta el valor seleccionado desde la interfaz.) from trunk.) from branches/4.0.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.select_row_mediorecepcion.php
+ 
+Revision: 600
+Author: freina
+Date: 06:41:09 p.m., martes, 15 de diciembre de 2015
+Message:
+Número de caso: 00132015 
+Observaciones: Cuando se ingrese al usuario reclamante, permitir que sea buscado por No de cédula
+R/
+Se modifica el plugin para que permita la consulta por número de cédula.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlSqlExtended.class.php
+ 
+Revision: 601
+Author: freina
+Date: 04:33:22 p.m., jueves, 07 de enero de 2016
+Message:
+Número de caso: 00142015
+Observaciones: Si el usuario ya esta registrado, apenas se ingrese deberá traer la información.
+R/
+Este caso se refiere a la interfaz de paciente y lo que se solicita es que cada vez que  se digite el número de identificación de un paciente registrado se cargue la data del mismo.
+----
+Modified : /branches/SCHUV/ASAP/applications/customers/config/SaveNavigationFile.php
+Modified : /branches/SCHUV/ASAP/applications/customers/data/Pgsql/FeCuPgsqlPaciente.class.php
+Added : /branches/SCHUV/ASAP/applications/customers/web/commands/FeCuCmdLoadPaciente.class.php
+Added : /branches/SCHUV/ASAP/applications/customers/web/js/jsPaciente.js
+Modified : /branches/SCHUV/ASAP/applications/customers/web/templates/Form_Paciente.tpl
+ 
+Revision: 602
+Author: freina
+Date: 04:01:29 p.m., martes, 10 de mayo de 2016
+Message:
+Número de Caso 	: 000102016
+Observaciones : En las transferencias quitar precargue fecha.
+R/
+Cambio realizado
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_TransferTareas.tpl
+ 
+Revision: 603
+Author: freina
+Date: 04:07:23 p.m., martes, 10 de mayo de 2016
+Message:
+Número de Caso 	: 000112016
+Observaciones : Validar que hasta que no anexe el documento adjunto no dejar grabar la tarea
+R/
+Esto control se solicita ya que algunos funcionarios solo cargan el archivo pero no completan el proceso de anexarlos al caso o a la tarea.
+
+Se valida que no exista una rchivo cargado al ingresar o atender un caso.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/language/es/es.messages.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdAddActaempresa.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdAddOrden.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdUpdateOrden.class.php
+ 
+Revision: 604
+Author: freina
+Date: 01:42:16 p.m., miércoles, 11 de mayo de 2016
+Message:
+Número de Caso 	: 000122016
+Observaciones : El listado de casos presenta errores en la consulta
+R/
+Se examina el listado de casos y se determina que el problema radica en el desempeño del listado ya que existe una instrucción que indica el borrado de las tablas temporales activas desde el día anterior hacia atrás.
+
+Se modifica esta instruccion para que se elimine la taba temporal recien creada una vez ya no se use.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlSqlExtended.class.php
+ 
+Revision: 605
+Author: freina
+Date: 05:29:05 p.m., lunes, 16 de mayo de 2016
+Message:
+NÃºmero de Caso 	: 000132016
+Observaciones : Actualizar la administracion de soluciones para que se puedan anexar varios archivos a la vez.
+R/
+Se actualiza el componente para permitir el anexar varios archivos a las soluciones.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/SaveNavigationFile.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/language/es/es.messages.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlSqlExtended.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/domain/FeCrSolucionManager.class.php
+Added : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdAddAnexosSol.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdAddSolucion.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdCancelShowListSolucion.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdDefaultSolucion.class.php
+Added : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdDeleteAnexosSol.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdDeleteSolucion.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdShowByIdSolucion.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdShowListSolucion.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdUpdateSolucion.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.consultsolucion.php
+Added : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.register_attachment_sol.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_Solucion.tpl
+ 
+Revision: 606
+Author: freina
+Date: 03:31:00 p.m., viernes, 27 de mayo de 2016
+Message:
+NÃºmero de Caso 	: 000142016
+Observaciones : Totalizar la cantidad de casos de las Empresas aseguradodas en el reporte Casos por Empresa Aseguradora
+R/
+Se actualiza el reporte para totalizar la finasl del mismo la cantidad de casos. se soluciona problema de visualizacion que surgia al desplegar el evento y la causa.
+----------------------------------
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/language/es/es.reqeps.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.reqeps.php
+
+ 
+Revision: 607
+Author: freina
+Date: 01:42:16 p.m., viernes, 03 de junio de 2016
+Message:
+Numero de Caso 	: 000152016
+Observaciones : El listado de casos presenta errores en la descarga del excel con los resultados
+R/
+Se examina el listado de casos y se determina que el problema radica en que la tabla temporal que se arma para la consulta de casos no puede ser borrada ya que la funcion que arma el excel la necesita.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlSqlExtended.class.php
+ 
+Revision: 608
+Author: freina
+Date: 05:28:00 p.m., jueves, 16 de junio de 2016
+Message:
+Número de Caso 	: 000162016
+Observaciones : Al ingresar la solucion a una encuesta se presenta un error si un caso es seleccionado
+R/
+El problema radicaba en la llamada a un servicio. Se actualiza el llamado al servicio.
+----------------------------------
+Modified : /branches/SCHUV/ASAP/applications/encuestas/web/commands/FeEnCmdSaveEncuesta.class.php
+ 
+Revision: 609
+Author: freina
+Date: 13:36:00 p.m., jueves, 30 de junio de 2016
+Message:
+Número de Caso 	: 000172016
+Observaciones : Presentar fecha de ingreso de la transferencia en la ficha de caso
+R/
+Se presenta la fecha de ingreso de la transferencia
+----------------------------------
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.viewfichaord.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/data/Pgsql/FeCrPgsqlSqlExtended.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/language/es/es.fichaord.php
+ 
+Revision: 610
+Author: freina
+Date: 05:29:05 p.m., viernes, 14 de octubre de 2016
+Message:
+Número de caso: 0002012016
+Observaciones: Se ingreso un caso vía Web, el cual no mostraba información en las observaciones al tratar de verse con la ficha de caso, y tampoco se mostraba en el listado. Solo cuando se exportaba aparece el contenido. El caso para revisar es el 0256312016 en produccion.
+R/
+El problema es que el area causante ingresada no era un codigo de dependencia valido, por lo tanto se procede a validar que la informacion de el area causante sea una dependencia activa.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/language/es/es.messages.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/language/es/es.webuser.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/domain/FeCrOrdenManager.class.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.href.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.printcoment_pub.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_WebUser.tpl
+Modified : /branches/SCHUV/ASAP/system/classes/Services/Human_resources.class.php
+ 
+Revision: 611
+Author: freina
+Date: 04:36:18 p.m., sábado, 15 de octubre de 2016
+Message:
+Número de caso: 0002022016
+Observaciones: Cuando se le cambia el responsable a una dependencia, se actualiza activo a todos los entes organizaciones que son hijos de esa dependencia.
+R/
+Se modifica la interfaz de dependencias para que cuando se desea inactivar una dependencia se presente un mensaje de confirmacion. Al inactivar una dependencia las dependencias hijo se inactivan tambien. Solo se cambia el estado de las dependencias hijo cuando se realiza una inactivación.
+----
+Modified : /branches/SCHUV/ASAP/applications/human_resources/config/language/es/es.messages.php
+Modified : /branches/SCHUV/ASAP/applications/human_resources/domain/FeHrOrganizacionManager.class.php
+Added : /branches/SCHUV/ASAP/applications/human_resources/web/plugins/function.btn_command_organizacion_update.php
+Modified : /branches/SCHUV/ASAP/applications/human_resources/web/templates/Form_Organizacion.tpl
+ 
+Revision: 612
+Author: freina
+Date: 12:49:07 p.m., martes, 18 de octubre de 2016
+Message:
+Numero de Caso: caso 0002052016
+Observaciones: Cuando se le da aceptar en la configuración de la encuesta, el campo de Formulario queda con el valor. Se debe limpiar el valor para que al seleccionar el formulario, este sea cargado. Adicionalmente se solicita mejorar la presentación de la encuesta eliminando bordes de las opciones de respuesta.
+R/
+Se realizan los cambios solicitados.
+----
+Modified : /branches/SCHUV/ASAP/applications/encuestas/web/js/configEncuesta.js
+Modified : /branches/SCHUV/ASAP/applications/encuestas/web/plugins/function.viewEncuesta.php
+
+************************************************************************************************************************
+Se modifica directamente en el codigo para poder corregir el adjuntar archivos en el registro de casos, los siguientes archivos:
+ASAP/applications/cross300/domain/FeCrOrdenManager.class.php (19/10/2016):
+
+Se arregla el boton de limpiar en el formulario de Administracion de soluciones. Se arregla que permita agregar documentos en cualquier momento en la Admon de soluciones.
+ASAP/applications/cross300/web/commands/FeCrCmdClearSolucion.class.php (20/10/2016)
+ASAP/applications/cross300/domain/FeCrSolucionManager.class.php        (20/10/2016)
+Se arregla el listado de soluciones:
+ASAP/applications/cross300/web/plugins/function.consultsolucion.php    (20/10/2016)
+************************************************************************************************************************
+ 
+Revision: 613
+Author: freina
+Date: 17:38:00 p.m., viernes, 19 de octubre de 2018
+Message:
+Numero de Caso: caso 0000012018
+Observaciones: 9. Presentar el nombre del paciente o usuario en el administrador de tareas
+12 El admnistrador de tareas se inicie ordenado por fecha de registro en forma descendente
+R/
+Se realizan los cambios solicitados.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.viewtareas.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/language/es/es.acta.php
+Modified : /branches/SCHUV/ASAP/applications/workflow/data/Pgsql/FeWFPgsqlActaExtended.class.php
+ 
+Revision: 614
+Author: freina
+Date: 11:05:00 p.m., lunes, 22 de octubre de 2018
+Message:
+Numero de Caso: caso 0000022018
+Observaciones: 2. Construir componente donde el usuario solo pueda ver la respuesta final a su caso.
+R/
+Se modifica la ficha de caso web para que solo presente las observaciones y archivos de la ultima atencion de la penultima acta de un caso cerrado.
+Si el caso solo tiene una acta entonces presentara las ultima atencion de la misma.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/language/es/es.fichaord.php
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_FichaOrdenWeb.tpl
+Modified : /branches/SCHUV/ASAP/applications/cross300/config/SaveNavigationFile.php
+Added : /branches/SCHUV/ASAP/applications/cross300/web/commands/FeCrCmdDefaultBodyFichaOrdWeb.class.php
+Added : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.viewfichaordweb.php
+Added : /branches/SCHUV/ASAP/applications/cross300/web/templates/Form_BodyFichaOrdWeb.tpl
+ 
+Revision: 615
+Author: freina
+Date: 11:24:00 p.m., martes, 23 de octubre de 2018
+Message:
+Numero de Caso: caso 0000022018
+Observaciones: 2. Construir componente donde el usuario solo pueda ver la respuesta final a su caso.
+R/
+Se modifica la ficha de caso web para que solo presente las observaciones y archivos de la ultima atencion de la ultima acta de un caso cerrado.
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.viewfichaordweb.php
+ 
+Revision: 616
+Author: freina
+Date: 14:30:00 p.m., martes, 23 de octubre de 2018
+Message:
+Numero de Caso: caso 0000012018
+Observaciones: 9. Presentar el nombre del paciente o usuario en el administrador de tareas
+12 El admnistrador de tareas se inicie ordenado por fecha de registro en forma descendente
+R/
+Se presenta el tipo de caso en el administrador de tareas.
+----
+Modified : /branches/SCHUV/ASAP/applications/workflow/data/Pgsql/FeWFPgsqlActaExtended.class.php
+
+Revision: 617
+Author: freina
+Date: 15:53:00 p.m., martes, 11 de diciembre de 2018
+Message:
+Numero de Caso: caso 0000032018
+Observaciones: 9. No presentar la informacion  de la tarea en la administracion de tareas de cross
+R/
+SE modifica el plugin function.viewtareas.php para que se almacenen en una arreglo interno los campos que no deben presentarse ante el usuario final
+----
+Modified : /branches/SCHUV/ASAP/applications/cross300/web/plugins/function.viewtareas.php

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<profile>
+  <title>profile</title>
+  <action>
+    <name>cross</name>
+    <type>node</type>
+    <action>
+      <name>cross300</name>
+      <type>module</type>
+      <action>
+        <name>registro_cross</name>
+        <type>node</type>
+        <action>
+          <name>FeCrCmdDefaultOrden</name>
+          <type>form</type>
+          <action>
+            <name>FeCrCmdAddOrden</name>
+            <type>button</type>
+          </action>
+        </action>
+      </action>
+    </action>
+  </action>
+</profile>

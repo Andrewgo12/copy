@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-11-07T18:11:58.281522Z
+K 7
+svn:log
+V 124
+Se quita el debug para el tema anterior del charset y se comienza a trabajar el envio de correo en la transferencia de caso.
+END

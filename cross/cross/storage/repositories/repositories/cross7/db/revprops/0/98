@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-11-10T04:38:37.848600Z
+K 7
+svn:log
+V 59
+Se soluciona el error del charset en el formulario público
+END

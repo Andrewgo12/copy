@@ -1,0 +1,52 @@
+<?php
+settype($rcField1, "array");
+settype($rcParams, "array");
+
+$rcParams["cols"] = 3;
+$rcParams["size_table"] = "100%";
+$rcParams["size_data"] = "100%";
+$rcParams["size_label"] = "45%";
+$rcParams["size_puntos"] = "5%";
+$rcParams["size_datos"] = "50%";
+$rcParams["border"] = 1;
+$rcParams["puntos"] = " ";
+
+//informacion de campos
+$rcField1["contindentis"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"contindentis", "name"=>"contacto__contindentis", "maxlength"=>"100", "onChange"=>"jsLoadSolicitante('1');"))),1=>true);
+$rcField1["contprinoms"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"contprinoms", "name"=>"contacto__contprinoms", "maxlength"=>"20", "typeData"=>"string"))),1=>true) ;
+$rcField1["contsegnoms"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"contsegnoms", "name"=>"contacto__contsegnoms", "maxlength"=>"30", "typeData"=>"string"))),1=>false) ;
+$rcField1["contpriapes"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"contpriapes", "name"=>"contacto__contpriapes", "maxlength"=>"30", "typeData"=>"string"))),1=>true) ;
+$rcField1["contsegapes"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"contsegapes", "name"=>"contacto__contsegapes", "maxlength"=>"30", "typeData"=>"string"))),1=>false) ;
+$rcField1["tiidcodigos"] = array(0=>array(0=>array(0=>"select_row_table_lang",1=>array("id"=>"tiidcodigos", "name"=>"contacto__tiidcodigos", "table_name"=>"tipoidentifi", "value"=>"tiidcodigos", "label"=>"tiidnombres", "is_null"=>"true", "sqlid"=>"tipoidentifi"))),1=>true) ;
+$rcField1["contfecnacis"] = array(0=>array(0=>array(0=>"calendar",1=>array("id"=>"contfecnacis", "name"=>"contacto__contfecnacis", "form_name"=>"frmSolicitante", "is_null"=>"true"))),1=>false) ;
+$rcField1["contsexos"] = array(0=>array(0=>array(0=>"select_row_table_lang",1=>array("id"=>"contsexos", "name"=>"contacto__contsexos", "table_name"=>"sexo", "value"=>"sexocodigos", "label"=>"sexonombres", "is_null"=>"true", "sqlid"=>"sexo"))),1=>true) ;
+$rcField1["contemail"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"contemail", "name"=>"contacto__contemail", "maxlength"=>"100", "size"=>"20"))),1=>false) ;
+$rcField1["locacodigos"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"locacodigos", "name"=>"contacto__locacodigos", "onBlur"=>"if(this.value!='')autoReference('localizacion','locacodigos',Array(this),document.frmSolicitante.contacto_locacodigos_desc);else document.frmSolicitante.contacto_locacodigos_desc.value='';")),
+												   1=>array(0=>"href",1=>array("label"=>"<img src='web/images/menu.gif' border='0' align='absmiddle'></img>",
+	      															  "onclick"=>"javascript:fncopenwindows('FeCuCmdTreeHelp',  'table=localizacion&sqlid=localizacion&return_obj=contacto__locacodigos&return_key=locacodigos&father=locacodpadrs&son=locacodigos&label=locanombres&param=geografia&value='+document.frmSolicitante.contacto__locacodigos.value+'&localizacion__locanombres='+document.frmSolicitante.contacto_locacodigos_desc.value);")),
+												   2=>array(0=>"textfield",1=>array("name"=>"contacto_locacodigos_desc"))),1=>false) ;
+$rcField1["contdirecios"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"contdirecios", "name"=>"contacto__contdirecios", "maxlength"=>"100", "size"=>"20"))),1=>false) ;
+$rcField1["conttelefons"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"conttelefons", "name"=>"contacto__conttelefons", "maxlength"=>"13", "typeData"=>"int"))),1=>false) ;
+$rcField1["contnumcels"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"contnumcels", "name"=>"contacto__contnumcels", "maxlength"=>"13", "typeData"=>"int"))),1=>false) ;
+
+$rcField2["clieidentifs"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"clieidentifs", "name"=>"cliente__clieidentifs", "maxlength"=>"30", "onChange"=>"jsLoadSolicitante('2');"))),1=>true);
+$rcField2["clienombres"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"clienombres", "name"=>"cliente__clienombres", "size"=>"20", "maxlength"=>"150"))),1=>true);
+$rcField2["tiidcodigos_c"] = array(0=>array(0=>array(0=>"select_row_table_lang",1=>array("id"=>"tiidcodigos_c", "name"=>"cliente__tiidcodigos", "table_name"=>"tipoidentifi", "value"=>"tiidcodigos", "label"=>"tiidnombres", "is_null"=>"true", "sqlid"=>"tipoidentifi"))),1=>true) ;
+$rcField2["ticlcodigos"] = array(0=>array(0=>array(0=>"select_row_table_lang",1=>array("id"=>"ticlcodigos", "name"=>"cliente__ticlcodigos", "table_name"=>"tipocliente", "value"=>"ticlcodigos", "label"=>"ticlnombres", "is_null"=>"true", "sqlid"=>"tipocliente"))),1=>true);
+$rcField2["clierepprnos"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"clierepprnos", "name"=>"cliente__clierepprnos", "maxlength"=>"20", "typeData"=>"string"))),1=>false);
+$rcField2["clierepsenos"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"clierepsenos", "name"=>"cliente__clierepsenos", "maxlength"=>"30", "typeData"=>"string"))),1=>false);
+$rcField2["cliereppraps"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"cliereppraps", "name"=>"cliente__cliereppraps", "maxlength"=>"30", "typeData"=>"string"))),1=>false);
+$rcField2["clierepseaps"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"clierepseaps", "name"=>"cliente__clierepseaps", "maxlength"=>"30", "typeData"=>"string"))),1=>false);
+$rcField2["clielocalizs"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"clielocalizs", "name"=>"cliente__clielocalizs", "size"=>"20", "maxlength"=>"100"))),1=>true);
+$rcField2["clietelefons"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"clietelefons", "name"=>"cliente__clietelefons", "maxlength"=>"13", "typeData"=>"int"))),1=>true);
+
+$rcField2["locacodigos_c"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"locacodigos_c", "name"=>"cliente__locacodigos", "onBlur"=>"if(this.value!='')autoReference('localizacion','locacodigos',Array(this),document.frmSolicitante.cliente_locacodigos_desc);else document.frmSolicitante.cliente_locacodigos_desc.value='';")),
+												   1=>array(0=>"href",1=>array("label"=>"<img src='web/images/menu.gif' border='0' align='absmiddle'></img>",
+	      																	   "onclick"=>"javascript:fncopenwindows('FeCuCmdTreeHelp','table=localizacion&sqlid=localizacion&return_obj=cliente__locacodigos&return_key=locacodigos&father=locacodpadrs&son=locacodigos&label=locanombres&param=geografia&value='+document.frmSolicitante.cliente__locacodigos.value+'&localizacion__locanombres='+document.frmSolicitante.cliente_locacodigos_desc.value);")),
+												   2=>array(0=>"textfield",1=>array("name"=>"cliente_locacodigos_desc"))),1=>true) ;
+$rcField2["cliepagwebs"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"cliepagwebs", "name"=>"cliente__cliepagwebs", "maxlength"=>"100"))),1=>false);
+$rcField2["cliemails"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"cliemails", "name"=>"cliente__cliemails", "maxlength"=>"100"))),1=>false);
+$rcField2["esclcodigos"] = array(0=>array(0=>array(0=>"select_row_table_lang",1=>array("id"=>"esclcodigos", "name"=>"cliente__esclcodigos", "table_name"=>"estadoclient", "value"=>"esclcodigos", "label"=>"esclnombres", "is_null"=>"true", "sqlid"=>"estadoclient"))),1=>true);
+$rcField2["clienumfaxs"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"clienumfaxs", "name"=>"cliente__clienumfaxs", "maxlength"=>"13", "typeData"=>"int"))),1=>false);
+$rcField2["clieaparaers"] = array(0=>array(0=>array(0=>"textfield",1=>array("id"=>"clieaparaers", "name"=>"cliente__clieaparaers", "maxlength"=>"200"))),1=>false);
+?>

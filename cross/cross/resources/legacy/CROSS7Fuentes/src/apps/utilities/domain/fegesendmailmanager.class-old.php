@@ -1,0 +1,65 @@
+<?php   
+include("smtpSendMail.class.php");
+
+class FeGeSendMailManager {
+    var $rchdrs;
+    var $sbrecipient;
+
+    function FeGeSendMailManager() {
+        //Obtiene el servidor de correo
+		$params = Application :: getDomainController("ParamsManager");
+		$emailServer = $params->getParam("general","email_server");
+		
+        $this->smtp = new smtpSendMail();
+        $this->smtp->host_name = $emailServer;		
+        $this->smtp->localhost = $_SERVER['SERVER_ADDR'];       
+        $this->smtp->direct_delivery = 0;           
+        $this->smtp->timeout = 10;                 
+        $this->smtp->data_timeout = 0;                                                 
+        $this->smtp->debug = 0;                     
+        $this->smtp->html_debug = 0;                
+        $this->smtp->pop3_auth_host = "";          
+        $this->smtp->user = "";                     
+        $this->smtp->realm = "";                    
+        $this->smtp->password = "";                
+        $this->smtp->workstation = "";              
+        $this->smtp->authentication_mechanism = "";
+        
+	}
+	
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Compone y envia un email
+	*   @author freina
+	*	@return string $osbresult (true o false)
+	*   @date 14-Oct-2004 16:22
+	*   @location Cali-Colombia
+	*/
+	function ComposeEmail() {
+
+		
+        $this->smtp->from = $this->rchdrs["from"];
+        $this->smtp->to = explode(",",$this->sbrecipient);
+        $this->smtp->subject = $this->rchdrs["subject"];
+        
+        //$smtp->typeBody = "plain";  
+        $this->smtp->body =  $this->sbhtml;
+        
+        //Inserta los adjuntos
+        if(is_array($this->rcfile)){
+            foreach($this->rcfile as $sbFile){
+                $nameFile = str_replace("/","",strrchr($sbFile, "/"));
+                if(!$nameFile)
+                    $nameFile = str_replace("\\","",strrchr($sbFile, "\\"));
+                if(!$this->smtp->add_attachment($sbFile,$nameFile))
+                    return false;
+            }
+        }
+        $this->rcfile = null;
+        $respuesta = $this->smtp->send();
+        return $respuesta;
+        
+	}
+}
+?>

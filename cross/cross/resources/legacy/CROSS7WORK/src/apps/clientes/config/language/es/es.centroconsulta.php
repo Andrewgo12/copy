@@ -1,0 +1,40 @@
+<?php
+/*
+ This is the language's file to the  Point Cliente 
+ */
+$rclabels = array("title"=>"Centro de consulta",
+                    "consulttitle"=>"Centro de consulta",
+                    "context_help"=>"En el centro de consulta se puede obtener la informaci&oacute;n directamente de los clientes o de los contratos 
+    e indirectamente se puede obtener la hoja de vida de un producto en un contrato.",
+"clieidentifs"=>array("label"=>"Identificaci&oacute;n del cliente","accesskey"=>true,"commentary"=>""),
+"contnics"=>array("label"=>"N&uacute;mero de contrato","accesskey"=>true,"commentary"=>""),
+"clienombres"=>array("label"=>"Nombre del cliente","accesskey"=>false,"commentary"=>""),
+"ticlnombres"=>array("label"=>"Tipo de cliente","accesskey"=>false,"commentary"=>""),
+"clielocalizs"=>array("label"=>"Direcci&oacute;n","accesskey"=>false,"commentary"=>""),
+"clietelefons"=>array("label"=>"Tel&eacute;fono","accesskey"=>false,"commentary"=>""),
+"locanombres"=>array("label"=>"Localizaci&oacute;n","accesskey"=>false,"commentary"=>""),
+"cliemails"=>array("label"=>"Correo electr&oacute;nico","accesskey"=>false,"commentary"=>""),
+"esclnombres"=>array("label"=>"Estado del cliente","accesskey"=>false,"commentary"=>""),
+"titclientes"=>array("label"=>"Informaci&oacute;n del cliente","accesskey"=>false,"commentary"=>""),
+"listcontratos"=>array("label"=>"Contratos","accesskey"=>false,"commentary"=>""),
+"contobjetos"=>array("label"=>"Objeto del contrato","accesskey"=>false,"commentary"=>""),
+"contfchfirmn"=>array("label"=>"Fecha de firma","accesskey"=>false,"commentary"=>""),
+"contmonton"=>array("label"=>"Monto del contrato","accesskey"=>false,"commentary"=>""),
+"timonombres"=>array("label"=>"Tipo de moneda","accesskey"=>false,"commentary"=>""),
+"titcontrato"=>array("label"=>"Informaci&oacute;n del Contrato","accesskey"=>false,"commentary"=>""),
+"ticonombres"=>array("label"=>"Tipo de contrato","accesskey"=>false,"commentary"=>""),
+"fopanombres"=>array("label"=>"Forma de pago","accesskey"=>false,"commentary"=>""),
+"contdescrips"=>array("label"=>"Descripci&oacute;n","accesskey"=>false,"commentary"=>""),
+"productos"=>array("label"=>"Productos","accesskey"=>false,"commentary"=>""),
+"productos"=>array("label"=>"Productos","accesskey"=>false,"commentary"=>""),
+"prodcodigos"=>array("label"=>"Referencia","accesskey"=>false,"commentary"=>""),
+"prodnombres"=>array("label"=>"Nombre","accesskey"=>false,"commentary"=>""),
+"marcnombres"=>array("label"=>"Marca","accesskey"=>false,"commentary"=>""),
+"modenombres"=>array("label"=>"Modelo","accesskey"=>false,"commentary"=>""),
+"coprcantidan"=>array("label"=>"Cantidad","accesskey"=>false,"commentary"=>""),
+"coprvalunidn"=>array("label"=>"Valor","accesskey"=>false,"commentary"=>""),
+"coprserials"=>array("label"=>"Serial","accesskey"=>false,"commentary"=>""),
+"actions"=>array("label"=>"Acciones","accesskey"=>false,"commentary"=>""),
+"alt"=>array("label"=>"Registar caso.","accesskey"=>false,"commentary"=>""),
+);
+?>

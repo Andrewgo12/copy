@@ -1,0 +1,330 @@
+id: bb-2.0.r117/0
+type: file
+pred: bb-2.0.r116/104
+count: 11
+text: 89 0 32 7518 7653d202230f54d74a899aef10a027c2 58f2c4f3fbac1d9d1af5c4ebc1513ef8d4ff608d 116-38/_7
+props: 2 8336553 30 0 4160c74de5f4e580dc15660c798ff9fc
+cpath: /trunk/ASAP/applications/cross300/web/js/jsLoadSelect.js
+copyroot: 0 /
+
+PLAIN
+K 16
+AutoCompletar.js
+V 22
+file az-2.0.r2/8333013
+K 11
+Lst_Help.js
+V 22
+file b1-2.0.r2/8333342
+K 16
+SelectControl.js
+V 22
+file b2-2.0.r2/8333663
+K 17
+disableButtons.js
+V 22
+file b3-2.0.r2/8333991
+K 9
+encode.js
+V 22
+file b4-2.0.r2/8334320
+K 16
+fncWindowOpen.js
+V 22
+file b5-2.0.r2/8334642
+K 14
+jsAccessKey.js
+V 22
+file b6-2.0.r2/8334970
+K 12
+jsDrawdiv.js
+V 22
+file b7-2.0.r2/8335295
+K 10
+jsError.js
+V 22
+file b8-2.0.r2/8335619
+K 14
+jsIndicador.js
+V 22
+file b9-2.0.r2/8335940
+K 16
+jsIndoprequre.js
+V 22
+file ba-2.0.r2/8336267
+K 15
+jsLoadSelect.js
+V 18
+file bb-2.0.r117/0
+K 10
+jsOrden.js
+V 19
+file bc-2.0.r9/1497
+K 23
+jsdrawDynamicColumns.js
+V 22
+file bd-2.0.r2/8337247
+K 18
+jsreportscenter.js
+V 22
+file be-2.0.r2/8337583
+K 13
+jsrsClient.js
+V 22
+file bf-2.0.r2/8337915
+K 14
+libCalendar.js
+V 22
+file bg-2.0.r2/8338242
+K 23
+libCalendarPopupCode.js
+V 22
+file bh-2.0.r2/8338570
+K 13
+libSetDate.js
+V 22
+file bi-2.0.r2/8338906
+K 10
+noMouse.js
+V 22
+file bj-2.0.r2/8339230
+K 12
+optionKey.js
+V 22
+file bk-2.0.r2/8339551
+K 9
+prototype
+V 21
+dir bl-2.0.r2/8347292
+K 11
+putFocus.js
+V 22
+file cb-2.0.r2/8347506
+END
+ENDREP
+id: ay-2.0.r117/1409
+type: dir
+pred: ay-2.0.r116/1517
+count: 13
+text: 117 298 1098 1098 59340af42611534d160fa11241162ed1
+cpath: /trunk/ASAP/applications/cross300/web/js
+copyroot: 0 /
+
+PLAIN
+K 8
+commands
+V 20
+dir 5c-2.0.r71/14444
+K 3
+css
+V 18
+dir a0-2.0.r85/445
+K 6
+images
+V 21
+dir a4-2.0.r2/8332803
+K 2
+js
+V 20
+dir ay-2.0.r117/1409
+K 7
+plugins
+V 21
+dir cc-2.0.r110/11358
+K 9
+templates
+V 20
+dir fy-2.0.r101/6567
+END
+ENDREP
+id: 5b-2.0.r117/1831
+type: dir
+pred: 5b-2.0.r116/1939
+count: 58
+text: 117 1593 225 225 55a423771e112000f7b22f4fdf805e04
+cpath: /trunk/ASAP/applications/cross300/web
+copyroot: 0 /
+
+PLAIN
+K 6
+config
+V 18
+dir 7-2.0.r42/4723
+K 4
+data
+V 19
+dir 28-2.0.r80/5998
+K 6
+domain
+V 20
+dir 3q-2.0.r115/2834
+K 9
+index.php
+V 22
+file 4w-2.0.r2/8249513
+K 2
+rs
+V 21
+dir 4x-2.0.r2/8250529
+K 11
+templates_c
+V 21
+dir 51-2.0.r2/8250993
+K 3
+tmp
+V 21
+dir 55-2.0.r2/8251676
+K 3
+web
+V 20
+dir 5b-2.0.r117/1831
+END
+ENDREP
+id: 5-2.0.r117/2323
+type: dir
+pred: 5-2.0.r116/2431
+count: 71
+text: 117 2011 299 299 30680f688eaee3540153d4073dc94442
+cpath: /trunk/ASAP/applications/cross300
+copyroot: 0 /
+
+PLAIN
+K 8
+cross300
+V 19
+dir 5-2.0.r117/2323
+K 9
+customers
+V 19
+dir ib-2.0.r62/2853
+K 7
+docunet
+V 21
+dir tm-2.0.r2/8592456
+K 9
+encuestas
+V 21
+dir uk-2.0.r2/8756566
+K 7
+general
+V 21
+dir 16w-2.0.r80/17094
+K 15
+human_resources
+V 22
+dir 1ol-2.0.r2/9092412
+K 8
+products
+V 22
+dir 1vv-2.0.r2/9121700
+K 8
+profiles
+V 20
+dir 1yp-2.0.r78/3137
+K 8
+schedule
+V 22
+dir 27p-2.0.r2/9358758
+K 7
+storage
+V 22
+dir 2h0-2.0.r2/9477419
+K 8
+workflow
+V 20
+dir 2pr-2.0.r68/3804
+END
+ENDREP
+id: 3-2.0.r117/2959
+type: dir
+pred: 3-2.0.r116/3067
+count: 90
+text: 117 2497 449 449 75bef7ed44dec2ace0987ca0e2d28c21
+cpath: /trunk/ASAP/applications
+copyroot: 0 /
+
+PLAIN
+K 12
+applications
+V 19
+dir 3-2.0.r117/2959
+K 3
+lib
+V 23
+dir 2wi-2.0.r2/10042403
+K 6
+system
+V 20
+dir 412-2.0.r92/2335
+END
+ENDREP
+id: 1-2.0.r117/3258
+type: dir
+pred: 1-2.0.r116/3366
+count: 115
+text: 117 3124 121 121 c47cbb57c78c4aeffae6e1fa627d078d
+cpath: /trunk/ASAP
+copyroot: 0 /
+
+PLAIN
+K 4
+ASAP
+V 19
+dir 1-2.0.r117/3258
+K 6
+README
+V 24
+file 42i-2.0.r2/10058589
+K 7
+VERSION
+V 21
+file 42j-2.0.r3/57017
+K 9
+index.php
+V 24
+file 42k-2.0.r2/10059166
+K 19
+provitional_log.php
+V 20
+file 1-43.0.r45/2287
+K 13
+set_config.sh
+V 24
+file 42l-2.0.r2/10059455
+END
+ENDREP
+id: 0-1.0.r117/3686
+type: dir
+pred: 0-1.0.r116/3794
+count: 116
+text: 117 3411 262 262 bf2b133ab465b646ce661f01b01c80f4
+cpath: /trunk
+copyroot: 0 /
+
+PLAIN
+K 8
+branches
+V 14
+dir 2-1.0.r1/0
+K 4
+tags
+V 15
+dir 3-1.0.r1/66
+K 5
+trunk
+V 19
+dir 0-1.0.r117/3686
+END
+ENDREP
+id: 0.0.r117/3949
+type: dir
+pred: 0.0.r116/4057
+count: 117
+text: 117 3834 102 102 50540bebf6ff02f96c6c20088278d0e4
+cpath: /
+copyroot: 0 /
+
+bb-2.0.t116-38 modify-file true false /trunk/ASAP/applications/cross300/web/js/jsLoadSelect.js
+
+
+3949 4088

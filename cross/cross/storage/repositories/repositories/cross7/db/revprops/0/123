@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2021-05-08T16:10:26.403487Z
+K 7
+svn:log
+V 60
+se comenta línea 131 para que no decoda el charset de utf8 
+END

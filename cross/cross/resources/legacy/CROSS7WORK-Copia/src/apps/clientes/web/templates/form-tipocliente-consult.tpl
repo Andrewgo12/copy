@@ -1,0 +1,29 @@
+<html>
+{loadlabels table_name=Tipocliente&controls[]=CmdAccept&controls[]=CmdCancel}
+{head}
+      <title>Consultar Tipocliente</title>
+{putstyle style=""}
+{putjsfiles}
+
+{/head}
+{body onkeydown="return doKeyDown(event)" onload="" onunload=""}
+
+<br>
+{form name="frmTipoclienteConsult" method="post"}
+{consult_table table_name="tipocliente" llaves="ticlcodigos" form_name="frmTipoclienteConsult" command="FeCuCmdShowListTipocliente"}
+<br>
+<table border="0" align="center" width="90%">
+	<tr>
+    	<td class="piedefoto">
+    		<div align="center">
+				{btn_command type="button" value="Cancelar" id="CmdCancel" name="FeCuCmdCancelShowListTipocliente" form_name="frmTipoclienteConsult"}
+			</div>
+		</td>
+	</tr>
+</table>
+{hidden name="action" value=""}
+{/form}
+{putjsacceskey}
+{/body}
+
+</html>

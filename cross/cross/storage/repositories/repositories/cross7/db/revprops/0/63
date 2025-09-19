@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-10-07T05:39:11.017733Z
+K 7
+svn:log
+V 102
+Se agregan los labels y el parámetro para la alerta de vencimientos y contraseña de correo de salida
+END

@@ -1,0 +1,1071 @@
+<?php     
+class FeCrActaempresaManager {
+	var $gateway;
+	function FeCrActaempresaManager() {
+		$this->gateway = Application :: getDataGateway("actaempresa");
+		$this->gatewayExt = Application :: getDataGateway("actaempresaExtended");
+	}
+
+	function addActaempresa($actacodigos, $acemnumeros, $esaccodigos, $acemfeccren, 
+	$acemfecaten, $acemhorainn, $acemhorafin, $acemobservas, $acemusumods, $acemradicas,
+	$orgacodigos,$ircactivities = null,$acemcompromis=null,$compromiso=null,$acemnumerosupd=null,
+	$rcDimension=null,$rcData=null) {
+
+		settype($objGateway, "object");
+		settype($rcRules, "array");
+		settype($rcResult, "array");
+		settype($sbflag, "string");
+		settype($sbResult, "string");
+		settype($rcExtra, "array");
+		$sbflag = false;
+        $finalizada = false;
+        
+        //Determina el usuario que digito
+		$rcuser = Application :: getUserParam();
+		$acemusuars = $rcuser["username"];
+        
+        //SI LA TAREA ES DE SEGUIMIENTO, QUIERE DECIR QUE NO HA SIDO INSTANCIADA
+        //ENTONCES DEBEMOS CREAR EL ACTA CORRESPONDIENTE
+        $objGeneral = Application::loadServices("General");
+		$rcEstadosCumplido = $objGeneral->getParam("cross300","CLOSE_COMMITMENT_STATES",false);
+		$rcEstadosNoCumplido = $objGeneral->getParam("cross300","NO_CLOSE_COMMITMENT_STATES",false);
+		$seguimiento = $objGeneral->getParam("cross300","TAREA_SEGUIMIENTO");
+		/*
+        if($_REQUEST["tarecodigos"]==$seguimiento)
+        {
+	        $numerador = Application::getDomainController("NumeradorManager");
+			$actacodigos = $numerador->fncgetByIdNumerador("acta");
+			
+			$date = Application::loadServices("DateController");
+			$now = $date->fncintdate();
+			
+			$sbActive = Application::getConstant("REG_ACT");
+			$gateway = Application::getDataGateway("sqlExtended");
+			$gateway->addActa($actacodigos,$_REQUEST["tarecodigos"],$_REQUEST["ordenumeros"],$orgacodigos,$acemusuars,$sbActive,$now);
+			if($gateway->consult == false)
+				return 11;
+        }
+        */
+        
+		//Calcula el actanumeros si no es digitado
+		if (!$acemnumeros) {
+			$numerador_manager = Application :: getDomainController('NumeradorManager');
+			$acemnumeros = $numerador_manager->fncgetByIdNumerador("actaempresa");
+		}
+		
+		//Trae el ente organizacional
+		//$orgacodigos = $_REQUEST["orgacodigos"];
+		//Trae los datos del ente organizacional
+		$humanService = Application :: loadServices('Human_resources');
+		$rcGroup = $humanService->getActiveGroup($orgacodigos);
+		
+		//trae los datos de  
+		$acemusuars = $rcGroup[0]["grupcodigon"];
+		
+		//Obtiene el numero de la orden consultando el acta
+		$workflowService = Application :: loadServices('Workflow');
+		$rcActa = $workflowService->getByIdActa($actacodigos);
+		$rcActa = $rcActa[0];
+
+		//Obtine el numero proceso desde la orden
+		$objGateway = Application :: getDataGateway("sqlExtended");
+		$rcOrden = $objGateway->getByIdOrden($rcActa["ordenumeros"]);
+		$rcOrden = $rcOrden[0];
+		//data extra para la asignacion por carga
+		$rcExtra["proccodigos"] = $rcOrden["proccodigos"];
+		//data extra para la fecha de inicio y fin de tarea
+		$rcExtra["ordefecregd"] = $rcOrden["ordefecregd"];
+		$rcExtra["ordefecvend"] = $rcOrden["ordefecvend"];
+		
+		$serviceDate = Application :: loadServices("DateController");
+		$hoy = $serviceDate->fncintdatehour();
+		
+		//Valida la el caso si la fecha de ingreso del caso es mayor a la fecha de hoy
+		$exepction = false;
+	
+		if($hoy < $rcOrden["ordefecregd"]){
+			$hoy = $rcOrden["ordefecregd"];
+			$exepction = true;
+		}
+		
+		//se valida que la fecha de atencion no sea mayor que la de registro de la orden
+		if ($acemfecaten < $rcOrden["ordefecregd"]) {
+			if($exepction)
+				return 56;
+			return 24;
+		}
+		//Se valida que la fecha de atencion no sea mayor  a la fecha de hoy
+		if($acemfecaten > $hoy){ 
+			if($exepction)
+				return 56;
+			return 74;
+		}
+		
+		//se valida que la fecha de atencion sea mayor que la ultima atencion o transferencia
+		if(!$this->validateDateActaempresa($actacodigos, $acemfecaten)){
+			return 73;
+		}
+		
+		//Verifica si existio cambio de estado
+		if ($rcActa["actaestacts"] != $esaccodigos) {
+			$sbflag = true;
+
+			//Carga el servicio de workflow
+			$workflowService = Application :: loadServices('Workflow');
+			
+			//Valida que el cambio de estado del acta sea valida de acuerdo a los datos digitados y la confuracion
+			$ircdata["tarecodigos"] = $rcActa["tarecodigos"];
+			$ircdata["actaestacts"] = $esaccodigos;
+			/*
+				NOTA: COLOCAR AQUI EN $ircdata LOS CAMPOS QUE DEBEN SER VALIDADOS
+			*/
+			$result = $workflowService->fncvaldatest($rcOrden["proccodigos"], $ircdata, false);
+			if ($result == false) {
+				$workflowService->close();
+				return 12;
+			}
+			//Hace la actulizacion del estado nuevo al acta
+			$actesttemp = $rcActa["actaestacts"];
+			$rcActa["actaestacts"] = $esaccodigos;
+			$rcActa["actaestants"] = $actesttemp;
+			$result = $workflowService->updateActa($rcActa, false);
+			if ($result == false) 
+			{ 
+				//La operacion no se pudo realizar 
+				$workflowService->close();
+				return 11;
+			}
+			//Inserta el registro de actaestorden
+			//$rcActaestorden["acescodigos"] -> Calculado dentro del servicio
+			$rcActaestorden["actacodigos"] = $actacodigos;
+			$rcActaestorden["acesestrecis"] = $actesttemp;
+			$rcActaestorden["acesestentrs"] = $esaccodigos;
+			$rcActaestorden["acesfechmovs"] = $acemfeccren;
+			$result = $workflowService->addActaestorden($rcActaestorden, false);
+			if ($result == false) 
+			{ 
+				//La operacion no se pudo realizar 
+				$workflowService->close();
+				return 11;
+			}
+			//Hace la validacion del flujo de tareas
+			$rcExtra["orgacodigos"] = array($orgacodigos);
+			$rcExtra["ind_tar_sig"] = true;
+			$rcResult = $workflowService->fncnexttareas($rcActa["ordenumeros"], 
+			$actacodigos, $rcOrden["proccodigos"], $rcActa["tarecodigos"], $esaccodigos,$rcExtra);
+			
+			//SI el proceso finaliza, se le pone fecha de finalizacion a la orden
+			if (isset ($rcResult["FP"])) 
+			{
+				//Hace el update de la fecha de finalizacion de la orden
+				//Con la fecha de atención del acta
+				$rcOrden["ordefecfinad"] = $acemfecaten;
+				
+				//compuerta extendida de orden
+				$objGateway = Application :: getDataGateway("ordenExtended");
+				$objGateway->setOrdefecfinad($rcOrden["ordenumeros"], $rcOrden["ordefecfinad"]);
+                $finalizada = true;
+            }
+		}
+		if ($this->gateway->existActaempresa($actacodigos, $acemnumeros) == 0) {
+			
+			$this->gateway->addActaempresa($actacodigos, $acemnumeros, $esaccodigos, 
+			$acemfeccren, $acemfecaten, $acemhorainn, $acemhorafin, $orgacodigos, 
+			$acemusuars, $acemobservas, $acemusumods, $acemradicas);
+			
+			if($this->gateway->consult == false)
+				return 11;
+			
+			//Inserta los compromisos por acta (acemcompromis)
+			//Ingresa las compromisos por atencion
+			if (is_array($acemcompromis)) 
+			{
+				$nuReg = sizeof($acemcompromis);
+				$gatewayCompromiso = Application :: getDataGateway("compromisoExtended");
+				$gatewayCompromiso->addArrayCompromisosActa($acemcompromis, $acemnumeros);
+				
+				WebSession :: unsetProperty("activiacta");
+			}
+			if($compromiso)
+				{
+					$gatewayCompromiso = Application :: getDataGateway("compromisoExtended");
+					if(in_array($esaccodigos,$rcEstadosCumplido))
+						$gatewayCompromiso->updateCompromiso($compromiso,$acemnumerosupd,"C",$acemobservas,$acemnumeros);
+					elseif(in_array($esaccodigos,$rcEstadosNoCumplido))
+						$gatewayCompromiso->updateCompromiso($compromiso,$acemnumerosupd,"N",$acemobservas,$acemnumeros);
+				}
+			
+			//Inserta las actividades por acta (activiacta)
+			//Ingresa las actividades por atencion
+			if (is_array($ircactivities)) {
+				if (!$numerador_manager)
+					$numerador_manager = Application :: getDomainController('NumeradorManager');
+				$nuReg = sizeof($ircactivities);
+				$acaccodigon = $numerador_manager->fncgetByIdNumerador("activiacta", $nuReg);
+				$gatewayActiviacta = Application :: getDataGateway("activiactaExtended");
+				$gatewayActiviacta->addArrayActiviacta($ircactivities, $actacodigos, $acemnumeros, $acaccodigon);
+				WebSession :: unsetProperty("activiacta");
+			}
+			//se almacena los archivos anexos
+			$this->addFiles($acemnumeros);
+			
+			$this->UnsetRequest();
+			if ($sbflag) {
+				$rcRules = $this->executeRules($rcOrden["ordenumeros"], $rcResult["task"],$rcOrden);
+				if($rcRules){
+					if($rcRules["sql"]){
+						//se deben ejecutar los sql
+						$objGateway = Application :: getDataGateway("actaempresaExtended");
+						$sbResult = $objGateway->ActaempresaTrans($rcRules["sql"]);
+					}
+					if($rcRules["actions"]){
+						
+						//se ejecutan las acciones posteriores a un grabado exitoso
+						$rcResult = $this->executeActions($rcRules["actions"]);
+					}
+				}
+			}
+			
+			//si existen columnas dinamicas
+			if($rcDimension){
+				$sbresult = $this->updateDynamicColumns($acemnumeros,$rcDimension,$rcData);
+				if(!$sbresult){
+					return 11;
+				}
+			}
+			
+            if($finalizada == true)
+                return array("FIN",$rcActa["ordenumeros"]);
+			return 3;
+		} else {
+			return 1;
+		}
+	}
+	
+	/**
+	* @copyright Copyright 2011 &copy; FullEngine
+	*
+	*  valida que la fecha de atencion del acta sea valida
+	* @param string $sbActacodigos 
+	* @param integer $nuAcemfecaten
+	* @return boolean true fecha valida false fecha  incorrecta.
+	* @author freina <freina@fullengine.com>
+	* @date 29-Nov-2011 15:48:00
+	* @location Cali-Colombia
+	*/
+	function validateDateActaempresa($sbActacodigos, $nuAcemfecaten){
+		
+		settype($objService, "object");
+		settype($objGateway, "object");
+		settype($rcActa, "array");
+		settype($rcActaAnt, "array");
+		settype($rcTmp, "array");
+		settype($sbResult, "string");
+		settype($nuDateM, "integer");
+		
+		$sbResult = false;
+		
+		if($sbActacodigos && $nuAcemfecaten){
+			
+			//se obtiene la informacion del acta
+			$objService = Application :: loadServices('Workflow');
+			$rcActa = $objService->getByIdActa($sbActacodigos);
+			if(is_array($rcActa) && $rcActa){
+				$rcActa = $rcActa[0];
+				$nuDateM = $rcActa["actafechingn"];
+				
+				// se determina la fecha de inicio de comparacion
+				//se obtiene el acta anterior
+				$objService = Application :: loadServices('Workflow');
+				$objGateway = $objService->getGateWay("recorridoExtended");
+				$rcActaAnt = $objGateway->getRecorridoByActacodigos($sbActacodigos); 
+				$objService->close();
+				if(is_array($rcActaAnt) && $rcActaAnt){
+					$rcActaAnt = $rcActaAnt[0];
+					
+					//se obtienen las posibles atenciones de acta anterior
+					$rcTmp = $this->gatewayExt->getActaempresaByActacodigos($rcActaAnt["recoactpads"]);
+					if(is_array($rcTmp) && $rcTmp){
+						$rcTmp = array_pop($rcTmp);
+						$nuDateM = $rcTmp["acemfecaten"];
+					}
+				}
+				
+				//se obtienen las posibles atenciones de acta
+				$rcTmp = $this->gatewayExt->getActaempresaByActacodigos($sbActacodigos);
+				if(is_array($rcTmp) && $rcTmp){
+					$rcTmp = array_pop($rcTmp);
+					if($rcTmp["acemfecaten"]>$nuDateM){
+						$nuDateM = $rcTmp["acemfecaten"];
+					}
+				}
+				//se obtiene las posibles transferencias
+				$objGateway = Application :: getDataGateway("transfertarea"); 
+				$rcTmp = $objGateway->getByIdTarecodigos($sbActacodigos);
+				if(is_array($rcTmp) && $rcTmp){
+					$rcTmp = array_pop($rcTmp);
+					if($rcTmp["trtafechan"]>$nuDateM){
+						$nuDateM = $rcTmp["trtafechan"];
+					}
+				}
+				
+				if($nuDateM<$nuAcemfecaten){
+					$sbResult = true;
+				}else{
+					$sbResult = false;
+				}
+			}else{
+				$sbResult = false;
+			}
+		}
+		
+		return $sbResult;
+	}
+	
+	/**
+	* @copyright Copyright 2006 FullEngine
+	*
+	* Ejecuta ls reglas del cambio de estado
+	* @param string $sbOrdenumeros Cadena con el numero de caso
+	* @param array $rcExec Arreglo con los codigo de ruta para los cuales se debe
+	* ejecutar las reglas
+	* @param array $rcData Arreglo con los datos necesarios para ejecutar las reglas
+	* @return boolean true o false
+	* @author freina <freina@parquesoft.com>
+	* @date 15-Apr-2006 11:55
+	* @location Cali-Colombia
+	*/
+	function executeRules($sbOrdenumeros, $rcExec,$rcData) {
+
+		settype($objService, "object");
+		settype($rcResult, "array");
+		settype($rcReturn, "array");
+		settype($rcTmp, "array");
+		settype($rcSql, "array");
+		settype($rcAction, "array");
+		settype($nuCont, "integer");
+		
+
+		if($sbOrdenumeros && $rcExec && $rcData){
+			
+			$rcData["ordenumeros"] = $sbOrdenumeros;
+			
+			//Carga el servicio de workflow
+			$objService = Application :: loadServices('Workflow');
+			
+			//Se ejecutan las reglas que se activan con el cambio de estado
+			$rcResult = $objService->execute_rules($rcExec, $rcData);
+			if ($rcResult) {
+				foreach ($rcResult as $rcTmp) {
+					
+					if (($rcTmp["result"]==true)) {
+						
+						switch($rcTmp["type"]){
+							case "sql":
+								$rcSql[] = $rcTmp["query"];
+							break;
+							case "execute":
+								$rcAction[$nuCont]["service"]=$rcTmp["service"];
+								$rcAction[$nuCont]["method"]=$rcTmp["method"];
+								$rcAction[$nuCont]["parameters"]=$rcTmp["parameters"];
+								$nuCont ++;
+							break;
+						}
+					}
+				}
+				$rcReturn["sql"]= $rcSql;
+				$rcReturn["actions"]= $rcAction;
+			}
+		}
+		return $rcReturn;
+	}
+	/**
+	* @copyright Copyright 2006 FullEngine
+	*
+	* Ejecuta las acciones generadas por las reglas
+	* @param array $rcExec Arreglo con los parametros necesarios para la ejecucion
+	* @return boolean true o false
+	* @author freina <freina@parquesoft.com>
+	* @date 15-Apr-2006 11:55
+	* @location Cali-Colombia
+	*/
+	function executeActions($rcExec){
+		
+		settype($objService,"object");
+		settype($rcResult,"array");
+		
+		if($rcExec){
+			
+			$objService = Application :: loadServices('ExecuteAction');
+			$objService->setParameters($rcExec);
+			$rcResult = $objService->execute();
+		}
+		return $rcResult;
+	}
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	*  Hace el update del acta y de ordenempresa
+	* @param string $isbOrgacodigos 
+	* @param string $isbActacodigos
+	* @param array $rcData [trtafechan] Fecha de registro
+	* 					   [trtaobservas] Observaciones de la transferencia
+	* @return int numero del resultado o error
+	* @author creyes <cesar.reyes@parquesoft.com>
+	* @date 21-sep-2004 15:06:55
+	* modified
+	* @author freina <freina@parquesoft.com>
+	* @date 04-Nov-2011 08:26:00
+	* Se agregra la fecha de registro y las observaciones de la transferencia
+	* @location Cali-Colombia
+	*/
+	function updateActa($orgacodigos, $actacodigos, $rcData=null) {
+		
+		settype($objService,"object");
+		settype($objManager,"object");
+		settype($objManagerN,"object");
+		settype($objDate,"object");
+		settype($rcActa, "array");
+		settype($rcTranferTarea, "array");
+		settype($orgacodigosTmp, "string");
+		settype($sbResult, "string");
+		settype($nuHoy, "integer");
+		settype($nuTrtacodigos,"integer");
+		settype($nuResult, "integer");
+		
+		$objDate = Application::loadServices('DateController');
+        $nuHoy = $objDate->fncintdatehour();
+		
+		//Trae los datos del acta
+		$objService = Application :: loadServices('Workflow');
+		$rcActa = $objService->getByIdActa($actacodigos);
+		if (!is_array($rcActa)) {
+			return 11;
+		}
+		$rcActa = $rcActa[0];
+		
+        //Valida que el ente organizacional destino no se el mismo que el de origen
+        if($rcActa["orgacodigos"] == $orgacodigos){
+            return 52;
+        }
+        
+		//si viene la fecha de registro se verifica que sea valida
+        if($rcData["trtafechan"]){
+        	$sbResult = $this->validateDate($actacodigos, $rcData["trtafechan"]);
+        	if(!$sbResult){
+        		return 72;
+        	}	
+        }else{
+        	$rcData["trtafechan"] = $nuHoy;
+        }
+            
+        $orgacodigosTmp = $rcActa["orgacodigos"];
+		$rcActa["orgacodigos"] = $orgacodigos;
+		$objService = Application :: loadServices('Workflow');
+		$sbResult = $objService->updateActa($rcActa);
+		
+		if (!$sbResult){
+			return 11;
+		}
+		
+        //Hace el registro en transfertarea
+		$objManagerN = Application :: getDomainController('NumeradorManager');
+        $objManager = Application::getDomainController('TransfertareaManager');
+        $rcTranferTarea = $objManager->getTranferByTarecodigos($rcActa["actacodigos"]);
+        
+        //Si la tarea no tiene transferencias se crea primero el registro del ente anterior
+        //Para generar la secuencia de la tarea
+        if(!is_array($rcTranferTarea)){
+            $nuTrtacodigos = $objManagerN->fncgetByIdNumerador("transfertarea");
+            $nuResult = $objManager->addTransfertarea($nuTrtacodigos,$rcActa["actacodigos"],$orgacodigosTmp,$rcActa["actafechingn"],$nuHoy,null);
+            if($nuResult == 5 || $nuResult == 2)
+                return $nuResult;
+        }
+        $nuTrtacodigos = $objManagerN->fncgetByIdNumerador("transfertarea");
+        return $objManager->addTransfertarea($nuTrtacodigos,$rcActa["actacodigos"],$orgacodigos,$rcData["trtafechan"],$nuHoy,$rcData["trtaobservas"]);
+	}
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	*  valida que la fecha de registro de la transferencia sea valida
+	* @param string $sbActacodigos 
+	* @param integer $nuTrtafechan
+	* @return boolean true fecha valida false fecha  incorrecta.
+	* @author freina <freina@fullengine.com>
+	* @date 28-Nov-2011 16:51:00
+	* @location Cali-Colombia
+	*/
+	function validateDate($sbActacodigos, $nuTrtafechan){
+		
+		settype($objService, "object");
+		settype($objGateway, "object");
+		settype($objDate, "object");
+		settype($rcActa, "array");
+		settype($rcActaAnt, "array");
+		settype($rcHour, "array");
+		settype($rcTmp, "array");
+		settype($sbResult, "string");
+		settype($nuDateM, "integer");
+		settype($nuToday, "integer");
+		settype($nuDate, "integer");
+		settype($nuHour, "integer");
+		settype($nuHourHFin, "integer");
+		settype($nuHourHIni, "integer");
+		
+		$sbResult = false;
+		
+		if($sbActacodigos && $nuTrtafechan){
+			
+			//se valida que la fecha se un dia habil y que el horario de atencion sea correcto
+			$objDate = Application::loadServices('DateController');
+			$nuToday = $objDate->fncintdatehour();
+			//se obtienen los horarios de atencion
+			$objService = Application::loadServices("General");
+			$rcHour = $objService->getParam("general",'horario_atencion');
+			if($rcHour && is_array($rcHour)){
+				if($rcHour["hora_fin"]){
+					$nuHourHFin = $objDate->hour2secs($rcHour["hora_fin"]);
+				}else{
+					$nuHourHFin = $objDate->nuSecsDay - 1;
+				}
+				if($rcHour["hora_ini"]){
+					$nuHourHIni = $objDate->hour2secs($rcHour["hora_ini"]);
+				}else{
+					$nuHourHIni = 0 ;
+				}
+			}else{
+				//sino se ha definido un horario el turno es de todo el dia
+				$nuHourHFin = $objDate->nuSecsDay - 1;
+				$nuHourHIni = 0 ;
+			}
+			$nuHour = $objDate->getHour2DateInSecs($nuTrtafechan);
+			$nuDate =  $nuTrtafechan - $nuHour;
+			$objService = Application :: loadServices('General');
+			$sbResult = $objService->dateIsInhabil($nuDate);
+			
+			if(!$sbResult && ($nuToday>=$nuTrtafechan) &&($nuHour >= $nuHourHIni && $nuHour <= $nuHourHFin)){
+				//se obtiene la informacion del acta
+				$objService = Application :: loadServices('Workflow');
+				$rcActa = $objService->getByIdActa($sbActacodigos);
+				if(is_array($rcActa) && $rcActa){
+					$rcActa = $rcActa[0];
+					$nuDateM = $rcActa["actafechingn"];
+					
+					// se determina la fecha de inicio de comparacion
+					//se obtiene el acta anterior
+					$objService = Application :: loadServices('Workflow');
+					$objGateway = $objService->getGateWay("recorridoExtended");
+					$rcActaAnt = $objGateway->getRecorridoByActacodigos($sbActacodigos); 
+					$objService->close();
+					if(is_array($rcActaAnt) && $rcActaAnt){
+						$rcActaAnt = $rcActaAnt[0];
+						
+						//se obtienen las posibles atenciones de acta anterior
+						$rcTmp = $this->gatewayExt->getActaempresaByActacodigos($rcActaAnt["recoactpads"]);
+						if(is_array($rcTmp) && $rcTmp){
+							$rcTmp = array_pop($rcTmp);
+							$nuDateM = $rcTmp["acemfecaten"];
+						}
+					}
+					
+					//se obtienen las posibles atenciones de acta
+					$rcTmp = $this->gatewayExt->getActaempresaByActacodigos($sbActacodigos);
+					if(is_array($rcTmp) && $rcTmp){
+						$rcTmp = array_pop($rcTmp);
+						if($rcTmp["acemfecaten"]>$nuDateM){
+							$nuDateM = $rcTmp["acemfecaten"];
+						}
+					}
+					//se obtiene las posibles transferencias
+					$objGateway = Application :: getDataGateway("transfertarea"); 
+					$rcTmp = $objGateway->getByIdTarecodigos($sbActacodigos);
+					if(is_array($rcTmp) && $rcTmp){
+						$rcTmp = array_pop($rcTmp);
+						if($rcTmp["trtafechan"]>$nuDateM){
+							$nuDateM = $rcTmp["trtafechan"];
+						}
+					}
+					
+					if($nuDateM<$nuTrtafechan){
+						$sbResult = true;
+					}else{
+						$sbResult = false;
+					}
+				}	
+			}else{
+				$sbResult = false;
+			}
+		}
+		
+		return $sbResult;
+	}
+	//-------------------------------------
+	function updateActaempresa($actacodigos, $acemnumeros, $esaccodigos, $acemfeccren, $acemfecaten, $acemhorainn, $acemhorafin, $acemobservas, $acemusumods) {
+		if ($this->gateway->existActaempresa($actacodigos, $acemnumeros) == 1) {
+			$this->gateway->updateActaempresa($actacodigos, $acemnumeros, $esaccodigos, $acemfeccren, $acemfecaten, $acemhorainn, $acemhorafin, $acemobservas, $acemusumods);
+			$this->UnsetRequest();
+			return 3;
+		} else {
+			return 2;
+		}
+	}
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	*  Desactiva el registro de actaempresa pasado como parametro
+	* @param string $isbOrdenumeros Cadena con el id del requerimiento
+	* @param string $isbActacodigos Cadena con el id del acta
+	* @param string $isbAcemnumeros Cadena con el id del detalle
+	* @return integer $onuResult Entero con el id del mensaje de respuesta
+	* @author freina <freina@parquesoft.com>
+	* @date 18-Jul-2005 10:49
+	* @location Cali-Colombia
+	*/
+	function deleteActaempresa($isbOrdenumeros, $isbActacodigos, $isbAcemnumeros,$blSeguimiento=false) {
+
+		settype($objGateway, "object");
+		settype($objGatewayOrden, "object");
+		settype($objService, "object");
+		settype($rcTmp, "array");
+		settype($rcUser, "array");
+		settype($rcLogActa, "array");
+		settype($rcActa, "array");
+		settype($rcDetalle, "array");
+		settype($rcSql, "array");
+		settype($rcRecorrido, "array");
+		settype($sbSql, "string");
+		settype($sbResult, "string");
+		settype($sbDeactive, "string");
+		settype($sbAcemnumerosU, "string");
+		settype($sbAcemnumerosP, "string");
+		settype($sbActaestacts, "string");
+		settype($sbActaestants, "string");
+		settype($sbDbNull, "string");
+		settype($sbFlag, "string");
+		settype($sbActacodigos, "string");
+		settype($onuResult, "integer");
+		settype($nuCant, "integer");
+		settype($nuCont, "integer");
+		settype($nuResult, "integer");
+
+		$sbFlag = false;
+
+		if ($this->gateway->existActaempresa($isbActacodigos, $isbAcemnumeros) == 1) {
+
+			//se obtienen los registros de actaempresa
+			$objGateway = Application :: getDataGateway("actaempresaExtended");
+			$rcDetalle = $objGateway->getActaempresaByActacodigos($isbActacodigos);
+
+			if ($rcDetalle) {
+				$sbDbNull = Application :: getConstant("DB_NULL");
+				$nuCant = sizeof($rcDetalle);
+
+				//se obtiene el log del acta
+				$objService = Application :: loadServices('Workflow');
+				$rcLogActa = $objService->getActaestordenByActacodigos($isbActacodigos);
+
+				//se realiza el agoritmo que determinara si se debe analizar el cambio de estado en el acta
+				if ($nuCant == 1) {
+					$sbFlag = true;
+					//se debe inicializar el acta
+					if ($rcLogActa) {
+						$sbActaestacts = $rcLogActa[0]["acesestentrs"];
+						$sbActaestants = $sbDbNull;
+					} else {
+						$onuResult = 11;
+						return $onuResult;
+					}
+				} else {
+					//se determina la operacion  a realizar si es el ultimo detalle
+					$sbAcemnumerosU = $rcDetalle[$nuCant -1]["acemnumeros"];
+					if ($sbAcemnumerosU == $isbAcemnumeros) {
+						$sbFlag = true;
+						$sbActaestacts = $rcDetalle[$nuCant -2]["esaccodigos"];
+						if ($rcDetalle[$nuCant -3]) {
+							$sbActaestants = $rcDetalle[$nuCant -3]["esaccodigos"];
+						} else {
+							if ($rcLogActa) {
+								$sbActaestants = $rcLogActa[0]["acesestentrs"];
+							} else {
+								$onuResult = 11;
+								return $onuResult;
+							}
+						}
+					} else {
+						$sbAcemnumerosP = $rcDetalle[$nuCant -2]["acemnumeros"];
+						if ($sbAcemnumerosP == $isbAcemnumeros) {
+							$sbActaestacts = $rcDetalle[$nuCant -1]["esaccodigos"];
+							if ($rcDetalle[$nuCant -3]) {
+								$sbActaestants = $rcDetalle[$nuCant -3]["esaccodigos"];
+							} else {
+								if ($rcLogActa) {
+									$sbActaestants = $rcLogActa[0]["acesestentrs"];
+								} else {
+									$onuResult = 11;
+									return $onuResult;
+								}
+							}
+						}
+					}
+				}
+
+				//se determina si el acta esta finalizada, si es asi entonces se realiza el analisis
+				//de las actas a desactivar
+				if ($sbFlag) {
+					$objService = Application :: loadServices('Workflow');
+					$sbResult = $objService->DetermineFinalizedActa($isbActacodigos, false);
+					//se inicia el analisis de actas que se debe desactivar 
+					if ($sbResult) {
+						$rcRecorrido = $objService->DeactivateRoute($isbActacodigos, false);
+						if ($rcRecorrido) {
+							//sql para desactivar el registro de recorrido
+							foreach ($rcRecorrido[1] as $sbSql) {
+								$rcSql[$nuCont] = $sbSql;
+								$nuCont ++;
+							}
+							//se obtienen los sql  para desactivar las actas
+							foreach ($rcRecorrido[0] as $sbActacodigos) {
+								$rcSql[$nuCont] = $objService->getSqlDeactivateActa($sbActacodigos, false);
+								$nuCont ++;
+							}
+							$objService->close();
+						} else {
+							$objService->close();
+						}
+						//se obtiene el sql que activa nuevamente el acta
+						$objService = Application :: loadServices('Workflow');
+						$sbsql = $objService->getSqlActivateActa($isbActacodigos);
+						if ($sbsql) {
+							$rcSql[$nuCont] = $sbsql;
+							$nuCont ++;
+						}
+						//se determina si  la orden debe abrirse  nuevamente
+						$objService = Application :: loadServices('Workflow');
+						$rcActa = $objService->getByIdActa($isbActacodigos);
+						$rcActa = $rcActa[0];
+						if ($rcActa) {
+							//se determina si al orden esta marcada como finalizada
+							$objGatewayOrden = Application :: getDataGateway("OrdenExtended");
+							$nuResult = $objGatewayOrden->DetermineFinalizedOrden($rcActa["ordenumeros"]);
+							if($nuResult){
+								$rcTmp = $rcRecorrido[0];
+								$nuCant = sizeof($rcTmp);
+								$rcTmp[$nuCant] = $isbActacodigos;
+								$objService = Application :: loadServices('Workflow');
+								$sbResult = $objService->DetermineReopenOrden($rcActa["ordenumeros"],$rcTmp);
+								if ($sbResult) {
+									//Se obtiene el sql que abre la orden
+									$sbsql = $objGatewayOrden->getSqlActivateOrden($rcActa["ordenumeros"]);
+									if ($sbsql) {
+										$rcSql[$nuCont] = $sbsql;
+										$nuCont ++;
+									}
+								}
+							}
+						} else {
+							$objService->close();
+						}
+					} else {
+						$objService->close();
+					}
+				}
+
+				// se modifica el acta
+				if ($sbActaestacts && $sbActaestants) {
+					$objService = Application :: loadServices('Workflow');
+					$sbSql = $objService->getSqlUpdateState($sbActaestacts, $sbActaestants, $isbActacodigos);
+
+					if ($sbSql) {
+						$rcSql[$nuCont] = $sbSql;
+						$nuCont ++;
+					}
+				}
+
+				//se obtiene el sql que modifica el estado de la actuacion
+				$sbDeactive = Application :: getConstant("REG_INACT");
+				$rcUser = $this->getDataUser();
+				$sbSql = $objGateway->getSqlDeactivateActaempresa($rcUser["username"], $sbDeactive, $isbAcemnumeros);
+				if ($sbSql) {
+					$rcSql[$nuCont] = $sbSql;
+					$nuCont ++;
+				}
+				if ($rcSql) 
+				{
+					//Eliminar solucines
+					$rcSql[] = $objGateway->deleteSolutions($isbOrdenumeros);
+					$rcSql[] = $objGateway->deleteCommitments($isbAcemnumeros);
+					
+					//se lleva a cabo la transaccion
+					$objGateway->ActaempresaTrans($rcSql);
+					$sbResult = $objGateway->consult;
+					if ($sbResult) {
+						$onuResult = 3;
+						$this->UnsetRequestRev();
+					} else {
+						$onuResult = 11;
+					}
+				}
+			} else {
+				$onuResult = 2;
+			}
+		} else {
+			$onuResult = 2;
+		}
+		return $onuResult;
+	}
+
+	function revertCompromiso($isbOrdenumeros, $isbActacodigos, $isbAcemnumeros) {
+		settype($objGateway, "object");
+		settype($objGatewayOrden, "object");
+		settype($objService, "object");
+		settype($rcTmp, "array");
+		settype($rcUser, "array");
+		settype($rcLogActa, "array");
+		settype($rcActa, "array");
+		settype($rcDetalle, "array");
+		settype($rcSql, "array");
+		settype($rcRecorrido, "array");
+		settype($sbSql, "string");
+		settype($sbResult, "string");
+		settype($sbDeactive, "string");
+		settype($sbAcemnumerosU, "string");
+		settype($sbAcemnumerosP, "string");
+		settype($sbActaestacts, "string");
+		settype($sbActaestants, "string");
+		settype($sbDbNull, "string");
+		settype($sbFlag, "string");
+		settype($sbActacodigos, "string");
+		settype($onuResult, "integer");
+		settype($nuCant, "integer");
+		settype($nuCont, "integer");
+		settype($nuResult, "integer");
+
+		$sbFlag = false;
+
+		if ($this->gateway->existActaempresa($isbActacodigos, $isbAcemnumeros) == 1) {
+
+			//se obtienen los registros de actaempresa
+			$rcUser = $this->getDataUser();
+			$sbDeactive = Application :: getConstant("REG_INACT");
+
+			$objService = Application :: loadServices('Workflow');
+			$rcSql[] = $objService->getSqlDeactivateActa($isbActacodigos, false);
+			$objService->close();
+
+			$objGateway = Application :: getDataGateway("actaempresaExtended");
+			$rcSql[] = $objGateway->getSqlDeactivateAndHideActaempresa($rcUser["username"], $sbDeactive, $isbAcemnumeros);
+			$rcSql[] = $objGateway->reverseCommitment($isbAcemnumeros);
+			$objGateway->ActaempresaTrans($rcSql);
+
+			$sbResult = $objGateway->consult;
+			if ($sbResult) {
+				$onuResult = 3;
+				$this->UnsetRequestRev();
+			} else {
+				$onuResult = 11;
+			}
+		}
+		else
+			$onuResult = 2;
+		return $onuResult;
+	}
+
+	function getByIdActaempresa($actacodigos, $acemnumeros) {
+		$data_actaempresa = $this->gateway->getByIdActaempresa($actacodigos, $acemnumeros);
+		return $data_actaempresa;
+	}
+	function getAllActaempresa() {
+		//$this->gateway->
+	}
+	function getByActaempresa_fkey($actacodigos) {
+		//$this->gateway->
+	}
+	function getByActaempresa_fkey1($esaccodigos) {
+		//$this->gateway->
+	}
+	function UnsetRequest() {
+		
+		settype($rcFileName, "array");
+		settype($rcTmp, "array");
+		settype($rcNull, "array");
+		settype($nuCont, "integer");
+		
+		unset ($_REQUEST["actaempresa__actacodigos"]);
+		unset ($_REQUEST["actaempresa__acemnumeros"]);
+		unset ($_REQUEST["actaempresa__esaccodigos"]);
+		unset ($_REQUEST["actaempresa__acemfeccren"]);
+		unset ($_REQUEST["actaempresa__acemfecaten"]);
+		unset ($_REQUEST["actaempresa__acemhorainn"]);
+		unset ($_REQUEST["actaempresa__acemhorafin"]);
+		unset ($_REQUEST["actaempresa__acemobservas"]);
+		unset ($_REQUEST["actaempresa__acemradics"]);
+		unset ($_REQUEST["actaempresa__acemcomproms"]);
+		unset ($_REQUEST["actaempresa__acemnomexpes"]);
+		unset ($_REQUEST["actaempresa__acemnumexpes"]);
+		unset ($_REQUEST["activities"]);
+		
+		//Limpia de la sesion el vector de actividades
+		WebSession :: unsetProperty("activiacta");
+		
+		//se obtienen los archivos ya guardados
+		$rcFileName = WebSession :: getProperty("_rcFileList");
+		
+		if($rcFileName){
+			foreach($rcFileName as $nuCont=>$rcTmp){
+				WebSession :: unsetProperty($rcTmp["index"]);
+			}
+			WebSession :: setProperty("_rcFileList", $rcNull);
+		}
+	}
+	/**
+	*   Propiedad   intelectual del FullEngine.   Obtiene la data de usuario
+	*  @author   freina
+	*	@return	 array $orcresult (Array con la data del usuario o null)
+	*   @date   18-Jul-2005 13:30
+	*   @location   Cali-Colombia
+	*/
+	function getDataUser() {
+
+		settype($orcresult, "array");
+		//Trae los datos del usuario
+		$orcresult = Application :: getUserParam();
+		if (!is_array($orcresult)) {
+			//Si no existe usuario en sesion 
+			$orcresult["lang"] = Application :: getSingleLang();
+		}
+		return $orcresult;
+	}
+	function UnsetRequestRev(){
+		unset ($_REQUEST["orden"]);
+		unset ($_REQUEST["acta"]);
+		unset ($_REQUEST["acemnumeros"]);
+	}
+	/**
+	* @copyright Copyright 2006 FullEngine
+	*
+	* Ingresa los archivo anexos de la atencion
+	* @param string $sbAcemnumeros Cadena con el numero de atencion
+	* @return boolean true o false
+	* @author freina <freina@parquesoft.com>
+	* @date 20-Dec-2006 15:20
+	* @location Cali-Colombia
+	*/
+	function addFiles($sbAcemnumeros) {
+
+		settype($objService, "object");
+		settype($objService, "object");
+		settype($objGateway, "object");
+		settype($rcTipos, "array");
+		settype($rcTmp, "array");
+		settype($rcFileName, "array");
+		settype($rcDelete, "array");
+		settype($sbTipo, "string");
+		settype($sbResult, "string");
+		settype($nuArchcodigon, "integer");
+		settype($nuCant, "integer");
+		settype($nuCont, "integer");
+		settype($nuIndex, "integer");
+		
+
+		if($sbAcemnumeros){
+			
+			//se obtienen los archivos ya guardados
+			$rcFileName = WebSession :: getProperty("_rcFileList");	
+			if($rcFileName && is_array($rcFileName)){
+				
+				$nuCant = sizeof($rcFileName);
+				
+                //graba el archivo
+                $objNumerador = Application :: getDomainController('NumeradorManager');
+                $nuArchcodigon = $objNumerador->fncgetByIdNumerador("archivos",$nuCant);
+                $objService = Application::loadServices('General');
+                $rcTipos = $objService->getConstant('TIPO_FILE');
+                $objService = Application::loadServices('General');
+                $objGateway = $objService->loadGateway('Archivos');
+                $sbTipo = $rcTipos["atencion"];
+                foreach($rcFileName as $nuCont=>$rcTmp){
+                	$sbResult = $objGateway->addArchivos($nuArchcodigon,
+                	$sbTipo,$sbAcemnumeros,$rcTmp["name"],$rcTmp["type"],
+                	$rcTmp["size"],WebSession :: getProperty($rcTmp["index"]));
+                	$rcDelete[] = $nuArchcodigon;
+                	if(!$sbResult){
+                		break;
+                	}
+                	$nuArchcodigon ++;
+                }
+                //Se elimina lo almacenado
+                if(!$sbResult){
+                	foreach($rcDelete as $nuIndex){
+                		$sbResult = $objGateway->deleteArchivos($nuIndex);
+                	}
+                }
+                $objService->close();
+                if(!$sbResult){
+                	return false;
+                }
+                
+            }
+            return true;
+		}
+		return false;
+	}
+
+	function getCompromisosAtendidosByActa($acta) {
+		return $this->gatewayExt->getCompromisosAtendidosByActa($acta);
+	}
+	/**
+    * Copyright 2010 FullEngine
+    * 
+    * Metodo para actualizar los datos de las columnas dinamicas
+    * @author freina<freina@parquesoft.com>
+    * @param string $sbAcemnumeros Cadena con el codigo del acta
+    * @param array $rcDimension Arreglo con los id de las dimensiones contra las
+    *  cuales se debe validar los datos dinamicos
+    * @param array $rcData Arreglo con la de la orden
+    * @param integer $sbSignal Entero con el id que determina la accion a realizar
+    * @return boolean true o false si el ingreso se ejecuto correctamente
+    * @date 24-Oct-2010 17:48:00
+    * @location Cali-Colombia
+    */
+	function updateDynamicColumns($sbAcemnumeros,$rcDimension, $rcData, $sbSignal=1) {
+
+		settype($objService, "object");
+		settype($objManager, "object");
+		settype($rcUser, "array");
+		settype($rcVadidominios, "array");
+		settype($nuDimecodigon, "integer");
+		
+		if ($sbAcemnumeros && $rcDimension && $rcData) {
+			
+			$rcData['acemnumeros']= $sbAcemnumeros;
+			
+			//informacion de usuario
+			$rcUser = Application :: getUserParam();
+			
+			//se obtiene el dominio de los datos
+			$objservice = Application :: loadServices("General");
+            $rcVadidominios = $objservice->getParam("general", "DOM_COL_DIN");
+			
+			//Carga el servicio de general
+			$objService = Application :: loadServices('General');
+			$objManager = $objService->InitiateClass('DimensionManager');
+			foreach ($rcDimension as $nuDimecodigon) {
+				$objManager->setCodDimension($nuDimecodigon);
+			}
+			$objManager->setData($rcData);
+			
+			if($sbSignal==1){
+				$objManager->setOperation('insertDimensionValues');
+			}else{
+				$objManager->setOperation('updateDimensionValues');
+			}
+			$objManager->setIdProcess($rcUser["username"]);
+			$objManager->setVadidominios($rcVadidominios['atencion']);
+			$objManager->setVadidomivals($sbAcemnumeros);
+			$objService->close();
+			return $objManager->execute();
+		}
+		return false;
+	}
+}
+?>

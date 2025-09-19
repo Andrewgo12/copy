@@ -1,0 +1,11 @@
+
+################################################################################
+# @autor                Carlos Zapata <cazapata@fullengine.com>
+# @since                2017-06-07
+################################################################################
+#Min Hora Dia Mes Dia_semana Comando
+
+#8. Alerta de vencimientos (De lunes a Viernes a las 5:00 am)
+13 10 * * 1-5 php /var/www/html/cross/apps/CROSSHUV/ASAP/applications/cross300/domain/FeCrAlertaCasosManager.class.php
+
+

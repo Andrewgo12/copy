@@ -1,0 +1,548 @@
+<?php                  
+//Paquete de conexion a bases de datos
+include_once ("pkdatabases.php");
+class FeWFPgsqlActaExtended {
+	var $connection;
+	var $consult;
+	var $objdb;
+	function FeWFPgsqlActaExtended() {
+		$config = & ASAP :: getStaticProperty('Application', 'config');
+		$this->objdb = new databases();
+		$this->objdb->fncadoconn($config['database']);
+	}
+	function addActaSql($actacodigos, $ordenumeros, $tarecodigos, $actaestacts, $actaestants, $actafechingn, $usuacodigos, $orgacodigos, $actaactivas, $actafechinin, $actafechvenn) {
+		$sql = 'INSERT INTO "acta" ("actacodigos","ordenumeros","tarecodigos","actaestacts","actaestants","actafechingn","usuacodigos","orgacodigos","actaactivas","actafechinin","actafechvenn")'
+		.' VALUES(\''.$actacodigos.'\',\''.$ordenumeros.'\',\''.$tarecodigos.'\',\''.$actaestacts.'\','.$actaestants.' ,'.$actafechingn.' ,\''.$usuacodigos.'\',\''.$orgacodigos.'\',\''.$actaactivas.'\','.$actafechinin.','.$actafechvenn.')';
+		return $sql;
+	}
+	function ActaTrans($ircdata) {
+		if (!$ircdata) {
+			$this->consult = false;
+		}
+		$this->objdb->fncadoexecutetrans($ircdata);
+		if (!$this->objdb->objresult) {
+			$this->consult = false;
+		} else {
+			$this->consult = true;
+		}
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*	
+	*	Realiza el ingreso de las proximas actas
+	*	@author freina
+	*	@param array $ircdata(Arreglo con los insert de ingreso de las actas)
+	*	@return array $orcresult(Arreglo con el retorno de cada un de los insert)
+	*	@date 12-Ago-2004 06:17	 
+	*	@location Cali-Colombia
+	*/
+	function addActaTrans($ircdata) {
+		settype($orcresult, "array");
+		settype($rctmp, "array");
+		settype($rctmpae, "array");
+		settype($rcSql, "array");
+		settype($sbsql, "string");
+		settype($sbactacodigos, "string");
+		settype($sbJoker, "string");
+		settype($sbFlag, "string");
+		settype($nucant, "integer");
+		settype($nucont, "integer");
+		settype($nuContRow, "integer");
+
+		if ($ircdata) {
+			//bandera que indica si se debe realizar el grabado
+			$sbFlag = true;
+			//comodin
+			$sbJoker = Application :: getConstant("PIPE");
+			// se inicia la transaccion
+			$this->objdb->fncadobegintrans();
+			//Se bloquea la tabla de acta
+			$this->objdb->fncadolock("acta");
+			//se organizan los sql de recorrido
+			if($ircdata[3]){
+				foreach($ircdata[3] as $nucont=>$sbsql){
+					$rcSql[$nucont] = $sbsql;
+				}
+				$nuContRow = sizeof($ircdata[3]);
+			}
+			//si existe se debe realizar la validacion de tareas requeridas
+			if ($ircdata[1]) {
+				if ($ircdata[1][0]) {
+					foreach ($ircdata[1][0] as $nucont => $rctmp) {
+						$sbsql = $rctmp[0];
+						$this->objdb->fncadoselect($sbsql, FETCH_ASSOC);
+						if ($this->objdb->rcresult) {
+							$nucant = 0;
+							$nucant = sizeof($this->objdb->rcresult);
+							$sbactacodigos = $this->objdb->rcresult[$nucant -1]["actacodigos"];
+							//con el numero de acta se completa el sql de recorrido
+							if($rctmp[3]){
+								$sbsql = $rctmp[3];
+								$sbsql = str_replace($sbJoker, $sbactacodigos, $sbsql);
+								$rcSql[$nuContRow] = $sbsql;
+								$nuContRow ++; 
+							} 
+							//con el numero de acta se determina su ultimo cambio de estado
+							$sbsql = $rctmp[1];
+							$sbsql = str_replace("|", $sbactacodigos, $sbsql);
+							$this->objdb->fncadoselect($sbsql, FETCH_ASSOC);
+							if ($this->objdb->rcresult) {
+								$nucant = 0;
+								$nucant = sizeof($this->objdb->rcresult);
+								$rctmpae = $this->objdb->rcresult[$nucant -1];
+								if (!($rctmpae["acesestentrs"] == $rctmp[2]["tasiesactas"])) {
+									$orcresult["REQ"][0] = $rctmp[2]["tasiacttareas"];
+									$orcresult["REQ"][1] = "required";
+									//cierra transaccion
+									$sbFlag = false;
+									break;
+								}
+							}
+						}
+					}
+					if (!$ircdata[1][1][0]) {
+						//cierra transaccion
+						$orcresult["OPC"][0] = $rctmp[2]["tasiacttareas"];
+						$orcresult["OPC"][1] = "optional";
+						$sbFlag = false;
+					}
+				} else {
+					//si no existen tareas requeridas se debe realizar la validacion de las opcionales 
+					if (!$ircdata[1][1][0]) {
+						if ($ircdata[1][2]) {
+							foreach ($ircdata[1][2] as $nucont => $rctmp) {
+								$sbsql = $rctmp[0];
+								$this->objdb->fncadoselect($sbsql, FETCH_ASSOC);
+								if ($this->objdb->rcresult) {
+									$nucant = 0;
+									$nucant = sizeof($this->objdb->rcresult);
+									$sbactacodigos = $this->objdb->rcresult[$nucant -1]["actacodigos"];
+									//con el numero de acta se completa el sql de recorrido
+									if($rctmp[3]){
+										$sbsql = $rctmp[3];
+										$sbsql = str_replace($sbJoker, $sbactacodigos, $sbsql);
+										$rcSql[$nuContRow] = $sbsql;
+										$nuContRow ++; 
+									}
+									//con el numero de acta se determina su ultimo cambio de estado
+									$sbsql = $rctmp[1];
+									$sbsql = str_replace("|", $sbactacodigos, $sbsql);
+									$this->objdb->fncadoselect($sbsql, FETCH_ASSOC);
+									if ($this->objdb->rcresult) {
+										$nucant = 0;
+										$nucant = sizeof($this->objdb->rcresult);
+										$rctmpae = $this->objdb->rcresult[$nucant -1];
+										if (($rctmpae["acesestentrs"] == $rctmp[2]["tasiesactas"])) {
+											$orcresult["OPC"][0] = $rctmp[2]["tasiacttareas"];
+											$orcresult["OPC"][1] = "optional";
+											//cierra transaccion
+											$sbFlag = false;
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			//si se deben grabar las actas
+			if($sbFlag){
+				if ($ircdata[0]) {
+					//se recorre el arreglo con los sql
+					foreach ($ircdata[0] as $nucont => $rctmp) {
+						//se ingresa el registro
+						$sbsql = $rctmp[0];
+						$this->objdb->fncadoexecute($sbsql);
+							if (!$this->objdb->objresult) {
+								$orcresult[$nucont] = "fail";
+								$this->objdb->fncadorollbacktrans();
+								return $orcresult;
+							} else {
+								$sbsql = $rctmp[1];
+								$this->objdb->fncadoexecute($sbsql);
+								if (!$this->objdb->objresult) {
+									$orcresult[$nucont] = "fail";
+									$this->objdb->fncadorollbacktrans();
+									return $orcresult;
+								} else {
+									$orcresult[$nucont] = "add";
+								}
+							}
+					}
+				}
+				//sql de recorrido
+				if($rcSql){
+					//se recorre el arreglo con los sql
+					foreach ($rcSql as $nucont => $sbsql) {
+						//se ingresa el registro
+						$this->objdb->fncadoexecute($sbsql);
+						if (!$this->objdb->objresult) {
+							$this->objdb->fncadorollbacktrans();
+							return $orcresult;
+						}
+					}
+				}
+			}
+			
+			if ($ircdata[2]) {
+				// se realiza el update del acta
+				$sbsql = $ircdata[2];
+				$this->objdb->fncadoexecute($sbsql);
+				if (!$this->objdb->objresult) {
+					$orcresult['UPDATE'] = 'update fail';
+					$this->objdb->fncadorollbacktrans();
+					return $orcresult;
+				} else {
+					$orcresult['UPDATE'] = 'update ok';
+				}
+			}
+			//cierra transaccion
+			$this->objdb->fncadocommittrans();
+			return $orcresult;
+		}
+	}
+	function getActacodigosSql($ordenumeros, $tarecodigos, $actaactivas, $actaactivasfin) {
+		$sql = 'SELECT "actacodigos" FROM "acta" WHERE "ordenumeros"=\''.$ordenumeros.'\' AND "tarecodigos"=\''.$tarecodigos.'\' AND "actaactivas" IN (\''.$actaactivas.'\',\''.$actaactivasfin.'\') ORDER BY "actafechingn"';
+		return $sql;
+	}
+	/*
+	*Copyright 2004 � FullEngine
+	 Hace la consulta de actas para la visualizaci�n de las asignadas a un ente organizacional
+	@param string $orgacodigos C�digo del ente organizacional
+	@return array
+	@author creyes <cesar.reyes@parquesoft.com>
+	@date 01-sep-2004 13:27:32
+	@location Cali - Colombia
+	*/
+	function getActasAsign($orgacodigos,$order_by=null,$sentido) {
+		
+		settype($objService,"object");
+		settype($objGateway,"object");
+		settype($objDate,"object");
+		settype($rcTmp,"array");
+		settype($rcTmpA,"array");
+		settype($sbPos,"string");
+		settype($sbstate,"string");
+		settype($sbSql,"string");
+		settype($sbTable, "string");
+		settype($sbId, "string");
+		
+		$sbstate = Application :: getConstant("ACTA_INAC");
+        $objDate = Application :: loadServices("DateController");
+        
+		//Arma el sql
+		 
+        if($order_by){
+        	
+        	$sbPos = strpos($order_by, ".");
+			if (!($sbPos === false)) {
+				$order_by = preg_replace("#((([a-z]|[0-9])*)\.(([a-z]|[0-9])*))#", '"$2"."$4"', $order_by);
+			} else {
+				$order_by = '"'.$order_by.'"';
+			}
+			$order = " ORDER BY $order_by $sentido";
+        }
+        
+        //tabla temporal para el ultima acta activa
+		$objService = Application::loadServices('Workflow');
+		$objGateway = $objService->getGateWay("actatmp");
+		$objGateway->create();
+		$sbId = $objGateway->getName();
+		$objService->close();
+		
+		$sbTable =' "'.$sbId.'" AS "acta" ';
+        
+		$sbSql = 'SELECT '. 
+					'"acta"."actacodigos",'.
+					'"acta"."ordenumeros",'.					
+					'COALESCE("paciente"."paciindentis", \'\') || \' -- \' || COALESCE("paciente"."paciprinoms", \'\') || COALESCE("paciente"."pacisegnoms", \'\')|| COALESCE("paciente"."pacipriapes", \'\')|| COALESCE("paciente"."pacisegapes", \'\') AS "pacinombres",'.
+					'COALESCE("view_solicitante"."contnombres", \'\') || \' -- \' || COALESCE("view_solicitante"."clienombres", \'\') AS "contnombre",'.
+					'"tipoorden"."tiornombres",'.
+					'"evento"."evennombres",'.					
+					'"mediorecepcion"."merenombres",'.					
+					'"tarea"."tarenombres" AS "tarecodigos",'.
+					'"estadoacta"."esacnombres" AS "actaestacts",
+					"acta"."actafechinin",
+					"acta"."actafechvenn",'.
+                    '"orden"."ordefecregd",'.
+                    '("orden"."ordefecvend") AS "restantes",'.
+                    '"orden"."ordefecvend",'.
+                    '"localizacion"."locanombres" ||\', \'|| COALESCE("orden"."ordesitiejes",\'\') AS "locanombres",'.
+                    '("orden"."ordefecvend") AS "avance" '.
+				'FROM '.
+					$sbTable.',"tarea","estadoacta",' .
+					'"ordenempresa" LEFT JOIN "view_solicitante" ON ("ordenempresa"."contidentis"="view_solicitante"."solicodigos") LEFT JOIN "paciente" ON ("ordenempresa"."paciindentis"="paciente"."paciindentis"),' .
+					' "tipoorden", "evento","orden","localizacion", "mediorecepcion" '.
+				'WHERE '.
+					'"acta"."orgacodigos"=\''.$orgacodigos.'\' AND '.
+					'"acta"."actafechfinn" IS NULL AND '.
+					'"orden"."ordefecfinad" IS NULL AND '.
+                    '"acta"."actaactivas"<>\''.$sbstate.'\' AND '.
+					'"acta"."tarecodigos"="tarea"."tarecodigos" AND '.
+					'"acta"."actaestacts"="estadoacta"."esaccodigos" AND '.
+					'"ordenempresa"."locacodigos"="localizacion"."locacodigos" AND '.
+					'"acta"."ordenumeros"="ordenempresa"."ordenumeros" AND '.					
+					'"ordenempresa"."tiorcodigos"="tipoorden"."tiorcodigos" AND '.					
+					'"ordenempresa"."tiorcodigos"="evento"."tiorcodigos" AND '.
+					'"ordenempresa"."evencodigos"="evento"."evencodigos" AND '.					
+					'"ordenempresa"."merecodigos"="mediorecepcion"."merecodigos" AND '.					
+                    '"ordenempresa"."ordenumeros"="orden"."ordenumeros" '.$order;
+                    
+		//Ejecuta el sql en db pero haciendo el fectch para hacer la conversion de fechas
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		
+		//borrado tabla temporal para el ultima acta activa
+		$objService = Application::loadServices('Workflow');
+		$objGateway = $objService->getGateWay("actatmp");
+		$objGateway->drop();
+		$objService->close();
+		
+		if (!$this->objdb->objresult)
+			return null;
+
+		$nuCont = 0;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+            //avance
+            $objService = Application :: loadServices("General"); //llamado a la funcion
+			$rcTmpA = $objService->get_Time_Progress($rcTmp["ordefecregd"],$rcTmp["ordefecvend"],false);
+			$rcTmp["avance"] = $rcTmpA["avance"];
+			$rcTmp["restantes"] = $rcTmpA["restantes"];
+
+			echo "<pre>";
+			var_dump("Orden: ",$rcTmp[$nuCont]["ordenukeros"]," Avance: ",$rcTmp["avance"]," Restante: ",$rcTmp["restantes"]);
+			echo "</pre>******";
+			
+			//se valida que las fechas existan
+			if($rcTmp["actafechinin"] && $rcTmp["actafechvenn"]){
+				$rcTmpA = $objService->get_Time_Progress($rcTmp["actafechinin"],$rcTmp["actafechvenn"]);
+				$rcTmp["actafechvenn"] = $rcTmpA["avance"];
+				$rcTmp["actafechinin"] = $rcTmpA["restantes"];	
+			}else{
+				$rcTmp["actafechvenn"] = null;
+				$rcTmp["actafechinin"] = null;
+				$objService->close();
+			}
+			
+            //Hace la conversion de fechas
+            $rcTmp["ordefecvend"] = $objDate->fncformatofechahora($rcTmp["ordefecvend"]);
+			$rcTmp["ordefecregd"] = $objDate->fncformatofechahora($rcTmp["ordefecregd"]);
+			
+            $rcTareas[$nuCont] = $rcTmp;
+			$nuCont ++;
+		}
+        
+		return $rcTareas;
+	}
+	function updateActaactivasByOrdenumeros($ordenumeros, $actaactivas) {
+		$sql = 'UPDATE 
+                    "acta" 
+				SET 
+					"actaactivas"=\''.$actaactivas.'\' 
+				WHERE 
+					"ordenumeros"=\''.$ordenumeros.'\'';
+		return $sql;
+	}
+	function updateFinalizarActa($actacodigos) {
+		$servceDate = Application :: loadServices("DateController");
+        $hoy = $servceDate->fncintdatehour();
+        $sbactafinalizada = Application :: getConstant("ACTA_FIN");
+		$sql = 'UPDATE "acta" SET "actafechfinn"='.$hoy.' ,"actaactivas"=\''.$sbactafinalizada.'\' WHERE "actacodigos"=\''.$actacodigos.'\'';
+		return $sql;
+	}
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	* Consulta los datos del acta para la ficha
+	* @param string $actacodigos 
+	* @return array
+	* @author creyes <cesar.reyes@parquesoft.com>
+	* @date 21-sep-2004 9:34:43
+	* @location Cali-Colombia
+	*/
+	function getByIdActaFicha($actacodigos,$tarecodigos=false) {
+		//Arma el sql 
+		$sbSql = 'SELECT '. 
+					'"acta"."actacodigos",'.
+					'"acta"."ordenumeros",'.
+					'"tarea"."tarenombres" AS "tarecodigos",'.
+					'"estadoacta"."esacnombres" AS "actaestacts",'.
+					'"acta"."actaestants",'.
+					'"acta"."actafechingn",
+					"acta"."actafechinin",
+					"acta"."actafechvenn",'.
+					'"acta"."usuacodigos",'.
+					'"organizacion"."organombres" AS "orgacodigos" '.
+				'FROM '.
+					'"acta","tarea","estadoacta","organizacion" '.
+				'WHERE ';
+		if($actacodigos)
+			$sbSql .= '"acta"."actacodigos"=\''.$actacodigos.'\' AND ';
+		else
+			$sbSql .= '"acta"."tarecodigos"=\''.$tarecodigos.'\' AND ';
+		$sbSql .= '"acta"."tarecodigos"="tarea"."tarecodigos" AND '.
+					'"acta"."actaestacts"="estadoacta"."esaccodigos" AND '.
+					'"acta"."orgacodigos"="organizacion"."orgacodigos"';
+					
+		//Ejecuta el sql en db pero haciendo el fectch para hacer la conversi�n de fechas
+		$this->objdb->fncadosetmodefetch(FETCH_ASSOC);
+		$this->objdb->fncadoexecute($sbSql);
+		if (!$this->objdb->objresult)
+			return null;
+		//Trae los estados para poner los nombres al estado anterior
+		$gatewayEstAct = Application :: getDataGateway("estadoacta");
+		//Carga el servicio de control de fechas 
+		$servceDate = Application :: loadServices("DateController");
+		$nuCont = 0;
+		while (!$this->objdb->objresult->EOF) {
+			$rcTmp = $this->objdb->fncadofetch();
+			$this->objdb->fncadomovenext();
+			//Hace la conversi�n de fechas
+			$rcTmp["actafechingn"] = $servceDate->fncformatofecha($rcTmp["actafechingn"]);
+			$rcTmp["actafechinin"] = $servceDate->fncformatofecha($rcTmp["actafechinin"]);
+			$rcTmp["actafechvenn"] = $servceDate->fncformatofecha($rcTmp["actafechvenn"]);
+			$rcEstadoActa = $gatewayEstAct->getByIdEstadoacta($rcTmp["actaestants"]);
+			$rcTmp["actaestants"] = $rcEstadoActa[0]["esacnombres"];
+			$rcTareas[$nuCont] = $rcTmp;
+			$nuCont ++;
+		}
+		return $rcTareas;
+	}
+	function getActaByOrdenumeros($ordenumeros) {
+		
+		settype($sbsql,"string");
+		settype($sbstate,"string");
+		
+		$sbstate = Application :: getConstant("ACTA_INAC");
+		$sbsql = 'SELECT * FROM "acta" WHERE "ordenumeros"=\''.$ordenumeros
+		.'\' AND "actaactivas"<>\''.$sbstate.'\' ORDER BY "actafechingn" ASC';
+		$this->objdb->fncadoselect($sbsql, FETCH_ASSOC);
+		return $this->objdb->rcresult;
+	}
+	function updateActaSql($actacodigos, $ordenumeros, $tarecodigos, $actaestacts, $actaestants, $actafechingn, $usuacodigos, $orgacodigos, $actaactivas) {
+		settype($osbSql,"string");
+		$osbSql = 'UPDATE "acta" SET "ordenumeros"=\''.$ordenumeros.'\',"tarecodigos"=\''.$tarecodigos.'\',"actaestacts"=\''.$actaestacts.'\',"actaestants"=\''.$actaestants.'\',"actafechingn"='.$actafechingn.' ,"usuacodigos"=\''.$usuacodigos.'\',"orgacodigos"=\''.$orgacodigos.'\',"actaactivas"=\''.$actaactivas.'\' WHERE "actacodigos"=\''.$actacodigos.'\'';
+		return $osbSql;
+	}
+	function getSqlUpdateState($isbActaestacts,$isbActaestants, $isbActacodigos){
+		settype($osbSql,"string");
+		settype($sbDbNull, "string");
+		$sbDbNull = Application :: getConstant("DB_NULL");
+		if($isbActaestacts && $isbActaestacts != $sbDbNull){
+			$isbActaestacts = "'".$isbActaestacts."'";
+		}
+		if($isbActaestants && $isbActaestants != $sbDbNull){
+			$isbActaestants = "'".$isbActaestants."'";
+		}
+		$osbSql = 'UPDATE "acta" SET "actaestacts"='.$isbActaestacts.',"actaestants"='.$isbActaestants.' WHERE "actacodigos"=\''.$isbActacodigos.'\'';
+		return $osbSql;
+	}
+	function getSqlDeactivateActa($isbActacodigos){
+		settype($osbSql,"string");
+		settype($sbState,"string");
+		$sbState = Application :: getConstant("ACTA_INAC");
+		$osbSql = 'UPDATE "acta" SET "actaactivas"=\''.$sbState.'\' WHERE "actacodigos" =\''.$isbActacodigos.'\'';
+		return $osbSql;
+	}
+	function getSqlActivateActa($isbActacodigos){
+		settype($osbSql,"string");
+		settype($sbState,"string");
+		settype($sbDbNull,"string");
+		$sbState = Application :: getConstant("ACTA_AC");
+		$sbDbNull = Application :: getConstant("DB_NULL");
+		$osbSql = 'UPDATE "acta" SET "actaactivas"=\''.$sbState.'\', "actafechfinn"='.$sbDbNull.' WHERE "actacodigos" =\''.$isbActacodigos.'\'';
+		return $osbSql;
+	}
+	
+	function getActaFinalizedByOrdenumeros($isbOrdenumeros) {
+		
+		settype($sbSql,"string");
+		settype($sbState,"string");
+		
+		$sbState = Application :: getConstant("ACTA_FIN");
+		$sbSql = 'SELECT * FROM "acta" WHERE "ordenumeros"=\''.$isbOrdenumeros.'\' AND "actaactivas"=\''.$sbState.'\' ORDER BY "actafechfinn" DESC';
+		$this->objdb->fncadoselect($sbSql, FETCH_ASSOC);
+		return $this->objdb->rcresult;
+	}
+	
+	function getOrdenes($orgacodigos) {
+		
+		settype($sbSql,"string");
+		settype($sbState,"string");
+		
+		$sbState = Application :: getConstant("ACTA_FIN");
+		$sbSql = 'SELECT "ordenumeros","acta"."tarecodigos","actacodigos","tarenombres"'.
+				' FROM "acta","tarea"'.
+				' WHERE "acta"."orgacodigos"=\''.$orgacodigos.'\''.
+				' AND "tarea"."tarecodigos"="acta"."tarecodigos"'.
+				' AND "actaactivas"!=\''.$sbState.'\''.
+				' ORDER BY "actafechingn" DESC';
+		$this->objdb->fncadoselect($sbSql, FETCH_ASSOC);
+		return $this->objdb->rcresult;
+	}
+
+	/**
+    * Copyright 2009 FullEngine
+    * 
+    * OBTIENE LOS CASOS ASIGNADOS A UN ENTE, CON SUS RESPECTIVOS ESTADOS
+    * 
+    * @author mrestrepo
+    * @param array $orgacodigos, $padre
+    * @return type name desc
+    * @date 26-Feb-2009 23:36:26
+    * @location Cali-Colombia
+    */
+	function getOrdenesByOrgacodigos($orgacodigos) {
+		
+		settype($objGateway,"object");
+		settype($objService,"object");
+		settype($rcResult,"array");
+		settype($rcTmp, "array");
+		settype($rcRow, "array");
+		settype($sbSql,"string");
+		settype($sbId,"string");
+		settype($sbStatusA,"string");
+		settype($sbTable, "string");
+		settype($nuCont, "integer");
+		
+		$sbStatusA = Application :: getConstant("ACTA_AC");
+		
+		//tabla temporal para el ultima acta activa
+		$objService = Application::loadServices('Workflow');
+		$objGateway = $objService->getGateWay("actatmp");
+		$objGateway->create();
+		$sbId = $objGateway->getName();
+		$objService->close();
+		
+		$sbTable =' "'.$sbId.'" AS "acta" ';
+		
+		$sbSql = 'SELECT "acta".*'.
+				' FROM '.$sbTable.
+				' WHERE "acta"."orgacodigos"=\''.$orgacodigos.'\''.
+				' ORDER BY "actafechingn"';
+		$this->objdb->fncadoselect($sbSql, FETCH_ASSOC);
+		$rcTmp = $this->objdb->rcresult;
+		
+		//borrado tabla temporal para el ultima acta activa
+		$objService = Application::loadServices('Workflow');
+		$objGateway = $objService->getGateWay("actatmp");
+		$objGateway->drop();
+		$objService->close();
+		
+		if(is_array($rcTmp) && $rcTmp) {
+			foreach($rcTmp as $rcRow) {
+				if($rcRow["actaactivas"] == $sbStatusA){
+					$rcResult[$nuCont] = $rcRow;
+					$nuCont ++;	
+				}
+			}
+			return $rcResult;
+		}
+		return false;
+	}
+} //End of Class Acta
+?>

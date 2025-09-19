@@ -1,0 +1,11 @@
+Modulo 		: Cross300
+Clase    		: FeCrPgsqlSqlExtended
+metodo 		: getDataEmail
+Descripcion	: Consulta multimodulo que obtiene la data necesaria para armar los email
+					   generados e el centro de email.
+					   
+Modulo 		: General
+Clase    		: FeGePgsqlSqlExtended
+metodo 		: getAllEmailSql
+Descripcion	: Consulta multimodulo que obtiene la data necesaria para listar los email
+					   de acuerdo a ciertos parametros en el centro de email.

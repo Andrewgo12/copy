@@ -1,0 +1,1046 @@
+BODY {
+	FONT-SIZE: 12px; margin-left: 0px; margin-top: 0px;	margin-right: 0px; margin-bottom: 0px; COLOR: #666666; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+TD {
+	BACKGROUND: #ffffff; FONT-FAMILY: Arial, Helvetica, sans-serif; font-weight: normal; font-size: 9pt; color: #3F3F3F; text-decoration: none;
+}
+TH {
+	BACKGROUND-COLOR: #FFFFFF; FONT-WEIGHT: bold; font-size: 12pt; color: #CB0001; FONT-FAMILY: Arial, Helvetica, sans-serif; text-decoration: none; ALIGN: left;
+}
+SELECT {
+	font-family: arial; font-weight: normal; font-size: 9pt; color: #3F3F3F;
+}
+INPUT {
+	font-family: arial; font-weight: normal; font-size: 9pt; color: #3F3F3F;
+}
+TEXTAREA{
+	font-family: arial; font-weight: normal; font-size: 9pt; color: #3F3F3F;
+}
+.titulofila {
+	FONT-SIZE: 11px; BACKGROUND: #1c49bc; COLOR: #ffffff; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.titulo {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	color: #313380;
+}
+.celda2 {
+	BACKGROUND: #ffffff; FONT-FAMILY: Arial, Helvetica, sans-serif; font-weight: normal; font-size: 9pt; color: #3F3F3F; text-decoration: none;
+}
+.celda {
+	BACKGROUND: #ffffff; FONT-FAMILY: Arial, Helvetica, sans-serif; font-weight: normal; font-size: 9pt; color: #3F3F3F; text-decoration: none;
+}
+
+
+.celdaborder2 {
+	BACKGROUND: #ffffff; FONT-FAMILY: Arial, Helvetica, sans-serif; font-weight: normal; font-size: 9pt; color: #3F3F3F; text-decoration: none; border : 1px solid #999; valign: top;
+}
+.celdaborder {
+	BACKGROUND: #e8f5ff; FONT-FAMILY: Arial, Helvetica, sans-serif; font-weight: normal; font-size: 9pt; color: #3F3F3F; text-decoration: none; border : 1px solid #999
+}
+
+.boton {
+	FONT-SIZE: 10px; COLOR: #ffffff; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #313380
+}
+.piedefoto {
+	BACKGROUND: #ffffff; FONT-SIZE: 10px; COLOR: #888888; FONT-FAMILY: Arial, Helvetica, sans-serif 
+}
+.activas { background-color: #FFFF00; text-align: left;}
+.activaspanel { background-color: #FFFF00; text-align: center;}
+.inactivas { background-color: #00FF00; text-align: left;}
+.inactivaspanel { background-color: #00FF00; text-align: cneter;}
+.ocupada { background-color: #FFFF00; text-align: left;}
+.ocupadapanel { background-color: #FFFF00; text-align: center;}
+.pasada { background-color: #C0C0C0; text-align: left;}
+.pasadapanel { background-color: #C0C0C0; text-align: center;}
+.vacia { background-color: #FFFFFF; text-align: left;}
+DIV.content {
+	BACKGROUND-IMAGE: url(../images/trees/tree-mientrasTanto/left_line.gif); BACKGROUND-REPEAT: repeat-y; HEIGHT: 90%; BACKGROUND-COLOR: #efefef
+}
+DIV.boxcontrol {
+	PADDING-RIGHT: 1px; BACKGROUND-POSITION: right 50%; PADDING-LEFT: 15px; BACKGROUND-IMAGE: url(../images/trees/tree-mientrasTanto/right_line.gif); PADDING-BOTTOM: 0px; PADDING-TOP: 0px; BACKGROUND-REPEAT: repeat-y; HEIGHT: 100%
+}
+FIELDSET.context_help {
+	BACKGROUND: #ffffff; FONT-SIZE: 10px; COLOR: #888888; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.menugen{
+    FONT-FAMILY: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    scrollbar-face-color: #006699;
+    scrollbar-track-color: White;
+    scrollbar-arrow-color: #87CEFA;
+    scrollbar-shadow-color: Navy;
+    scrollbar-3dlight-color: #ADD8E6;
+    scrollbar-darkshadow-color: Black;
+    buttonface: #FF0000;
+	background-color: #f5e5e5;
+}
+.tdmenu{
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 12px; 
+	color: #960001; 
+	text-decoration: none;
+	background-color: #f5e5e5;
+}
+a:link{
+	color: #1C4AB9;
+	text-decoration: none;
+	font-size: 10px;
+	font-weight: bold;
+
+}
+a:active{
+	text-decoration: none;
+	font-size: 10px;
+	font-weight: bold;
+	color: #1C4AB9;
+}
+a:visited{
+	text-decoration: none;
+	font-size: 10px;
+	font-weight: bold;
+	color: #1C4AB9;
+}
+a:hover{ color: #1766DD; text-decoration: underline; font-size: 10px; font-weight: bold; }
+
+a.menuppal:link{ font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #960001; text-decoration: none}
+a.menuppal:visited{ font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #1C4AB9; text-decoration: none}
+a.menuppal:hover{ font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight:bold; color: #0044BA; text-decoration: underline}
+a.menuppal:active{ font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #FFFFFF; text-decoration: none}
+
+a.linkconsult:link{ font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #FFFFFF; text-decoration: none}
+a.linkconsult:visited{ font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #FFFFFF; text-decoration: none}
+a.linkconsult:hover{ font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight:bold; color: #ffff95; text-decoration: underline}
+a.linkconsult:active{ font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #FFFFFF; text-decoration: none}
+
+.menu {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+.expediente {
+border:1px solid #0000FF
+}
+
+/*Estilos del admiistrador de expedientes*/
+div.main {
+	height: 90%;
+	width: 90%;
+	left: 1%;
+	top: 1%;
+	border: 1px solid #D4D4D4;
+	position: relative;
+	padding: 10px;
+}
+
+div.header {
+	height: 200px;
+	border: 1px solid #D4D4D4;
+	position: relative;
+	margin-bottom:5px;
+	padding: 5px;
+}
+div.filtros {
+	border: 1px solid #D4D4D4;
+	width: 60%; 
+	height: 82%;
+	position: relative;
+	padding: 5px;
+	float:left;
+}
+div.info {
+	background-color:#FFFFFF;
+	border: 1px solid #D4D4D4;
+	width: 36%; 
+	height: 82%;
+	position: relative;
+	padding: 5px;
+	float:right;
+	overflow: auto;
+}
+
+div.contenido {
+	border: 1px solid #D4D4D4;
+	height: 400px;
+	position: relative;
+	margin-bottom:5px;
+	padding: 5px;
+}
+div.parte {
+	border: 1px solid #D4D4D4;
+	margin-bottom:5px;
+}
+div.data {
+	border-bottom: 1px solid #D4D4D4;
+	position: relative;
+}
+div.innerdata{
+	border: 1px solid #D4D4D4;
+	position: relative;
+	margin: 5px;
+	padding: 5px;
+}
+.box {
+	position: relative;
+	display: block;
+	text-align: center;
+}
+.box .dojoButton {
+	float: left;
+	margin-right: 10px;
+}
+.dojoButton .dojoButtonContents {
+	font-size: medium;
+}
+
+.label , .content {
+	width: 100%;
+}
+
+.label {
+	background-image:url(../images/blue-stripe.gif);
+	height: 36px;
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 12px;
+	color: BLACK;
+	text-decoration: bold;
+}
+.labelparte {
+	background-image:url(../images/blue-stripe.gif);
+	height: 20px;
+	font-family: Arial, Helvetica, sans-serif; 
+	font-size: 12px;
+	color: BLACK;
+	text-decoration: bold;
+}
+
+.content {
+	background-color:#FFFFFF;
+}
+
+.dojoDialog {
+	background : #eee;
+	border : 1px solid #999;
+	-moz-border-radius : 5px;
+	padding : 4px;
+}
+/* add padding to each contentpane inside the tab container, and scrollbar if necessary */
+.dojoTabPane {
+  padding : 5px;
+  overflow: auto;
+}
+/* -- END -- */
+
+/* SECTION A */
+body {
+  color: #000000;
+  font-family: arial;
+  font-size: 12px;
+  background-color: #ffffff;
+}
+a {
+  color: #000000;
+  text-decoration: none;
+}
+a:hover {
+  color: #0000FF;
+}
+#edituser,
+#edituserhandler,
+#groupedit,
+#editnonusers,
+#groupedithandler,
+#editnonusershandler {
+  background-color: #F8F8FF;
+}
+#tabscontent {
+  margin: 0px;
+  padding: 0.5em;
+  border: 2px groove #C0C0C0;
+  width: 70%;
+  background-color: #F8F8FF;
+}
+.tabfor {
+  padding: 0.2em 0.2em 0.07em 0.2em;
+  margin: 0px 0.2em 0px 0.8em;
+  border-top: 2px ridge #C0C0C0;
+  border-left: 2px ridge #C0C0C0;
+  border-right: 2px ridge #C0C0C0;
+  border-bottom: 2px solid #F8F8FF;
+  background-color: #F8F8FF;
+  font-size: 14px;
+  text-decoration: none;
+  color: #000000;
+}
+.tabbak {
+  padding: 0.2em 0.2em 0px 0.2em;
+  margin: 0 0.2em 0 0.8em;
+  border-top: 2px ridge #C0C0C0;
+  border-left: 2px ridge #C0C0C0;
+  border-right: 2px ridge #C0C0C0;
+  background-color: #E0E0E0;
+  font-size: 14px;
+  text-decoration: none;
+  color: #000000;
+}
+#tabscontent_public,
+#tabscontent_groups,
+#tabscontent_nonuser,
+#tabscontent_other,
+#tabscontent_email,
+#tabscontent_colors,
+#tabscontent_participants,
+#tabscontent_sched,
+#tabscontent_pete,
+#tabscontent_export,
+#tabscontent_nonusers,
+#useriframe,
+#grpiframe,
+#nonusersiframe {
+  display: none;
+}
+label {
+  font-weight: bold;
+}
+.sample {
+  border-style: groove;
+}
+.weeknumber,
+.weeknumber a {
+  font-size: 10px;
+  color: #B04040;
+  text-decoration: none;
+}
+img.color {
+  border-width: 0px;
+  width: 15px;
+  height: 15px;
+}
+#cat {
+  display: none;
+  font-size: 18px;
+}
+#trailer {
+  margin: 0px;
+  padding: 0px;
+}
+#trailer form {
+  float: left;
+  width: 33%;
+  border-top: 1px solid #666666;
+  padding-top: 5px;
+  margin-top: 5px;
+  margin-bottom: 25px;
+}
+#trailer label {
+  margin: 0px;
+  padding: 0px;
+  font-weight: bold;
+}
+#monthform {
+  clear: left;
+}
+#weekform {
+  text-align: center;
+}
+#yearform {
+  text-align: right;
+  clear: right;
+}
+#menu {
+  clear: both;
+}
+#menu a {
+  font-size: 14px;
+  color: #000000;
+  text-decoration: none;
+}
+.prefix {
+  font-weight: bold;
+  font-size: 14px;
+}
+a#programname {
+  margin-top: 10px;
+  font-size: 10px;
+}
+.printer {
+  font-size: 14px;
+  color: #000000;
+  text-decoration: none;
+  clear: both;
+  display: block;
+  width: 15ex;
+}
+.new {
+  border-width: 0px;
+  float: right;
+}
+.unapprovedentry {
+  font-size: 13px;
+  color: #800000;
+  text-decoration: none;
+  padding-right: 3px;
+}
+.nounapproved {
+  margin-left: 20px;
+}
+.layerentry {
+  font-size: 13px;
+  color: #006060;
+  text-decoration: none;
+  padding-right: 3px;
+}
+.entry {
+  font-size: 13px;
+  color: #006000;
+  text-decoration: none;
+  padding-right: 3px;
+}
+.entry img,
+.layerentry img,
+.unapprovedentry img {
+  border-width: 0px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.dayofmonth {
+  font-size: 13px;
+  color: #000000;
+  font-weight: bold;
+  text-decoration: none;
+  border-top-width: 0px;
+  border-left-width: 0px;
+  border-right: 1px solid #888888;
+  border-bottom: 1px solid #888888;
+  padding: 0px 2px 0px 3px;
+}
+.dayofmonth:hover {
+  color: #0000FF;
+  border-right: 1px solid #0000FF;
+  border-bottom: 1px solid #0000FF;
+}
+.prev img {
+  border-width: 0px;
+  margin-left: 3px;
+  margin-top: 7px;
+  float: left;
+}
+.next img {
+  border-width: 0px;
+  margin-right: 3px;
+  margin-top: 7px;
+  float: right;
+}
+#activitylog .prev {
+  border-width: 0px;
+  float: left;
+}
+#activitylog .next {
+  border-width: 0px;
+  float: right;
+}
+#day .prev img {
+  border-width: 0px;
+  margin-top: 37px;
+  float: left;
+}
+#day .next img {
+  border-width: 0px;
+  margin-top: 37px;
+  float: right;
+}
+#day .monthnav .prev img {
+  border-width: 0px;
+  margin: 0px;
+  float: left;
+}
+#day .monthnav .next img {
+  border-width: 0px;
+  margin: 0px;
+  float: right;
+}
+.dailymatrix {
+  cursor: pointer;
+  font-size: 12px;
+  text-decoration: none;
+  text-align: right;
+  background-color: #FFFFFF;
+}
+td.matrixappts {
+  cursor: pointer;
+  text-align: left;
+  background-color: #e8f5ff;
+  vertical-align: center;
+}
+td.matrix {
+  height: 1px;
+  background-color: #000000;
+}
+.matrix img {
+  border-width: 0px;
+  width: 100%;
+  height: 1px;
+}
+a.matrix img {
+  border-width: 0px;
+  width: 100%;
+  height: 8px;
+}
+.matrixd {
+  border-left: 1px solid #666666;
+  border-right: 1px solid #666666;
+  margin-left: auto; 
+  margin-right: auto;
+}
+.matrixlegend {
+  margin-top: 25px;
+  padding: 5px;
+  text-align: center;
+  background: #ffffff;
+  margin-left: auto; 
+  margin-right: auto;
+  border: 1px solid #000000;
+}
+.matrixlegend img {
+  border-width: 0px;
+  width: 10px;
+  height: 10px;
+}
+.nav {
+  font-size: 14px;
+  color: #000000;
+  text-decoration: none;
+}
+.popup {
+  font-size: 12px;
+  color: #000000;
+  text-decoration: none;
+  position: absolute;
+  z-index: 20;
+  visibility: hidden;
+  top: 0px;
+  left: 0px;
+  border: 1px solid #ffffff;
+  padding: 3px;
+}
+.popup dl {
+  margin: 0px;
+  padding: 0px;
+}
+.popup dt {
+  font-weight: bold;
+  margin: 0px;
+  padding: 0px;
+}
+.popup dd {
+  margin-left: 20px;
+}
+.tooltip {
+  cursor: help;
+  text-decoration: none;
+  font-weight: bold;
+}
+.tooltipselect {
+  cursor: help;
+  text-decoration: none;
+  font-weight: bold;
+  vertical-align: center;
+}
+h2 {
+  font-size: 20px;
+  color: #000000;
+}
+h3 {
+  font-size: 18px;
+}
+p,
+input,
+select {
+  font-size: 12px;
+}
+textarea {
+  font-size: 12px;
+  overflow: auto;
+}
+.user {
+  font-size: 18px;
+  color: #000000;
+  text-align: center;
+}
+.categories {
+  font-size: 18px;
+  color: #000000;
+  text-align: center;
+}
+.help {
+  vertical-align: center;
+  font-weight: bold;
+}
+img.help {
+  border-width: 0px;
+  cursor: help;
+}
+.standard {
+  border: 1px solid #666666;
+  background-color: #e8f5ff;
+  font-size: 12px;
+}
+.standard th {
+  color: #000000;
+  font-size: 18px;
+  padding: 0px;
+  border-bottom: 1px solid #666666;
+}
+.minical {
+  font-size: 12px;
+  border-collapse: collapse;
+  margin: 0px 0px 5px 0px;
+}
+.minical caption a {
+  font-weight: bold;
+  color: #B04040;
+}
+.minical caption a:hover {
+  color: #0000FF;
+}
+.minical th, 
+.minical td.empty {
+  color: #000000;
+  text-align: center;
+  background-color: #e8f5ff;
+}
+.minical td {
+  padding: 0px 2px;
+  border: 1px solid #e8f5ff;
+}
+.minical td a {
+  display: block;
+  text-align: center;
+  margin: 0px;
+  padding: 3px;
+}
+.minical td.weekend {
+  background-color: #e8f5ff;
+}
+.minical td#today {
+  background-color: #ffff40;
+}
+.minical td.hasevents {
+  background-color: #DDDDFF;
+  font-weight: bold;
+}
+#activitylog table,
+.embactlog {
+  width: 100%;
+  border-bottom: 1px solid #666666;
+  border-right: 1px solid #666666;
+  border-spacing: 0px;
+}
+#activitylog tr,
+.embactlog tr {
+  background-color: #FFFFFF;
+}
+#activitylog .odd,
+.embactlog .odd {
+  background-color: #EEEEEE;
+}
+#activitylog th,
+.embactlog th {
+  width: 14%;
+  color: #000000;
+  background-color: #FFFFFF;
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  border-bottom: 1px solid #666666;
+  padding: 1px 3px;
+}
+#activitylog th.usr,
+.embactlog th.usr,
+#activitylog th.cal,
+.embactlog th.cal,
+#activitylog th.action,
+.embactlog th.action {
+  width: 7%;
+}
+#activitylog td,
+.embactlog td {
+  border-left: 1px solid #666666;
+  padding: 1px 3px;
+}
+#day div.minicalcontainer {
+  text-align: right;
+  border: 1px solid #000000;
+  padding: 3px;
+}
+#day .minical caption {
+  text-align: center;
+  font-weight: bold;
+  color: #000000;
+  background-color: #FFFFFF;
+  font-size: 47px;
+}
+#day .minical td.selectedday {
+  border: 2px solid #666666;
+}
+#day .monthnav th {
+  text-align: center;
+  color: #000000;
+  background-color: #FFFFFF;
+  border-width: 0px;
+  padding: 3px;
+}
+.glance {
+  border-bottom: 1px solid #666666;
+  border-right: 1px solid #666666;
+  width: 100%;
+}
+.glance th.empty {
+  border-top: 1px solid #e8f5ff;
+  border-left: 1px solid #e8f5ff;
+  background-color: #e8f5ff;
+}
+.glance th.row {
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  height: 40px;
+  width: 14%;
+  color: #000000;
+  font-size: 13px;
+  background-color: #e8f5ff;
+  vertical-align: center;
+}
+.glance th.row2 {
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  height: 40px;
+  width: 14%;
+  color: #000000;
+  font-size: 13px;
+  background-color: #FFFFFF;
+  vertical-align: center;
+}
+.glance th.inactive {
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  height: 40px;
+  width: 14%;
+  color: #000000;
+  font-size: 13px;
+  background-color: #FFFFFF;
+  vertical-align: center;
+}
+.glance td {
+  vertical-align: center;
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  padding-left: 3px;
+}
+#day dl.desc {
+  display: none;
+  margin: 0px;
+  padding: 0px;
+}
+#day dl.desc dt {
+  font-weight: bold;
+}
+#day dl.desc dd {
+  margin: 0px;
+  padding-left: 20px;
+}
+.viewt,
+#viewv .main,
+#viewm .main,
+#vieww .main,
+#week .main,
+#viewl .main,
+#month .main {
+  border-bottom: 1px solid #666666;
+  border-right: 1px solid #666666;
+  width: 100%;
+  clear: both;
+}
+#year .main tr {
+  vertical-align: center;
+}
+ 
+#viewv .main th,
+#viewl .main th,
+#month .main th {
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  width: 14%;
+}
+#vieww .main th,
+#week .main th {
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  width: 12%;
+}
+#viewm .main th {
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+}
+#viewd .main th {
+  border-right: 1px solid #666666;
+  padding: 1px;
+}
+#viewv .main th.empty,
+#viewm .main th.empty,
+#vieww .main th.empty,
+#week .main th.empty {
+  background-color: #e8f5ff;
+  border-top: 1px solid #e8f5ff;
+  border-left: 1px solid #e8f5ff;
+}
+#week .main th.row {
+  width: 10%;
+  vertical-align: center;
+  height: 40px;
+}
+#vieww .main th.row,
+#viewv .main th.row,
+#viewm .main th.row,
+#viewt th.row {
+  width: 10%;
+  vertical-align: center;
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+}
+#viewd .main th.row {
+  border-right-width: 0px;
+  text-align: left;
+}
+#vieww .main th.today,
+#viewm .main th.today,
+#viewv .main th.today,
+#viewt .main th.today {
+  width: 10%;
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  vertical-align: center;
+}
+#week .main th.today {
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  width: 12%;
+}
+#week .main td.hasevents,
+#day .glance td.hasevents {
+	  background-color: #DDDDFF;
+  font-weight: bold;
+  vertical-align: center;
+}
+#week .main th a,
+#weekdetails .main th a {
+  color: #000000;
+}
+#week .main th a:hover,
+#weekdetails .main th a:hover {
+  color: #0000FF;
+}
+#year .main td {
+  text-align: center;
+  padding: 0px 3px;
+}
+#viewl .main td,
+#month .main td {
+  font-size: 12px;
+  height: 75px;
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  vertical-align: center;
+}
+#vieww .main td,
+#week .main td,
+#viewm .main td,
+#viewv .main td {
+  font-size: 12px;
+  vertical-align: center;
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  padding-left: 3px;
+}
+#viewl .main td.weekend,
+#month .main td.weekend,
+#viewm .main td.weekend,
+#viewv .main td.weekend,
+#vieww .main td.weekend,
+#week .main td.weekend {
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+}
+#viewl .main td.today,
+#month .main td.today,
+#viewm .main td.today,
+#vieww .main td.today,
+#viewv .main td.today {
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  vertical-align: center;
+}
+#month #prevmonth,
+#viewl #prevmonth {
+  float: left;
+}
+#month #nextmonth,
+#viewl #nextmonth {
+  float: right;
+}
+#month .minical caption,
+#viewl .minical caption {
+  margin-left: 4ex;
+}
+#year .minical {
+  margin: 5px auto;
+  display: block;
+}
+#year .minical caption {
+  margin: 0px auto;
+}
+#viewl .minical,
+#month .minical {
+  border-width: 0px;
+}
+#viewt td.reg {
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  width: 90%;
+}
+.title {
+  width: 99%;
+  text-align: center;
+}
+#day .title {
+  margin-top: 3px;
+  text-align: center;
+}
+#day .title .date,
+.title .date {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  color: #000000;
+}
+.title .weeknumber {
+  font-size: 20px;
+  color: #000000;
+}
+.title .viewname,
+#day .title .user,
+.title .user {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000000;
+  text-align: center;
+}
+#weekdetails .main {
+  border-right: 1px solid #666666;
+  border-bottom: 1px solid #666666;
+  width: 90%;
+}
+#weekdetails .main th {
+  font-size: 13px;
+  color: #000000;
+  border-left: 1px solid #666666;
+  border-top: 1px solid #666666;
+  width: 100%;
+  padding: 2px;
+}
+#weekdetails .main td {
+  border-left: 1px solid #666666;
+  border-top: 1px solid #666666;
+  vertical-align: center;
+  height: 75px;
+}
+#weekdetails .main th.today {
+}
+#weekdetails .main td.weekend {
+}
+#viewt table {
+  border-collapse: collapse;
+}
+#viewt .timebar {
+  padding: 0px;
+  width: 100%;
+  border-width: 0px;
+}
+#viewt .timebar td {
+  padding: 0px;
+  background-color: #FFFFFF;
+  text-align: center;
+  color: #CCCCCC;
+  font-size: 10px;
+}
+#viewt .yardstick {
+  width: 100%;
+  padding: 0px;
+  border-width: 0px;
+}
+#viewt .yardstick td {
+  background-color: #FFFFFF;
+  border: 1px solid #CCCCCC;
+}
+#viewt .entrycont {
+  width: 100%;
+  padding: 0px;
+  border-width: 0px;
+}
+#viewt .entrycont td {
+  text-align: right;
+}
+#viewt .entrybar {
+  width: 100%;
+  border-width: 0px;
+}
+#viewt .entrybar td.entry {
+  text-align: center;
+  background-color: #F5DEB3;
+  border: 1px solid #000000;
+}
+#viewt .weekend {
+  width: 90%;
+  border-top: 1px solid #666666;
+  border-left: 1px solid #666666;
+  vertical-align: center;
+}
+#viewt td.today {
+  width: 90%;
+  border-left: 1px solid #666666;
+  border-top: 1px solid #666666;
+  vertical-align: center;
+}
+#viewt th.today {
+  color: #000000;
+  border-left: 1px solid #666666;
+  border-top: 1px solid #666666;
+  vertical-align: center;
+}
+#login {
+  margin-top: 70px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+#login table {
+  border: 1px solid #666666;
+  font-size: 12px;
+}
+.cookies {
+  font-size: 13px;
+}
+.standard th {
+  color: #000000;
+  font-size: 18px;
+  padding: 0px;
+  border-bottom: 1px solid #666666;
+}
+abbr {
+  cursor: help;
+}

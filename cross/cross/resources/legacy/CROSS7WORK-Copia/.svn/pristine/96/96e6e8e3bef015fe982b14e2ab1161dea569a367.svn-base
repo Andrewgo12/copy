@@ -1,0 +1,25 @@
+<?php
+		$rcmessages = array(0=>"Los campos con * son obligatorios.",
+						1=>"El registro ya existe.",
+						2=>"El registro no existe o no es accesible.",
+						3=>"Operaci&oacute;n realizada con &eacute;xito.",
+						4=>"La informaci&oacute;n digitada no es aceptada por el sistema.",
+						5=>"Los seriales deben ser n&uacute;meros enteros.",
+						6=>"El serial inicial debe ser menor o igual al serial final.",
+						7=>"El recurso no fue adicionado a la lista por que existen seriales duplicados.",
+						8=>"El recurso fue adicionado exitosamente a la lista.",
+						9=>"El recurso no existe en la base de datos.",
+						10=>"Las bodegas no deben ser iguales.",
+						11=>"Los conceptos de movimientos no deben ser iguales.",
+						12=>"No se ha adicionado recursos al movimiento.",
+						13=>"No hay recursos en la bodega de salida.",
+						14=>"Error de registro en la base de datos.",
+						15=>"No hay existencias en la bodega de salida, Recurso: <0>",
+						16=>"Ya existen movimientos registrados con este documento, por favor rev&iacute;selos antes de continuar.",
+						17=>"Error de registro en la base de datos, pos&iacute;blemente est&aacute; intentando ingresar seriales que ya existen.",
+						18=>"Se debe digitar como m&iacute;nimo el serial inicial para registrar recursos seriados.",
+						19=>"Falta digitar la cantidad.",
+						20=>"Los seriales deben ser n&uacute;meros positivos.",
+						100=>"No se pudo realizar la operaci&oacute;n."
+						);
+?>

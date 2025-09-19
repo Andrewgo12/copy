@@ -1,0 +1,10 @@
+DEPENDENCIAS DEL MÓDULO DE WORKFLOW
+
+- MODULO NO
+	Servicio: Data_type
+	Funcionalidad: Para la validación y formateo de los tipos de datos en los ingresos y actualización de datos en las formas.
+	
+- MODULO DE human_resources 
+	Servicio: Human_resources
+	Funcionalidad: En la forma de tareas para cargar los entes organizacionales. 
+	plug-in: select_dataservices

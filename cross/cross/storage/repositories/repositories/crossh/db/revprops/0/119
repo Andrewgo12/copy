@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-10-08T17:08:30.055058Z
+K 7
+svn:log
+V 97
+Se agrega el método SendGenericEmail en el domain FeGeCentroEmailManager para la alerta de casos
+END

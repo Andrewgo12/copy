@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2021-05-08T17:10:52.937472Z
+K 7
+svn:log
+V 73
+Se actualiza el left join de la admon de tareas para traer el solicitante
+END

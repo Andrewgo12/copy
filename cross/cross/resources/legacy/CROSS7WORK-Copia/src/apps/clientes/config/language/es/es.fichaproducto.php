@@ -1,0 +1,47 @@
+<?php
+/*
+ This is the language's file to the  Point Cliente 
+ */
+$rclabels = array("title"=>"Hoja de vida del producto",
+                  "consulttitle"=>"",
+				  "context_help"=>"",
+"prodcodigos"=>array("label"=>"Referencia","accesskey"=>false,"commentary"=>""),
+"prodnombres"=>array("label"=>"Nombre","accesskey"=>false,"commentary"=>""),
+"valor"=>array("label"=>"Valor","accesskey"=>false,"commentary"=>""),
+"marcnombres"=>array("label"=>"marca","accesskey"=>false,"commentary"=>""),
+"modenombres"=>array("label"=>"Modelo","accesskey"=>false,"commentary"=>""),
+"coprserials"=>array("label"=>"Serial","accesskey"=>false,"commentary"=>""),
+"proddescrips"=>array("label"=>"Descripci&oacute;n","accesskey"=>false,"commentary"=>""),
+"warranty"=>array("label"=>"Grant&iacute;a","accesskey"=>false,"commentary"=>""),
+"copovigencn"=>array("label"=>"Vigencia","accesskey"=>false,"commentary"=>""),
+"copodefinis"=>array("label"=>"Definici&oacute;n","accesskey"=>false,"commentary"=>""),
+"copoclausus"=>array("label"=>"Cl&aacute;usulas","accesskey"=>false,"commentary"=>""),
+"coporestris"=>array("label"=>"Restricciones","accesskey"=>false,"commentary"=>""),
+"contfchfirmn"=>array("label"=>"Inicio","accesskey"=>false,"commentary"=>""),
+"vencimiento"=>array("label"=>"Vence","accesskey"=>false,"commentary"=>""),
+"meses"=>array("label"=>"Meses","accesskey"=>false,"commentary"=>""),
+"orden"=>array("label"=>"Casos registrados","accesskey"=>false,"commentary"=>""),
+"ordenumeros"=>array("label"=>"N&uacute;mero","accesskey"=>false,"commentary"=>""),
+"tiornombres"=>array("label"=>"Tipo","accesskey"=>false,"commentary"=>""),
+"evennombres"=>array("label"=>"Evento","accesskey"=>false,"commentary"=>""),
+"ordefecregd"=>array("label"=>"Creaci&oacute;n","accesskey"=>false,"commentary"=>""),
+"ordefecfinad"=>array("label"=>"Finalizaci&oacute;n","accesskey"=>false,"commentary"=>""),
+"ordeobservs"=>array("label"=>"Observaciones","accesskey"=>false,"commentary"=>""),
+"actas"=>array("label"=>"Actas del caso","accesskey"=>false,"commentary"=>""),
+"actacodigos"=>array("label"=>"N&uacute;mero","accesskey"=>false,"commentary"=>""),
+"tarenombres"=>array("label"=>"Tarea","accesskey"=>false,"commentary"=>""),
+"esacnombres"=>array("label"=>"Estado","accesskey"=>false,"commentary"=>""),
+"actafechingn"=>array("label"=>"Ingreso","accesskey"=>false,"commentary"=>""),
+"usuacodigos"=>array("label"=>"Usuario","accesskey"=>false,"commentary"=>""),
+"atenciones"=>array("label"=>"Atenciones del acta","accesskey"=>false,"commentary"=>""),
+"esacnombres"=>array("label"=>"Estado del acta","accesskey"=>false,"commentary"=>""),
+"acemfecaten"=>array("label"=>"Atenci&oacute;n","accesskey"=>false,"commentary"=>""),
+"grupnombres"=>array("label"=>"Grupo","accesskey"=>false,"commentary"=>""),
+"acemobservas"=>array("label"=>"Observaciones","accesskey"=>false,"commentary"=>""),
+"actividades"=>array("label"=>"Actividades","accesskey"=>false,"commentary"=>""),
+"acticodigos"=>array("label"=>"C&oacute;digo","accesskey"=>false,"commentary"=>""),
+"actinombres"=>array("label"=>"Nombre","accesskey"=>false,"commentary"=>""),
+
+
+);
+?>

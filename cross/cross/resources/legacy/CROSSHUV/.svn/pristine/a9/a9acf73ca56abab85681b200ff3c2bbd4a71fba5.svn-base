@@ -1,0 +1,1152 @@
+<?php                
+class FeCrOrdenManager {
+	var $gateway;
+	var $gatewayext;
+	var $gatewayoremext;
+	var $objdate;
+	var $objorem;
+	var $objorlog;
+	function FeCrOrdenManager() {
+		$this->gateway = Application :: getDataGateway("Orden");
+		$this->gatewayext = Application :: getDataGateway("OrdenExtended");
+		$this->gatewayoremext = Application :: getDataGateway("OrdenempresaExtended");
+		$this->gatewayOG = Application :: getDataGateway("Ordengruposinteres");
+		$this->objorem = Application :: getDomainController('OrdenempresaManager');
+		$this->objorlog = Application :: getDomainController('Orden_logManager');
+		$this->objdate = Application :: loadServices("DateController");
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Ingresa el requerimiento a la base de datos
+	*   @author freina
+	*	@param string $isbordenumeros (Codigo del requerimiento)
+	*	@param array $ircdata (Arreglo con la data del requerimiento {order - ordenempresa})
+	*	@param array $ircDimension Arreglo con la data de las dimensiones de los campos dinamicos
+	*	@return integer (3 exito, 5 error en el ingreso,1 el registro ya existe)
+	*   @date 06-Sep-2004 07:33
+	*   @location Cali-Colombia
+	*/
+	function addOrden($isbordenumeros, $ircdata, $ircDimension, $webReg=false) {
+
+		settype($rctmp, "array");
+		settype($rctmpt, "array");
+		settype($rcExec, "array");
+		settype($rcResult, "array");
+		settype($rcLlave,"array");
+		settype($rctareas, "array");
+		settype($rcuser, "array");
+		settype($rcprocess, "array");
+		settype($rcattachment, "array");
+		settype($rclog, "array");
+		settype($rcRules, "array");
+		settype($rcExtra,"array");
+		settype($objwm, "object");
+		settype($objdate, "object");
+		settype($objnumerador, "object");
+		settype($sbresult, "string");
+		settype($sbproccodigos, "string");
+		settype($sbdbnull, "string");
+		settype($sbsql, "string");
+		settype($sbAuto, "string");
+		settype($nudatehour, "integer");
+		settype($nucant, "integer");
+		settype($nucont, "integer");
+		settype($rcDatosOrGI,"array");
+		
+		//constantes
+		$sbdbnull = Application :: getConstant("DB_NULL");
+        $sbAuto = true;
+        if(!$webReg)
+            $sbAuto = Application :: getConstant("COD_AUT_REQ");
+            
+        //Se valida el contacto si existe
+		if($ircdata["contidentis"] && $ircdata["contidentis"]!=$sbdbnull){
+			
+			$objwm = Application :: loadServices("Customers");
+			if(!$objwm->existActiveSolicitanteByIdentis($ircdata["contidentis"])){
+				return 59;
+			}
+		}
+		
+		//Se valida si existe y esta activa el area causante
+		if($ircdata["ordesitiejes"] && $ircdata["ordesitiejes"]!=$sbdbnull){
+			
+			$objwm = Application :: loadServices("Human_resources");
+			if(!$objwm->existOrganizacion($ircdata["ordesitiejes"])){
+				return 77;
+			}
+		}
+		
+		//fecha hora
+		$nudatehour = $this->objdate->fncintdatehour();
+		
+		//se valida, en caso de que haya sido ingresada, que la llave sea valida.
+		if($ircdata["llave"]!="" && $ircdata["llave"]!=null){
+			if(!$this->validateKey($ircdata["llave"],$nudatehour)){
+				return 70;	
+			}
+		}
+		
+        //Si se debe generar el consecutivo
+		if ($sbAuto) {
+			$objnumerador = Application :: getDomainController('NumeradorManager');
+			$isbordenumeros = $objnumerador->fncgetByIdNumerador("orden");
+		} else {
+			if ($this->gateway->existOrden($isbordenumeros) != 0) {
+				return 1;
+			}
+		}
+
+		//Obtiene los datos del usuario
+		$rcuser = Application :: getUserParam();
+
+		//servicio de reglas del motor
+		$objwm = Application :: loadServices("Workflow");
+		$sbproccodigos = $objwm->getIdprocess($ircdata);
+		$rcprocess = $objwm->getProcess($sbproccodigos,true);
+		
+		//Define el ente organizacional responsable del requerimiento
+        if(!$ircdata["orgacodigos"]){
+            $ircdata["orgacodigos"] =  $rcprocess["orgacodigos"];
+            $rcExtra = null;
+        }else
+            $rcExtra['orgacodigos'] = array($ircdata["orgacodigos"]);
+            
+        //valor extra para asignacion por carga
+        $rcExtra["proccodigos"] = $sbproccodigos;
+            
+        //Arma en numero de req
+        if($sbAuto){
+            $generalService = Application::loadServices('General');
+            $maxlength = $generalService->getParam("cross300","MAXLENGTH_ORDENUMEROS");
+            $maxlength++;
+            $generalService = Application::loadServices('General');
+            $sufijo = $generalService->getParam("cross300","SUFIJO_ORDENUMEROS");
+            $isbordenumeros = str_pad($isbordenumeros, $maxlength, "0", STR_PAD_LEFT);
+            $isbordenumeros = $isbordenumeros.$sufijo;
+        }
+		
+        if ($sbproccodigos) 
+        {
+			//Verifica la fecha de ingreso al sistema contra los dias inhabiles y el horario
+			$generalService = Application :: loadServices("General");
+			$ircdata["ordefecregd"] = $generalService->getDateStart($ircdata["ordefecregd"],false);
+			
+			//Modificacion para CVC se considera para el calculo del vencimiento un d�a mas
+			
+			//JUL 30 - 2008:  CVC reci�n solicit� expl�citamente que la fecha-hora de vencimiento sea calculado de acuerdo
+			//al tiempo configurado para el tipo de caso, pero hasta el final del d�a, o sea, a la hora (86400-1) - COMENTAR ESTA L�NEA
+			//$tmpDayStart = $generalService->getDateStart(($ircdata["ordefecregd"] + 86400),false);
+			
+			//JUL 30 - 2008:  CVC reci�n solicit� expl�citamente que la fecha-hora de vencimiento sea calculado de acuerdo
+			//al tiempo configurado para el tipo de caso, pero hasta el final del d�a, o sea, a la hora (86400-1)
+			$ordefecvend = $generalService->getDateEnd($ircdata["ordefecregd"], $rcprocess["proctiempon"]);
+			$ordefecvend = $this->objdate->fncdatetoint($this->objdate->fncformatofecha($ordefecvend)) + $this->objdate->nuSecsDay - 1;
+			
+			//nuevas tareas, se pone aqui para enviar la fecha de registro y la fecha de vencimiento del caso
+			$rcExtra["ordefecregd"] = $ircdata["ordefecregd"];
+			$rcExtra["ordefecvend"] = $ordefecvend;
+			
+			$objwm = Application :: loadServices("Workflow");
+	        $rctareas = $objwm->getIniTareasSql($isbordenumeros, $sbproccodigos, $ircdata["ordefecregd"],true, $rcExtra);
+			
+			if(is_array($rctareas["data"]) && $rctareas["data"]){
+				$ircdata["orgacodigos"] = $rctareas["data"][0]["orgacodigos"]; 
+			}
+			//$ircdata["ordeobservs"] = ereg_replace("\'","",$ircdata["ordeobservs"]);
+			
+			$rctmp[0] = $this->gatewayext->addOrdenSql($isbordenumeros, $sbproccodigos, $ircdata["ordesitiejes"], $rcuser["username"], $rcprocess["procestinis"],$ircdata["ordeobservs"], $nudatehour, $ircdata["ordefecregd"], $ordefecvend, $sbdbnull, $sbdbnull);
+            $rctmp[1] = $this->gatewayoremext->addOrdenempresaSql($isbordenumeros, $ircdata["contidentis"],$ircdata["priocodigos"], 
+			$ircdata["tiorcodigos"], $ircdata["evencodigos"], $ircdata["causcodigos"], $ircdata["orgacodigos"], 
+			$ircdata["merecodigos"], $ircdata["locacodigos"],$ircdata["oremradicas"],$sbdbnull,$sbdbnull,$ircdata["paciindentis"],$ircdata["sesocodigos"],$ircdata["couscodigos"],$ircdata["ipsecodigos"]);
+
+			//deuelve el sql necesario para registrar en el log de ordenes
+			$rclog = $this->objorlog->addOrden_logSql($rctmp, $rcuser["username"], "1");
+			if ($rclog) {
+				$rctmp[2] = $rclog[0];
+				$rctmp[3] = $rclog[1];
+			}
+			//Guardo el grupo de interés de la orden
+			if(!empty($ircdata["grincodigos"])){
+				$this->gatewayOG->setExecuteSql(false);
+				$rcDatosOrGI["ordenumeros"]=$isbordenumeros;
+				$rcDatosOrGI["grincodigos"]=$ircdata["grincodigos"];
+				$this->gatewayOG->setData($rcDatosOrGI);
+				$this->gatewayOG->addOrdengruposinteres();
+				$rctmp[]=$this->gatewayOG->getSql();
+			}
+
+			//===========================================
+			//se realiza el grabado de los anexos
+			$rcattachment = $this->addFiles($isbordenumeros);
+
+			//se valida que el traspazo de archivos se realizo correctamente
+			if ($rcattachment) {
+				 $rctmp = array_merge($rctmp,$rcattachment);
+			}
+			//===================================
+			
+			//============================================
+			//se modifica el estado de la llave
+			$rcLlave = $this->updateLlave($isbordenumeros,$nudatehour,$rcuser["username"],$ircdata["llave"]);
+			if(is_array($rcLlave) && $rcLlave){
+				$rctmp = array_merge($rctmp,$rcLlave);
+			}
+			//==============================================
+
+			//se obtiene la info de las tareas inciales del proceso
+			if ($rctareas) {
+				$rcExec = $rctareas["data"];
+                $rctmp = array_merge($rctmp,$rctareas["sql"]);
+			}
+			
+			//se ejecutan las reglas deacuerdo a las tareas creadas.
+			$rcRules = $this->executeRules($isbordenumeros, $rcExec,$ircdata);
+			if($rcRules){
+				if($rcRules["sql"]){
+					$rctmp = array_merge($rctmp,$rcRules["sql"]);
+				}
+			}
+
+			//se realiza el ingreso de los sql a la base de datos
+			$this->gatewayext->OrdenTrans($rctmp);
+			$sbresult = $this->gatewayext->consult;
+			
+			if ($sbresult) {
+				
+				//se ejecutan las acciones posteriores a un grabado exitoso
+				$rcResult = $this->executeActions($rcRules["actions"]);
+				
+				//si existen columnas dinamicas
+				if($ircDimension){
+					$sbresult = $this->updateDynamicColumns($isbordenumeros,
+					$ircDimension, $ircdata);
+					if(!$sbresult){
+						return 11;
+					}
+				}
+				
+				//AQU� VOY A INTGRAR CON DOCUNET
+				//$this->integrarDocunet($isbordenumeros,$ircdata);
+				
+				$this->UnsetRequest();
+				$this->objorem->UnsetRequest();
+				$rcReturn["msg"] = 3;
+				$rcReturn["ordenumeros"] = $isbordenumeros;
+				$rcReturn["dateven"] = $ordefecvend;
+				$rcReturn["actions"] = $rcResult;
+				$rcReturn["orgacodigos"] = $ircdata["orgacodigos"];
+				return $rcReturn;
+			} else {
+				return 5;
+			}
+		} else {
+			return 8;
+		}
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Modifica la data del requerimiento
+	*   @author freina
+	*	@param string $isbordenumeros (Codigo del requerimiento)
+	*	@param array $ircdata (Arreglo con la data del requerimiento {order - ordenempresa})
+	*	@param array $ircDimension Arreglo con la data de las dimensiones de los campos dinamicos
+	*	@return integer (true exito, false error en el ingreso)
+	*   @date 06-Sep-2004 07:33
+	*   @location Cali-Colombia
+	*/
+	function updateOrden($isbordenumeros, $ircdata, $ircDimension) {
+
+		settype($gatewayorem, "object");
+		settype($objservice, "object");
+		settype($rctmp, "array");
+		settype($rctmpo, "array");
+		settype($rcreq, "array");
+		settype($rcExec, "array");
+		settype($rcreqext, "array");
+		settype($rcprocess, "array");
+		settype($rclog, "array");
+		settype($rcuser, "array");
+		settype($rcRules, "array");
+		settype($rcExtra, "array");
+		settype($rcResult, "array");
+		settype($rcattachment, "array");
+         settype($rcWebUser, "array");
+		settype($objwm, "object");
+		settype($sbdbnull, "string");
+		settype($sbsql, "string");
+		settype($sbresult, "string");
+		settype($sbFlag, "string");
+		settype($nudatehour, "integer");
+		
+		$sbFlag = false;
+
+        $sbdbnull = Application :: getConstant("DB_NULL");
+        
+        //Se valida el contacto si existe
+		if($ircdata["contidentis"] && $ircdata["contidentis"]!=$sbdbnull){
+			
+			$objwm = Application :: loadServices("Customers");
+			if(!$objwm->existActiveSolicitanteByIdentis($ircdata["contidentis"])){
+				return 59;
+			}
+		}
+        
+		//si existe se realiza el update
+		$rctmp = $this->gateway->getByIdOrden($isbordenumeros);
+        /*
+        * Valida que el req pertenece al usuario,
+        * Solo los multidependencia pueden modificar cualquier Req
+        */
+        //Consulta los entes organizacionales del usuario para determinar si es multidependencia
+       	$rcUser = Application :: getUserParam();
+       	$objService = Application :: loadServices("General");
+        $rcMulti = $objService->getParam("human_resources", "acceso_total");
+        $objService = Application :: loadServices("Human_resources");
+        $rcPersDatos = $objService->getPersDatos($rcUser["username"], true);
+        
+        //$rcEntes = $objService->getActiveBeingEmployee($rcPersDatos["perscodigos"]);
+        $rcEntes = $objService->getActiveBeingSonEmployee($rcPersDatos["perscodigos"]);
+        
+        //Si el usuario no tiene Ente organizacional
+        if(!is_array($rcEntes))
+            return 36;
+            
+        //Indica si se debe validar
+        $multidep = false;
+        if($rcMulti){
+            foreach($rcEntes as $orgacodigos=>$organombres){
+                if(in_array($orgacodigos,$rcMulti)){
+                    $multidep=true;
+                    break;
+                }
+            }
+        }        
+        
+		if ($rctmp) {
+			
+			$rcreq = $rctmp[0];
+
+			//data de extension
+			$gatewayorem = Application :: getDataGateway("Ordenempresa");
+			$rctmpo = $gatewayorem->getByIdOrdenempresa2($isbordenumeros);
+			$rcreqext = $rctmpo[0];
+            
+             //Valida que no haya sido ingresado via web
+             $objservice = Application :: loadServices("General");
+             $rcWebUser = $objservice->getParam("cross300", "web_user_conf");
+             if($rcreqext["merecodigos"]===$rcWebUser["merecodigos"]){
+                 //return 51;
+             }
+
+            //Valida si el req pertenece al usuario
+            if(!$multidep){
+                if(!array_key_exists($rcreqext["orgacodigos"],$rcEntes))
+                    return 37;
+            }
+
+			//valida si se puede llevar a cabo la modificacion
+			$sbresult = $this->DetermineValuedModification($rcreq);
+			if (!$sbresult) {
+				return 18;
+			}
+
+			$sbresult = $this->DetermineDataModification($ircdata, $rcreq, $rcreqext);
+			if (!$sbresult) {
+				return 19;
+			}
+			
+			if($ircdata["ordefecregd"] != $rcreq["ordefecregd"]){
+				if ($this->objdate->ValidateGreaterDate_Today($ircdata["ordefecregd"])) {
+					return 38;
+				}
+				$sbFlag = true;
+			}
+
+			//servicio de reglas del motor
+			$objwm = Application :: loadServices("Workflow");
+			$sbproccodigos = $objwm->getIdprocess($ircdata, true);
+
+			if ($sbproccodigos) {
+				
+				//servicios de reglas del motor
+				$objwm = Application :: loadServices("Workflow");
+				$rcprocess = $objwm->getProcess($sbproccodigos,true);
+				
+				$rcuser = Application :: getUserParam();
+				
+				if ($sbproccodigos != $rcreq["proccodigos"]) {
+					
+					//Define el ente organizacional responsable del requerimiento
+        			if(!$ircdata["orgacodigos"]){
+            			$ircdata["orgacodigos"] =  $rcprocess["orgacodigos"];
+            			$rcExtra = null;
+        			}else{
+        				$rcExtra['orgacodigos'] = array($ircdata["orgacodigos"]);
+        			}
+
+					//nueva data del proceso
+					$sbdbnull = Application :: getConstant("DB_NULL");
+					$nudatehour = $this->objdate->fncintdatehour();			
+
+					//Trae el registro del proceso para sacar el tiempo de duracion
+					$objservice = Application :: loadServices("General");
+					$ircdata["ordefecvend"] = $objservice->getDateEnd($ircdata["ordefecregd"], $rcprocess["proctiempon"]);
+					
+					//servicios de reglas del motor
+					$objwm = Application :: loadServices("Workflow");
+
+					//se debe desactivar el posible camino trazado
+					$sbsql = $objwm->getSqlInaAct($isbordenumeros);
+
+					//se obtiene la info de las tareas inciales del proceso
+					$rcExtra["proccodigos"] = $sbproccodigos;
+					$rcExtra["ordefecregd"] = $ircdata["ordefecregd"];
+					$rcExtra["ordefecvend"] = $ircdata["ordefecvend"];
+					$rctareas = $objwm->getIniTareasSql($isbordenumeros, $sbproccodigos, null,true,$rcExtra);
+					if(is_array($rctareas["data"]) && $rctareas["data"]){
+						$ircdata["orgacodigos"] = $rctareas["data"][0]["orgacodigos"]; 
+					}
+					$rcreq["ordeestaacs"] = $rcprocess["procestinis"];
+					$rcreq["ordeestaans"] = $sbdbnull;
+					$rcreq["usuacodigos"] = $rcuser["username"];
+					$rcreq["ordefecingd"] = $nudatehour;
+					$rcreq["ordefecfinad"] = "$sbdbnull";
+					$rcreq["ordefecentn"] = "$sbdbnull";
+				} else {
+					$sbproccodigos = $rcreq["proccodigos"];
+					if($sbFlag){
+						//Trae el registro del proceso para sacar el tiempo de duracion
+						$objservice = Application :: loadServices("General");
+						$ircdata["ordefecvend"] = $objservice->getDateEnd($ircdata["ordefecregd"], $rcprocess["proctiempon"]);
+					}else{
+						$ircdata["ordefecvend"] = $rcreq["ordefecvend"];
+					}
+				}
+				$rcreq["ordefecfinad"] = "$sbdbnull";
+				$rcreq["ordefecentn"] = "$sbdbnull";
+				$rctmp[0] = $this->gatewayext->updateOrdenSql($isbordenumeros, $sbproccodigos, $ircdata["ordesitiejes"], $rcreq["usuacodigos"], $rcreq["ordeestaacs"], $ircdata["ordeobservs"], $rcreq["ordefecingd"], $ircdata["ordefecregd"], $ircdata["ordefecvend"], $rcreq["ordefecfinad"], $rcreq["ordefecentn"]);
+				$rctmp[1] = $this->gatewayoremext->updateOrdenempresaSql($isbordenumeros, 
+				$ircdata["contidentis"], $ircdata["priocodigos"], $ircdata["tiorcodigos"], 
+				$ircdata["evencodigos"], $ircdata["causcodigos"], $ircdata["orgacodigos"], 
+				$ircdata["merecodigos"], $ircdata["locacodigos"],$ircdata["oremradicas"],$ircdata["infrcodigos"],$sbdbnull,$ircdata["paciindentis"],$ircdata["sesocodigos"],$ircdata["couscodigos"],$ircdata["ipsecodigos"]);
+
+				//deuelve el sql necesario para registrar en el log de ordenes
+				$rclog = $this->objorlog->addOrden_logSql($rctmp, $rcuser["username"], "2");
+				if ($rclog) {
+					$rctmp[2] = $rclog[0];
+					$rctmp[3] = $rclog[1];
+				}
+                
+				if ($sbsql) {
+					$nucant = sizeof($rctmp);
+					$rctmp[$nucant] = $sbsql;
+				}
+
+				//se realiza el grabado de los anexos
+				$rcattachment = $this->updateFiles($isbordenumeros);
+
+				//se valida que el traspazo de archivos se realizo correctamente
+				if ($rcattachment) {
+				 	$rctmp = array_merge($rctmp,$rcattachment);
+				}
+				
+				//se obtiene la info de las tareas inciales del proceso
+				if ($rctareas) {
+					$rcExec = $rctareas["data"];
+                	$rctmp = array_merge($rctmp,$rctareas["sql"]);
+				}
+				//se ejecutan las reglas deacuerdo a las tareas creadas.
+				$rcRules = $this->executeRules($isbordenumeros, $rcExec,$ircdata);
+				if($rcRules){
+					if($rcRules["sql"]){
+						$rctmp = array_merge($rctmp,$rcRules["sql"]);
+					}
+				}
+
+				//se realiza el ingreso de los sql a la base de datos
+				$this->gatewayext->OrdenTrans($rctmp);
+				$sbresult = $this->gatewayext->consult;
+				if ($sbresult) {
+					
+					//se ejecutan las acciones posteriores a un grabado exitoso
+					$rcResult = $this->executeActions($rcRules["actions"]);
+					
+					//si existen columnas dinamicas
+					if($ircDimension){
+						$sbresult = $this->updateDynamicColumns($isbordenumeros,
+						$ircDimension, $ircdata, 2);
+						if(!$sbresult){
+							return 11;
+						}
+					}
+					$this->UnsetRequest();
+					$this->objorem->UnsetRequest();
+					return 3;
+				} else {
+					return 6;
+				}
+			} else {
+				return 8;
+			}
+		} else {
+			return 2;
+		}
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Determina si se puede llevar a cabo la modificacion
+	*   @author freina
+	*	@param array $ircdata (arraeglo con la data del requerimiento)
+	*	@return boolean true o false  (true se puede, false no)
+	*   @date 17-Feb-2004 15:46
+	*   @location Cali-Colombia
+	*/
+	function DetermineValuedModification($ircdata) {
+
+		settype($sbvalreqfin, "string");
+
+		//si la orden ya finalizo se valida si se puede modificar
+		if ($ircdata["ordefecfinad"]) {
+			$sbvalreqfin = Application :: getConstant("MOD_REQ_FIN");
+			if (!$sbvalreqfin) {
+				return false;
+			}
+		}
+		return true;
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Determina si data no modificable a cambiado
+	*   @author freina
+	*	@param array $ircdata (arreglo con la data nueva del requerimiento)
+	*	@param array $ircdatereq (arreglo con la data del requerimiento)	
+	*	@param array $ircdatereqext (arreglo con la data de la ext)
+	*	@return boolean true o false  (true se puede, false no)
+	*   @date 17-Feb-2004 16:28
+	*   @location Cali-Colombia
+	*/
+	function DetermineDataModification($ircdata, $ircdatereq, $ircdatereqext) {
+
+		settype($rccampos, "array");
+		settype($sbindex, "string");
+		settype($sbresult, "string");
+
+		$rccampos = Application :: getConstant("CAMP_MOD");
+
+		foreach ($rccampos as $sbindex) {
+			$sbresult = array_key_exists($sbindex, $ircdatereq);
+			if ($sbresult) {
+				if (!($ircdata[$sbindex] == $ircdatereq[$sbindex])) {
+					return false;
+				}
+			}
+			$sbresult = array_key_exists($sbindex, $ircdatereqext);
+			if ($sbresult) {
+				if (!($ircdata[$sbindex] == $ircdatereqext[$sbindex])) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+	function deleteOrden($ordenumeros) {
+		if ($this->gateway->existOrden($ordenumeros) == 1) {
+			$this->gateway->deleteOrden($ordenumeros);
+			$this->UnsetRequest();
+			return 3;
+		} else {
+			return 2;
+		}
+	}
+	function getByIdOrden($ordenumeros) {
+		$data_orden = $this->gateway->getByIdOrden($ordenumeros);
+		return $data_orden;
+	}
+	function getAllOrden() {
+		//$this->gateway->
+	}
+	function getByOrden_fkey($proccodigos) {
+		//$this->gateway->
+	}
+	function getByOrden_fkey2($ordeestaacs) {
+		//$this->gateway->
+	}
+	function getByOrden_fkey3($ordeestaans) {
+		//$this->gateway->
+	}
+	function UnsetRequest() {
+		foreach ($_REQUEST as $key => $value) {
+			if (strpos($key,"__")!==false)
+				unset ($_REQUEST[$key]);
+		}
+        unset ($_REQUEST["orgacodigos_desc"]);
+        unset ($_REQUEST["ordenempresa_locacodigos_desc"]);
+		unset ($_REQUEST["deleteattachment"]);
+		unset ($_REQUEST["consult"]);
+		unset ($_REQUEST["ordenumeros_load"]);
+		unset ($_REQUEST["infrcodigos_desc"]);
+		unset($_REQUEST["orden_ordesitiejes_desc"]);
+		//limpia los adjuntos
+		$this->unsetAttachment();
+	}
+	//=============================
+	/**
+    * Copyright 2006 FullEngine
+    * 
+    * Metodo para actualizar los datos de las columnas dinamicas
+    * @author freina<freina@parquesoft.com>
+    * @param string $sbOrdenumeros Cadena con el codigo de la orden
+    * @param array $rcDimension Arreglo con los id de las dimensiones contra las
+    *  cuales se debe validar los datos dinamicos
+    * @param array $rcData Arreglo con la de la orden
+    * @param integer $sbSignal Entero con el id que determina la accion a realizar
+    * @return boolean true o false si el ingreso se ejecuto correctamente
+    * @date 28-February-2006 11:45:00
+    * @location Cali-Colombia
+    */
+	function updateDynamicColumns($sbOrdenumeros,$rcDimension, $rcData, $sbSignal=1) {
+
+		settype($objService, "object");
+		settype($objManager, "object");
+		settype($rcUser, "array");
+		settype($rcVadidominios, "array");
+		settype($nuDimecodigon, "integer");
+
+
+		if ($sbOrdenumeros && $rcDimension && $rcData) {
+			
+			$rcData['ordenumeros']= $sbOrdenumeros;
+			
+			//informacion de usuario
+			$rcUser = Application :: getUserParam();
+			
+			//se obtiene el dominio de los datos
+			$objservice = Application :: loadServices("General");
+            $rcVadidominios = $objservice->getParam("general", "DOM_COL_DIN");
+			
+			//Carga el servicio de general
+			$objService = Application :: loadServices('General');
+			$objManager = $objService->InitiateClass('DimensionManager');
+			foreach ($rcDimension as $nuDimecodigon) {
+				$objManager->setCodDimension($nuDimecodigon);
+			}
+			$objManager->setData($rcData);
+			if($sbSignal==1){
+				$objManager->setOperation('insertDimensionValues');
+			}else{
+				$objManager->setOperation('updateDimensionValues');
+			}
+			$objManager->setIdProcess($rcUser["username"]);
+			$objManager->setVadidominios($rcVadidominios['orden']);
+			$objManager->setVadidomivals($sbOrdenumeros);
+			$objService->close();
+			return $objManager->execute();
+		}
+		return false;
+	}
+	//------------------------
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	* Ejecuta ls reglas del cambio de estado
+	* @param string $sbOrdenumeros Cadena con el numero de caso
+	* @param array $rcExec Arreglo con los codigo de ruta para los cuales se debe
+	* ejecutar las reglas
+	* @param array $rcData Arreglo con los datos necesarios para ejecutar las reglas
+	* @return boolean true o false
+	* @author freina <freina@parquesoft.com>
+	* @date 06-Apr-2005 11:03
+	* @location Cali-Colombia
+	*/
+	function executeRules($sbOrdenumeros, $rcExec,$rcData) {
+
+		settype($objService, "object");
+		settype($rcResult, "array");
+		settype($rcReturn, "array");
+		settype($rcTmp, "array");
+		settype($rcSql, "array");
+		settype($rcAction, "array");
+		settype($nuCont, "integer");
+		
+
+		if($sbOrdenumeros && $rcExec && $rcData){
+			
+			$rcData["ordenumeros"] = $sbOrdenumeros;
+			
+			//Carga el servicio de workflow
+			$objService = Application :: loadServices('Workflow');
+			//Se ejecutan las reglas que se activan con el cambio de estado
+			$rcResult = $objService->execute_rules($rcExec, $rcData);
+			if ($rcResult) {
+				foreach ($rcResult as $rcTmp) {
+					
+					if (($rcTmp["result"]==true)) {
+						
+						switch($rcTmp["type"]){
+							case "sql":
+								$rcSql[] = $rcTmp["query"];
+							break;
+							case "execute":
+								$rcAction[$nuCont]["service"]=$rcTmp["service"];
+								$rcAction[$nuCont]["method"]=$rcTmp["method"];
+								$rcAction[$nuCont]["parameters"]=$rcTmp["parameters"];
+								$nuCont ++;
+							break;
+						}
+					}
+				}
+				$rcReturn["sql"]= $rcSql;
+				$rcReturn["actions"]= $rcAction;
+			}
+		}
+		return $rcReturn;
+	}
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	* Ejecuta las acciones generadas por las reglas
+	* @param array $rcExec Arreglo con los parametros necesarios para la ejecucion
+	* @return boolean true o false
+	* @author freina <freina@parquesoft.com>
+	* @date 06-Apr-2005 11:57
+	* @location Cali-Colombia
+	*/
+	function executeActions($rcExec){
+		
+		settype($objService,"object");
+		settype($rcResult,"array");
+		
+		if($rcExec){
+			
+			$objService = Application :: loadServices('ExecuteAction');
+			$objService->setParameters($rcExec);
+			$rcResult = $objService->execute();
+		}
+		return $rcResult;
+	}
+	
+	/**
+	* Copyright 2007 FullEngine
+	* 
+	* limpia lo archivos anexos
+	* @author freina<freina@parquesoft.com>
+	* @return boolean true 	
+	* @date 02-Jun-2007 10:59
+	* @location Cali-Colombia
+	*/
+	function unsetAttachment(){
+		
+		settype($rcFileName,"array");
+		settype($rcTmp,"array");
+		settype($nuCont,"integer");
+		
+		if ((WebSession :: issetProperty("_rcCasosFileList"))) {
+			//se obtienen los archivos ya guardados
+			$rcFileName = WebSession :: getProperty("_rcCasosFileList");
+			foreach ($rcFileName as $nuCont => $rcTmp) {
+				if(!$rcTmp["id"]){
+					WebSession :: unsetProperty($rcTmp["index"]);
+				}
+			}
+			WebSession :: unsetProperty("_rcCasosFileList");
+		}
+	}
+	
+	/**
+	* @copyright Copyright 2007 FullEngine
+	*
+	* Ingresa los archivos anexos
+	* @param string $sbOrdenumeros Cadena con el numero del caso
+	* @return boolean true o false
+	* @author freina <freina@parquesoft.com>
+	* @date 02-Jun-2007 10:59
+	* @location Cali-Colombia
+	*/
+	function addFiles($sbOrdenumeros) {
+
+		settype($objService, "object");
+		settype($objGateway, "object");
+		settype($rcTipos, "array");
+		settype($rcTmp, "array");
+		settype($rcFileName, "array");
+		settype($rcSql, "array");
+		settype($rcResult, "array");
+		settype($sbTipo, "string");
+		settype($nuArchcodigon, "integer");
+		settype($nuCant, "integer");
+		settype($nuCont, "integer");
+		
+
+		if($sbOrdenumeros){
+			
+			//se obtienen los archivos ya guardados
+			$rcFileName = WebSession :: getProperty("_rcCasosFileList");
+				
+			if($rcFileName && is_array($rcFileName)){
+				
+				$nuCant = sizeof($rcFileName);
+				
+                //graba el archivo
+                $objNumerador = Application :: getDomainController('NumeradorManager');
+                $nuArchcodigon = $objNumerador->fncgetByIdNumerador("archivos",$nuCant);
+                $objService = Application::loadServices('General');
+                $rcTipos = $objService->getConstant('TIPO_FILE');
+                $objService = Application::loadServices('General');
+                $objGateway = $objService->loadGateway('Archivos');
+                $sbTipo = $rcTipos["anexo"];
+                foreach($rcFileName as $nuCont=>$rcTmp){
+                	$rcSql = $objGateway->addSqlArchivos($nuArchcodigon,
+                	$sbTipo,$sbOrdenumeros,$rcTmp["name"],$rcTmp["type"],
+                	$rcTmp["size"],WebSession :: getProperty($rcTmp["index"]),$rcTmp["ext"]);
+                	$nuArchcodigon ++;
+                	
+                	if($rcSql){
+                		$rcResult = array_merge($rcResult,$rcSql);
+                	}
+                }
+                $objService->close();
+            }
+		}
+		return $rcResult;
+	}
+	
+	/**
+	* @copyright Copyright 2007 FullEngine
+	*
+	* Actualiza los archivos anexos
+	* @param string $sbOrdenumeros Cadena con el numero del caso
+	* @return boolean true o false
+	* @author freina <freina@parquesoft.com>
+	* @date 02-Jun-2007 10:59
+	* @location Cali-Colombia
+	*/
+	function updateFiles($sbOrdenumeros) {
+
+		settype($objService, "object");
+		settype($objGateway, "object");
+		settype($rcTipos, "array");
+		settype($rcTmp, "array");
+		settype($rcFileName, "array");
+		settype($rcFileN, "array");
+		settype($rcFileO, "array");
+		settype($rcFileDB, "array");
+		settype($rcSql, "array");
+		settype($rcResult, "array");
+		settype($sbTipo, "string");
+		settype($nuArchcodigon, "integer");
+		settype($nuCant, "integer");
+		settype($nuCont, "integer");
+		
+
+		if($sbOrdenumeros){
+			
+			//se obtienen los archivos ya guardados
+			$rcFileName = WebSession :: getProperty("_rcCasosFileList");
+				
+			if($rcFileName && is_array($rcFileName)){
+				
+				//se separan los archivos nuevos y los viejos
+				foreach($rcFileName as $rcTmp){
+					if($rcTmp["id"]){
+						$rcFileO[]=$rcTmp["id"];
+					}else{
+						$rcFileF[]=$rcTmp;
+					}
+				}
+			}
+				
+                
+            $objService = Application::loadServices('General');
+            $rcTipos = $objService->getConstant('TIPO_FILE');
+            $sbTipo = $rcTipos["anexo"];
+                
+            //se eliminan lo archivos anteriores si los hay
+            $objService = Application::loadServices('General');
+            $objGateway = $objService->loadGateway('Archivos');
+            $rcFileDB = $objGateway->getByRefArchivos($sbTipo,$sbOrdenumeros);
+                
+            if($rcFileDB){
+            	$rcResult[]= $objGateway->deleteSqlArchivos($sbTipo,$sbOrdenumeros,$rcFileO);
+            }
+                
+            $objService->close();
+                
+            if($rcFileF){
+            	$nuCant = sizeof($rcFileF);
+                $objNumerador = Application :: getDomainController('NumeradorManager');
+                $nuArchcodigon = $objNumerador->fncgetByIdNumerador("archivos",$nuCant);
+                $objService = Application::loadServices('General');
+                $objGateway = $objService->loadGateway('Archivos');
+                
+                //graba el archivo
+                //se almacenan los nuevos
+                foreach($rcFileF as $nuCont=>$rcTmp){
+                	$rcSql = $objGateway->addSqlArchivos($nuArchcodigon,
+                	$sbTipo,$sbOrdenumeros,$rcTmp["name"],$rcTmp["type"],
+                	$rcTmp["size"],WebSession :: getProperty($rcTmp["index"]),$rcTmp["ext"]);
+                
+                	$nuArchcodigon ++;
+                
+                	if($rcSql){
+                		$rcResult = array_merge($rcResult,$rcSql);
+                	}
+                }
+                $objService->close();
+            }
+            
+		}
+		return $rcResult;
+	}
+	
+	/**
+	* @copyright Copyright 2007 FullEngine
+	*
+	* valida si una llave es valida
+	* @param string $sbLlavevalors Cadena con el numero de la llave
+	* @param integer $nudatehour timestamp con la fecha hora
+	* @return boolean true o false
+	* @author freina <freina@parquesoft.com>
+	* @date 24-Mar-2009 15:13
+	* @location Cali-Colombia
+	*/
+	function validateKey($sbLlavvalors,$nudatehour){
+		settype($objManager,"object");
+		settype($rcTmp,"array");
+			
+		if($sbLlavvalors && $nudatehour){
+			$objManager = Application :: getDomainController('LlaveManager');
+			$objManager->setData(array("llavvalors"=>$sbLlavvalors));
+			$objManager->getLlaveByLlavvalors();
+			$rcTmp = $objManager->getResult();
+			if(is_array($rcTmp) && $rcTmp){
+				$rcTmp = $rcTmp[0];
+				//se valida que la fecha que no este vencida. 
+				if($rcTmp["llavfecvend"]>=$nudatehour &&$rcTmp["llavfecusod"]==null){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	* @copyright Copyright 2007 FullEngine
+	*
+	* modifica la llave con la informaci�n del caso.
+	* @param string $sbOrdenumeros Cadena con el numero caso
+	* @param integer $nuDatehour Entero con la fecha de ingreso del caso
+	* @param string $sbUsername Cadena con el usuario que se logueo
+	* @return array con los sql para la actualizacion de la llave
+	* @author freina <freina@parquesoft.com>
+	* @date 24-Mar-2009 16:55
+	* @location Cali-Colombia
+	*/
+	function updateLlave($sbOrdenumeros,$nuDatehour,$sbUsername,$sbLlavvalors){
+		
+		settype($objManager,"object");
+		settype($rcResult,"array");
+		settype($sbSql,"string");
+		
+		if($sbOrdenumeros && $nuDatehour && $sbUsername && $sbLlavvalors){
+			$objManager = Application :: getDomainController('LlaveManager');
+			$objManager->setData(array("ordenumeros"=>$sbOrdenumeros,
+									   "llavfecusod"=>$nuDatehour,
+									   "llavusuutis"=>$sbUsername,
+									   "llavvalors"=>$sbLlavvalors));
+			$objManager->getSqlUpdate();
+			$sbSql = $objManager->getResult();
+			
+			if($sbSql){
+				$rcResult[] = $sbSql;
+			}
+		}
+		return $rcResult;
+	}
+	//-----------------------------------------
+	/**
+	* @copyright Copyright 2012 FullEngine
+	*
+	* realiza la integracion con docunet
+	* @param string $sbOrdenumeros Cadena con el numero caso
+	* @param array $rcData arreglo con la informacion del caso
+	* @return boolean true exito, false fallo
+	* @author freina <freina@parquesoft.com>
+	* @date 10-Apr-2012 10:23
+	* @location Cali-Colombia
+	*/
+	function integrarDocunet($sbOrdenumeros,$rcData) {
+		
+		settype($objGeneral,"object");
+		settype($objService,"object");
+		settype($rcEquivalencias,"array");
+		settype($rcTmp,"array");
+		settype($sbResult,"string");
+		
+		//primero se determina si existe la equivalencia adecuada pra el tipo de caso
+		$objGeneral = Application::loadServices("General");
+		$rcEquivalencias = $objGeneral->loadEquivalencias($rcData);
+		if(is_array($rcEquivalencias) && $rcEquivalencias) {
+			$sbResult = $objGeneral->saveEquivalenciaCaso($rcEquivalencias,$sbOrdenumeros);
+			$objGeneral->close();
+			
+			//se ejecuta la integracion con docunet
+			$sbResult = $this->sendFilesDocunet($sbOrdenumeros,$rcData,$rcEquivalencias);
+			
+		}else{
+			$objGeneral->close();
+		}
+		return true;
+	}
+	/**
+	* @copyright Copyright 2012 FullEngine
+	*
+	* realiza la integracion con docunet
+	* @param string $sbOrdenumeros Cadena con el numero caso
+	* @param array $rcData arreglo con la informacion del caso
+	* @param array $rcEq arreglo con la informacion del as equivalencias
+	* @return boolean true exito, false fallo
+	* @author freina <freina@parquesoft.com>
+	* @date 10-Apr-2012 10:52
+	* @location Cali-Colombia
+	*/
+	function sendFilesDocunet($sbOrdenumeros,$rcData,$rcEq){
+		
+		settype($DSService,"object");
+		settype($rcArchivos,"array");
+		settype($rcDatosDocunet,"array");
+		settype($rcFile,"array");
+		settype($rcRespuestaInteg,"array");
+		settype($sbResult,"string");
+		settype($sbRutaDestino,"string");
+		settype($sbPathTmp,"string");
+		settype($sbTmp,"string");
+		settype($sbContent,"string");
+		settype($nuCont,"integer");
+		
+		if($sbOrdenumeros && is_array($rcData) && $rcData && is_array($rcEq) && $rcEq){
+			
+			$rcArchivos = WebSession :: getProperty("_rcCasosFileList");
+			if(is_array($rcArchivos) && $rcArchivos) {
+	
+				$rcDatosDocunet["ordenumeros"] = $sbOrdenumeros;
+				$rcDatosDocunet["nmbre_crpta"] = $rcData["nmbre_crpta"];
+				$rcDatosDocunet["fncnrio"] = $rcData["fncnrio"];
+				$rcDatosDocunet["nmbre_srie"] = $rcEq["serie"]["name"];
+				$rcDatosDocunet["nmbre_tpo_crpta"] = $rcEq["tipo_carpeta"]["name"];
+				$rcDatosDocunet["nmbre_tpo_dcto"] = $rcEq["tipo_dcto"]["name"];
+				
+				foreach ($rcArchivos as $nuCont=>$rcFile) {
+	
+					$rcDatosDocunet["nmbre_dcto"] = $rcFile["name"];
+					if(strpos($rcFile["name"],".")!==false){
+						$rcDatosDocunet["ext"] = strtoupper(substr ($rcFile["name"] ,(strrpos($rcFile["name"],".")+1)));
+					}else{
+						$rcDatosDocunet["ext"] = null;	
+					}
+	
+					$DSService = Application::loadServices('Docunet');
+					$DSService->setData($rcDatosDocunet);
+					$rcRespuestaInteg = $DSService->IntegrarDocunet();
+					$DSService->close();
+					
+					if(is_array($rcRespuestaInteg) && $rcRespuestaInteg){
+						
+						$rcRespuestaInteg["texto"] = $rcRespuestaInteg["status"];
+						if (!$rcRespuestaInteg["code"]){
+							$rcRespuestaInteg["status"] = true;
+							$rcDatosDocunet["nmbre_crpta"] = $rcRespuestaInteg["folder"];
+						}else{
+							$rcRespuestaInteg["status"] = false;	
+						}
+	
+						if($rcRespuestaInteg["status"] == true) {
+						
+							//GUARDAR EL ARCHIVO EN LA RUTA ENTREGADA POR ORACLE
+							$sbRutaDestino = $this->getRutaDestino($rcRespuestaInteg["texto"]);
+							if($rcRespuestaInteg["texto"] && $sbRutaDestino && (strpos($sbRutaDestino,"/")!==false)) {
+								$rcRespuestaInteg["texto"] = $sbRutaDestino;
+								//se crea el archivo
+								$sbPathTmp = Application::getTmpDirectory()."/".$sbOrdenumeros;
+								$sbTmp = fopen($sbPathTmp,"w");
+								$sbContent = base64_decode(WebSession :: getProperty($rcFile["index"]));
+								fputs($sbTmp,$sbContent);
+								fclose($sbTmp);
+								copy($sbPathTmp,$sbRutaDestino);
+								chmod($sbRutaDestino,0777);
+								unlink($sbPathTmp);
+							}
+						}
+						
+						//GUARDAR EL LOG
+						$objwm = Application :: loadServices("General");
+						$rcDatosDocunet["inloapps"] = "1";
+						$rcDatosDocunet["exto"] = $rcRespuestaInteg["code"];
+						$rcDatosDocunet["texto_error"] = $rcRespuestaInteg["texto"];
+						$rcDatosDocunet["inloerrors"] = $rcRespuestaInteg["texto"];
+						$rcDatosDocunet["status"] = $rcRespuestaInteg["status"];
+						$rcDatosDocunet["id_cross"] = $sbOrdenumeros;
+						$rcDatosDocunet["d_id_cross"] = $sbOrdenumeros;
+						$sbResult = $objwm->saveIntegraLog($rcDatosDocunet);	
+					}else{
+						return false;
+					}
+				}
+			}else{
+				return false;
+			}	
+		}else{
+			return false;
+		}
+		return true;
+	}
+	/**
+	* @copyright Copyright 2012 FullEngine
+	*
+	* Determina la ruta en donde sera almacenado el archivo en el sistema Docunet
+	* @param string $sbRuta ruta a evaluar
+	* @return string ruta evaluada
+	* @author freina <freina@parquesoft.com>
+	* @date 11-Apr-2012 08:18
+	* @location Cali-Colombia
+	*/
+	function getRutaDestino($sbRuta) {
+		
+		settype($rcTmp,"array");
+		settype($sbPath,"string");
+		settype($sbDir,"string");
+		settype($nuSize,"integer");
+		settype($nuCont,"integer");
+		
+		$sbRuta = str_replace("\\","/",$sbRuta);
+		$rcTmp = explode("/",$sbRuta);
+		
+		if(!is_array($rcTmp)) {
+			return false;
+		}
+		$nuSize = sizeof($rcTmp);
+			
+		$sbPath = "";
+		$nuCont = 0;
+		
+		foreach ($rcTmp as $sbDir) {
+			if($nuCont==($nuSize-1))
+				break;
+			if(strlen($sbDir)) {
+				$sbPath .= "/".$sbDir;
+				if(!is_dir($sbPath)) {
+					mkdir($sbPath,0777);
+					chmod($sbPath,0777);
+				}
+			}
+			$nuCont++;
+		}
+		return $sbPath ."/". $sbDir;
+	}
+}
+?>

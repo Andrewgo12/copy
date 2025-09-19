@@ -1,0 +1,152 @@
+<?php
+#!/bin/sh
+
+$Application_constant = array (
+		0 => array( //Constantes para empresa(esquema 2)
+            'HEAD' => 'S',//Indica que una configuracion de archivo tiene encabezado
+            'EXT_FILE_FOR' => 'csv',//extencion que indica texto delimitado
+             'E-MAIL_NOE' => 'N',//senhal para e-mail interno a cliente
+             'E-MAIL_E' => 'S',//senhal para e-mail interno a cliente
+             'DB_NULL' => 'NULL',//Null para las bases de datos
+             'HOST_PROBE' => 'www.google.com',//Host para verificar si existe coneccion a internet
+             'PORT_PROBE' => '80',//Puerto de salida para prueba
+             'TIME_DELAY' => '15',//Tiempo de espera
+             'TYPE_EMAIL' => 'smtp',//Tipo de email
+             "REG_ACT" => "A", //Indicador de registros activos
+             "REG_INACT" => "I", //Indicador de registros inactivos
+             'COM_P' => 'P',//senhal para comunicacion pendiente
+             'COM_G' => 'G',//senhal para comunicacion generada
+             'PDF_D' => 'F',//orden de descarga del pdf
+             'COMMUNICATION_TAGS' => array(0=>array("label"=>"-FECHA-","value"=>"-FECHA-","equivalence"=>"hoy",),
+                                            1=>array("label"=>"-SOLICITANTE-","value"=>"-CONTACTO-","equivalence"=>"cliente",),
+                                            2=>array("label"=>"-CASO-","value"=>"-CASO-","equivalence"=>"caso",),
+                                            3=>array("label"=>"-FEC_GENERACION-","value"=>"-FEC_GENERACION-","equivalence"=>"fecha_reg",),
+                                            4=>array("label"=>"-OBSERVACIONES-","value"=>"-OBSERVACIONES-","equivalence"=>"observaciones",),
+                                            5=>array("label"=>"-ACTUACIONES-","value"=>"-ACTUACIONES-","equivalence"=>"actuaciones",),
+                                            6=>array("label"=>"-DEPENDENCIA-","value"=>"-DEPENDENCIA-","equivalence"=>"ente",),
+                                            7=>array("label"=>"-SITIO_EJEC-","value"=>"-SITIO_EJEC-","equivalence"=>"sitio",),
+                                            8=>array("label"=>"-DENUNCIADO-","value"=>"-DENUNCIADO-","equivalence"=>"denunciado",),
+                                            9=>array("label"=>"-MED_RECEP-","value"=>"-MED_RECEP-","equivalence"=>"recepcion",),
+                                            10=>array("label"=>"-RADICACION-","value"=>"-RADICACION-","equivalence"=>"radicacion",),),//tags utilizados para formar las cartas tipo
+            'EMAIL_TAGS' => array(0=>array("label"=>"-FECHA-","value"=>"-FECHA-","equivalence"=>"hoy",),
+                                            1=>array("label"=>"-SOLICITANTE-","value"=>"-CONTACTO-","equivalence"=>"cliente",),
+                                            2=>array("label"=>"-CASO-","value"=>"-CASO-","equivalence"=>"caso",),
+                                            3=>array("label"=>"-FEC_GENERACION-","value"=>"-FEC_GENERACION-","equivalence"=>"fecha_reg",),
+                                            4=>array("label"=>"-OBSERVACIONES-","value"=>"-OBSERVACIONES-","equivalence"=>"observaciones",),
+                                            5=>array("label"=>"-ACTUACIONES-","value"=>"-ACTUACIONES-","equivalence"=>"actuaciones",),
+                                            6=>array("label"=>"-DEPENDENCIA-","value"=>"-DEPENDENCIA-","equivalence"=>"ente",),
+                                            7=>array("label"=>"-SITIO_EJEC-","value"=>"-SITIO_EJEC-","equivalence"=>"sitio",),
+                                            8=>array("label"=>"-PIE-","value"=>"-PIE-","equivalence"=>"pie",),
+                                            9=>array("label"=>"-FEC_FINALIZACION-","value"=>"-FEC_FINALIZACION-","equivalence"=>"fec_fin",),
+                                            10=>array("label"=>"-TAREA-","value"=>"-TAREA-","equivalence"=>"tarea",),
+                                            11=>array("label"=>"-FECHA_INI_T-","value"=>"-FECHA_INI_T-","equivalence"=>"fecha_ini_t",),
+                                            12=>array("label"=>"-FECHA_FIN_T-","value"=>"-FECHA_FIN_T-","equivalence"=>"fecha_fin_t",),),//tags utilizados para formar los textos de  los e-mail
+            'EMAIL_EMPLOYEE_TAGS' => array(0=>array("label"=>"-SOLICITANTE-","value"=>"-CONTACTO-","equivalence"=>"cliente",),
+                                            1=>array("label"=>"-CASO-","value"=>"-CASO-","equivalence"=>"caso",),
+                                            2=>array("label"=>"-FEC_GENERACION-","value"=>"-FEC_GENERACION-","equivalence"=>"fecha_reg",),
+                                            3=>array("label"=>"-TAREA-","value"=>"-TAREA-","equivalence"=>"tarea",),
+                                            4=>array("label"=>"-RESPONSABLE-","value"=>"-RESPONSABLE-","equivalence"=>"responsable",),
+                                            5=>array("label"=>"-TAREA-","value"=>"-TAREA-","equivalence"=>"tarea",),
+                                            6=>array("label"=>"-FECHA_INI_T-","value"=>"-FECHA_INI_T-","equivalence"=>"fecha_ini_t",),
+                                            7=>array("label"=>"-FECHA_FIN_T-","value"=>"-FECHA_FIN_T-","equivalence"=>"fecha_fin_t",),),//tags utilizados para formar los textos del email para empleado									
+            "LOCALIZACION" => array(
+                                    "geografia" => array(array(1),array(2),array(3),array(4,5,6,7)), //Niveles para el tipo de localizacion de geografia 
+                                    ),
+            'PROFILE' => 'Profile',//prefijo con el que nombran los perfiles
+            'CACHE_MENU' => 'application.cachemenu.data',//Nombre del cahe de menu
+            'PDF_DIR'=>'pdf',//nombre del directorio donde se almacenan los pdf
+            'PDF_SUFIX' => ".pdf",//extencion del pdf
+            'DEPTH'=>'depth',//indice que determian que un nodo tiene profundidad
+            'NIVEL_DEPTH'=>1,//indica hasta que nivel se despliega la ayuda del arbol
+            'URL_HELP' => '../../../../../public/manual_CROSS/index.html', //Url de las ayudas
+            'TIPO_FILE' => array('anexo'=>1,'solucion'=>2,'producto'=>3,'atencion'=>4), //Indica el tipo de archivo
+            'UPLOAD_MAX_FILESIZE' => '2M', //tamanho maximo para cargar archivos en l aplicacion (en megas)
+            'CMD_SPLASH' => array('name'=>'FeCrCmdDefaultAdminTareas','app'=>'cross300'), //Nombre del comando y nombre de la aplicacion
+            'CMD_AGENT_SPLASH' => array('name'=>'FeCrCmdDefaultAdminTareas','app'=>'cross300'), //Nombre del comando y nombre de la aplicacion
+            'CMD_ADMIN_SPLASH' => array('name'=>'FeCrCmdDefaultAdminTareas','app'=>'cross300'), //Nombre del comando y nombre de la aplicacion
+            'SCHEMA_VBLE_NAME' => 'schema',//NOMBRE DE LA VARIABLE QUE CONTENDRA EL VALOR DEL NOMBRE DEL ESQUEMA ACTUAL
+            'XML_INFORMATION' => array("VALIDATEFORMAT"=>array("field"=>"dedivalidas","xsl"=>"validateformat.xsl"), //Para las validaciones
+                                        "FROMFORMAT"=>array("field"=>"dediorigens","xsl"=>"origenformat.xsl"),//Para la los datos referenciados
+                                        "CONFIGRULE"=>array("field"=>"codireglas","xsl"=>"valudaterules.xsl"), //Para la determinar la dimension
+                                        ),
+            'NOT_ALLOWED_PARAMS' => 'MAXLENGTH_TEXTAREA,MAXLENGTH_TEXTAREA_EXT,DOM_COL_DIN,PROC_HOURS,permisos_entes,permisos_personal,TIPOGRAPH_REPORT,month,period,frequency,PARTE-INSUMO,TIPOGRAPH_REPORT_SATISF,NIVELES_VIZ_ORDEN,TYPES_CASE_PURSUIT,oposite_activities,sector,idioma,estcivil,formapago,si_no,COD_LOCALIZ_CALI',
+            'GRANTS_LABEL_PARAM' => 'permisos_entes',
+            'CHEK_VALUES_PARAMS' => array('web_user_conf'=>'user'),
+            'PERMISOS_ENTES_PARAM_NAME' => 'permisos_entes',
+            'PERMISOS_PERSONAL_PARAM_NAME' => 'permisos_personal',
+            'OPOSITE_ACTIVITIES_PARAM_NAME' => 'oposite_activities',
+            'HUMAN_RESOURCES_MODULE_NAME' => 'human_resources',
+            'WORKFLOW_MODULE_NAME' => 'Workflow',
+            'PARAMS_OBJECTS' => array('dep_detalle'=>array('object'=>'select_multiple','table_name'=>'organizacion','field'=>'orgacodigos','service'=>'Human_resources','label'=>'organombres','value'=>'orgacodigos','id'=>'orgacodigos','name'=>'orgacodigos'),
+            						  'ticlcodigos'=>array('object'=>'select_row_table_service','table_name'=>'tipocliente','field'=>'ticlcodigos','service'=>'Customers','label'=>'ticlnombres','value'=>'ticlcodigos','id'=>'ticlcodigos','name'=>'ticlcodigos'),
+            						  'esclcodigos'=>array('object'=>'select_row_table_service','table_name'=>'estadoclient','field'=>'esclcodigos','service'=>'Customers','label'=>'esclnombres','value'=>'esclcodigos','id'=>'esclcodigos','name'=>'esclcodigos'),
+            						  'tiidcodigos'=>array('object'=>'select_row_table_service','table_name'=>'tipoidentifi','field'=>'tiidcodigos','service'=>'Customers','label'=>'tiidnombres','value'=>'tiidcodigos','id'=>'tiidcodigos','name'=>'tiidcodigos'),
+            						  'locacodigos'=>array('object'=>'select_row_table_service','table_name'=>'localizacion','field'=>'locacodigos','service'=>'General','label'=>'locanombres','value'=>'locacodigos','id'=>'locacodigos','name'=>'locacodigos'),
+            						  'ORG_INACT'=>array('object'=>'select_multiple','table_name'=>'estadoorgani','field'=>'esorcodigos','service'=>'Human_resources','label'=>'esornombres','value'=>'esorcodigos','id'=>'esorcodigos','name'=>'esorcodigos'),
+            						  'EST_GRUP_INA'=>array('object'=>'select_multiple','table_name'=>'estadogrupo','field'=>'esgrcodigos','service'=>'Human_resources','label'=>'esgrnombres','value'=>'esgrcodigos','id'=>'esgrcodigos','name'=>'esgrcodigos'),
+            						  'acceso_total'=>array('object'=>'select_multiple','table_name'=>'organizacion','field'=>'orgacodigos','service'=>'Human_resources','label'=>'organombres','value'=>'orgacodigos','id'=>'orgacodigos','name'=>'orgacodigos'),
+            						  'user'=>array('object'=>'select_row_table_service','table_name'=>'auth','field'=>'authusernams','service'=>'Profiles','method'=>'getWebUser','label'=>'authusernams','value'=>'authusernams','id'=>'authusernams','name'=>'authusernams'),	  
+            						  'orgacodigos'=>array('object'=>'select_row_table_service','table_name'=>'organizacion','field'=>'orgacodigos','service'=>'Human_resources','label'=>'organombres','value'=>'orgacodigos','id'=>'orgacodigos','name'=>'orgacodigos'),
+            						  'merecodigos'=>array('object'=>'select_row_table_service','table_name'=>'mediorecepcion','field'=>'merecodigos','service'=>'Cross300','label'=>'merenombres','value'=>'merecodigos','id'=>'merecodigos','name'=>'merecodigos'),
+            						  'hora_ini'=>array('object'=>'textfield_hour','id'=>'hora_ini','name'=>'hora_ini'),
+            						  'hora_fin'=>array('object'=>'textfield_hour','id'=>'hora_fin','name'=>'hora_fin'),
+            						  'type_close'=>array('object'=>'select_multiple','table_name'=>'tipoordenExtended','field'=>'tiorcodigos','service'=>'Cross300','label'=>'tiornombres','value'=>'','id'=>'type_close','name'=>'type_close','method'=>'getAllTipoorden'),
+            						  'TYPES_CASE_PURSUIT'=>array('object'=>'select_row_table_service','table_name'=>'tipoorden','field'=>'tiorcodigos','service'=>'Cross300','label'=>'tiornombres','value'=>'tiorcodigos','id'=>'TYPES_CASE_PURSUIT','name'=>'TYPES_CASE_PURSUIT'),
+            						  'TYPES_CASE_DENUNCIA'=>array('object'=>'select_multiple','table_name'=>'tipoorden','field'=>'tiorcodigos','service'=>'Cross300','label'=>'tiornombres','value'=>'tiorcodigos','id'=>'TYPES_CASE_DENUNCIA','name'=>'TYPES_CASE_DENUNCIA'),
+            						  'DENUNCIA_TC'=>array('object'=>'select_multiple','table_name'=>'tipoorden','field'=>'tiorcodigos','service'=>'Cross300','label'=>'tiornombres','value'=>'tiorcodigos','id'=>'DENUNCIA_TC','name'=>'DENUNCIA_TC'),
+            						  'TRACKING_ALLOWED_STATES'=>array('object'=>'select_multiple','table_name'=>'estadoacta','field'=>'esaccodigos','service'=>'Workflow','label'=>'esacnombres','value'=>'esaccodigos','id'=>'TRACKING_ALLOWED_STATES','name'=>'TRACKING_ALLOWED_STATES'),
+            						  'CLOSE_COMMITMENT_STATES'=>array('object'=>'select_multiple','table_name'=>'estadoacta','field'=>'esaccodigos','service'=>'Workflow','label'=>'esacnombres','value'=>'esaccodigos','id'=>'CLOSE_COMMITMENT_STATES','name'=>'CLOSE_COMMITMENT_STATES'),
+            						  'NO_CLOSE_COMMITMENT_STATES'=>array('object'=>'select_multiple','table_name'=>'estadoacta','field'=>'esaccodigos','service'=>'Workflow','label'=>'esacnombres','value'=>'esaccodigos','id'=>'NO_CLOSE_COMMITMENT_STATES','name'=>'NO_CLOSE_COMMITMENT_STATES'),
+            						  'TAREA_SEGUIMIENTO'=>array('object'=>'select_row_table_service','table_name'=>'tarea','field'=>'tarecodigos','service'=>'Workflow','label'=>'tarenombres','value'=>'tarecodigos','id'=>'TAREA_SEGUIMIENTO','name'=>'TAREA_SEGUIMIENTO'),
+            						  'ASAPPOINTS_DEFAULT'=>array('object'=>'select_multiple','table_name'=>'organizacion','field'=>'orgacodigos','service'=>'Human_resources','label'=>'organombres','value'=>'orgacodigos','id'=>'ASAPPOINTS_DEFAULT','name'=>'ASAPPOINTS_DEFAULT'),
+                                      'RESP_ABIERTA'=>array('object'=>'select_row_table_service','table_name'=>'opcionrepues','field'=>'oprecodigon','service'=>'Encuestas','label'=>'opredescrisp','value'=>'oprecodigon','id'=>'oprecodigon','name'=>'oprecodigon'),
+                                      'OBJ_PREG_ABIERTA'=>array('object'=>'select_multiple','table_name'=>'objeto','field'=>'objecodigon','service'=>'Encuestas','label'=>'objenombres','value'=>'objecodigon','id'=>'OBJ_PREG_ABIERTA','name'=>'OBJ_PREG_ABIERTA'),
+                                      'OBJ_PREG_CERRADA'=>array('object'=>'select_multiple','table_name'=>'objeto','field'=>'objecodigon','service'=>'Encuestas','label'=>'objenombres','value'=>'objecodigon','id'=>'OBJ_PREG_CERRADA','name'=>'OBJ_PREG_CERRADA'),
+                                      'DEFAULT_STATUS'=>array('object'=>'select_multiple','table_name'=>'estadoacta','field'=>'esaccodigos','service'=>'Workflow','label'=>'esacnombres','value'=>'esaccodigos','id'=>'DEFAULT_STATUS','name'=>'DEFAULT_STATUS'),
+                                      'TAREA_CC'=>array('object'=>'select_row_table_service','table_name'=>'tarea','field'=>'tarecodigos','service'=>'Workflow','label'=>'tarenombres','value'=>'tarecodigos','id'=>'TAREA_CC','name'=>'TAREA_CC'),
+                                      'ORG_INACT_DEFAULT'=>array('object'=>'select_row_table_service','table_name'=>'estadoorgani','field'=>'esorcodigos','service'=>'Human_resources','label'=>'esornombres','value'=>'esorcodigos','id'=>'ORG_INACT_DEFAULT','name'=>'ORG_INACT_DEFAULT'),
+                                      'TIP_DEP_FISICA'=>array('object'=>'select_multiple','table_name'=>'tipoorgani','field'=>'tiorcodigos','service'=>'Human_resources','label'=>'tiornombres','value'=>'tiorcodigos','id'=>'TIP_DEP_FISICA','name'=>'TIP_DEP_FISICA'),
+            						  'SERV_ORG'=>array('object'=>'select_multiple','table_name'=>'organizacion','field'=>'orgacodigos','service'=>'Human_resources','label'=>'organombres','value'=>'orgacodigos','id'=>'SERV_ORG','name'=>'SERV_ORG'),
+                                      ),
+            'TAB_TIP_DESC'=>array('tipoorden'=>array('primarykey'=>'tiorcodigos','name_desc'=>'tiornombres','service'=>'Cross300'),
+						  'evento'=>array('primarykey'=>'tiorcodigos,evencodigos','name_desc'=>'evennombres','service'=>'Cross300'),
+						  'causa'=>array('primarykey'=>'tiorcodigos,evencodigos,causcodigos','name_desc'=>'causnombres','service'=>'Cross300'),
+            			  'categoria'=>array('primarykey'=>'catecodigon','name_desc'=>'catenombres','service'=>'Schedule'),
+            			  'tipoidentifi'=>array('primarykey'=>'tiidcodigos','name_desc'=>'tiidnombres','service'=>'Customers'),
+            			  'tipocliente'=>array('primarykey'=>'ticlcodigos','name_desc'=>'ticlnombres','service'=>'Customers'),
+            			  'estadoclient'=>array('primarykey'=>'esclcodigos','name_desc'=>'esclnombres','service'=>'Customers'),
+            			  'desc_tipoorden'=>array('primarykey'=>'tiorcodigos','name_desc'=>'tiordescrips','service'=>'Cross300'),
+            			  'mediorecepcion'=>array('primarykey'=>'merecodigos','name_desc'=>'merenombres','service'=>'Cross300'),
+            			  'prioridad'=>array('primarykey'=>'priocodigos','name_desc'=>'prionombres','service'=>'Cross300'),
+            			  'tarea'=>array('primarykey'=>'tarecodigos','name_desc'=>'tarenombres','service'=>'Workflow'),
+            			  'estadoacta'=>array('primarykey'=>'esaccodigos','name_desc'=>'esacnombres','service'=>'Workflow'),
+            			  'actividad'=>array('primarykey'=>'acticodigos','name_desc'=>'actinombres','service'=>'Cross300'),
+            			  'compromiso'=>array('primarykey'=>'compcodigos','name_desc'=>'compdescris','service'=>'Cross300'),
+            			  'ejetematico'=>array('primarykey'=>'ejtecodigon','name_desc'=>'ejtenombres','service'=>'Encuestas'),
+                          'tema'=>array('primarykey'=>'temacodigon','name_desc'=>'temanombres','service'=>'Encuestas'),
+            			  'pregunta'=>array('primarykey'=>'pregcodigon','name_desc'=>'pregdescris','service'=>'Encuestas'),
+           				  'opcionrepues'=>array('primarykey'=>'oprecodigon','name_desc'=>'opredescrisp','service'=>'Encuestas'),
+            			  'sexo'=>array('primarykey'=>'sexocodigos','name_desc'=>'sexonombres','service'=>'Customers')),
+			'DEDITIPOBJES' => array('textfield'=>'TEXTFIELD','select'=>'SELECT','void'=>'LABEL'),
+			'DEDITIPODATS' => array('integer'=>'INTEGER','varchar'=>'VARCHAR','date'=>'DATE','float'=>'FLOAT','double'=>'DOUBLE'),
+			'DEDINOTNULLS' => array('0'=>'NO','1'=>'SI'),
+            'MEMORY_LIMIT' => "32M",
+            'FAILED_STATUS'=>'F',
+            'INTEG_APPS'=>array("1"=>'DOCUNET'),
+            'SLASH' => "/",//slash
+            'EXCEL_EXT' => ".xls",//Estado Asignado
+            'EQUIV_CROSS' => array(array("tipoorden"=>"tiorcodigos"),array("evento"=>"evencodigos"),array("causa"=>"causcodigos")),//valores interfaz equiv
+            'EQUIV_DOCUNET' => array(array("serie"=>"codigo"),array("tipo_carpeta"=>"codigo"),array("tipo_dcto"=>"codigo")),//valores interfaz equiv
+        ),
+);
+
+$path = dirname(__FILE__)."/application.constant.data";
+$fd = fopen($path,"w");
+if($fd){
+    fwrite($fd, serialize($Application_constant));
+    fclose($fd);
+}else{
+    die("[GENERAL] constant file ERROR\n");
+}
+die("[GENERAL] constant file OK\n");
+?>

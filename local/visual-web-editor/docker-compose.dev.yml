@@ -1,0 +1,133 @@
+version: '3.8'
+
+services:
+  # Development Frontend with Hot Reload
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3002:3000"
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:3001
+      - REACT_APP_LOCAL_AI_URL=http://localhost:8000
+      - REACT_APP_ENVIRONMENT=development
+      - CHOKIDAR_USEPOLLING=true
+      - FAST_REFRESH=true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend-dev
+      - local-ai-agent-dev
+    networks:
+      - visual-web-editor-dev
+    restart: unless-stopped
+
+  # Development Backend with Nodemon
+  backend-dev:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3001"
+      - "9229:9229"  # Debug port
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - LOCAL_AI_AGENT_URL=http://local-ai-agent-dev:8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - JWT_SECRET=dev_jwt_secret
+      - DATABASE_URL=postgresql://admin:dev_password@database-dev:5432/visual_web_editor_dev
+      - CORS_ORIGIN=http://localhost:3002
+      - DEBUG=visual-web-editor:*
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - database-dev
+      - redis-dev
+    networks:
+      - visual-web-editor-dev
+    restart: unless-stopped
+    command: npm run dev
+
+  # Development AI Agent with Auto-reload
+  local-ai-agent-dev:
+    build:
+      context: ./local-ai-agent
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8000:8000"
+      - "5678:5678"  # Debug port
+    environment:
+      - PYTHONPATH=/app
+      - ENVIRONMENT=development
+      - LOG_LEVEL=debug
+      - MODEL_CACHE_DIR=/app/models
+      - SPACY_MODEL=en_core_web_sm
+      - RELOAD=true
+    volumes:
+      - ./local-ai-agent:/app
+      - ai-models-dev:/app/models
+      - ai-cache-dev:/app/cache
+    networks:
+      - visual-web-editor-dev
+    restart: unless-stopped
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload --log-level debug
+
+  # Development Database
+  database-dev:
+    image: postgres:15-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=visual_web_editor_dev
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=dev_password
+    volumes:
+      - postgres-data-dev:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - visual-web-editor-dev
+    restart: unless-stopped
+
+  # Development Redis
+  redis-dev:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data-dev:/data
+    networks:
+      - visual-web-editor-dev
+    restart: unless-stopped
+
+  # Development Tools Container
+  dev-tools:
+    image: node:18-alpine
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - /workspace/node_modules
+    networks:
+      - visual-web-editor-dev
+    command: tail -f /dev/null
+    profiles:
+      - tools
+
+volumes:
+  postgres-data-dev:
+    driver: local
+  redis-data-dev:
+    driver: local
+  ai-models-dev:
+    driver: local
+  ai-cache-dev:
+    driver: local
+
+networks:
+  visual-web-editor-dev:
+    driver: bridge

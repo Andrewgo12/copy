@@ -1,0 +1,111 @@
+# Node.js dependencies - COMPLETAMENTE EXCLUIDAS
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.npm/
+.yarn/
+.pnp.*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+*.lcov
+.nyc_output
+
+# Build directories
+build/
+dist/
+out/
+.next
+
+# Cache
+.cache
+.parcel-cache
+.eslintcache
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Archives
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Executables and large files
+*.exe
+*.iso
+*.dmg
+
+# Database files
+*.sqlite
+*.db
+*.frm
+*.ibd
+*.MYD
+*.MYI
+
+# Backup files
+*.bak
+*.backup
+
+# Temporary files
+tmp/
+temp/
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+env/
+
+# PHP
+vendor/
+composer.lock
+
+# Specific files to ignore
+mediacreationtool.exe
+augment-vip-windows-x86_64*.exe
+vscode-augment-*.vsix
+*.torrent
+mysql_error.log
+mysql.pid
+instalacion.log
+
+# Templates with very long names
+**/templates-c/**/999999.*
+**/templates-c/**/*union-all-select*
+**/templates-c/**/*-2f..-2f..-2f*
+
+# Problematic template directories
+cross/cross/resources/legacy/CROSSHUV/src/apps/formularios/templates-c/
+cross/cross/resources/legacy/CROSSHUV/src/apps/main-system/templates-c/

@@ -1,0 +1,43 @@
+<?php
+/*
+ This is the language's file to the  Estadoorgani table
+*/
+$rclabels = array("title"=>"Transferencia de tareas",
+							"consulttitle"=>"Transferencia de tareas",
+							"context_help"=>"La transferencia de tareas permite al usuario mover o delegar el trabajo asignado a sus dependencias o entes subordinados.<br><b>Nota: </b>Para transferir, seleccione en la lista de dependencias y presione el bot&oacute;n Aceptar.",
+							"orgacodigos"=>array("label"=>"Dependencia","accesskey"=>true,"commentary"=>""),
+							"tareas"=>array("label"=>"Ficha del acta","accesskey"=>true,"commentary"=>""),
+							"actacodigos"=>array("label"=>"C&oacute;digo","accesskey"=>true,"commentary"=>""),
+							"actanumeros"=>array("label"=>"N&uacute;mero","accesskey"=>true,"commentary"=>""),
+							"ordenumeros"=>array("label"=>"N&uacute;mero de caso","accesskey"=>true,"commentary"=>""),
+							"tarecodigos"=>array("label"=>"Tarea","accesskey"=>true,"commentary"=>""),
+							"actaestacts"=>array("label"=>"Estado Actual","accesskey"=>true,"commentary"=>""),
+							"actaestants"=>array("label"=>"Estado Anterior","accesskey"=>true,"commentary"=>""),
+							"actafechingn"=>array("label"=>"Ingreso","accesskey"=>true,"commentary"=>""),
+							"usuacodigos"=>array("label"=>"Usuario","accesskey"=>true,"commentary"=>""),
+							"orgacodigos"=>array("label"=>"Dependencia","accesskey"=>true,"commentary"=>""),
+							"actaactivas"=>array("label"=>"Activa","accesskey"=>true,"commentary"=>""),
+							"card"=>array("label"=>"Ficha de la tarea","accesskey"=>false,"commentary"=>""),
+							"actacodigos"=>array("label"=>"C&oacute;digo","accesskey"=>true,"commentary"=>""),
+							"acemnumeros"=>array("label"=>"N&uacute;mero","accesskey"=>true,"commentary"=>""),
+							"esaccodigos"=>array("label"=>"Estado","accesskey"=>true,"commentary"=>""),
+							"acemfeccren"=>array("label"=>"Registro","accesskey"=>true,"commentary"=>""),
+							"acemfecaten"=>array("label"=>"Atenci&oacute;n","accesskey"=>true,"commentary"=>"AAAA/MM/DD hh:mm:ss"),
+							"acemhorainn"=>array("label"=>"Hora inicial","accesskey"=>true,"commentary"=>"HH:MM"),
+							"acemhorafin"=>array("label"=>"Hora final","accesskey"=>true,"commentary"=>"HH:MM"),
+							"acemusuars"=>array("label"=>"Grupo","accesskey"=>true,"commentary"=>""),
+							"acemobservas"=>array("label"=>"Observaciones","accesskey"=>true,"commentary"=>""),
+							"acemradicas"=>array("label"=>"Radicaci&oacute;n","accesskey"=>true,"commentary"=>""),
+							"acemcomproms"=>array("label"=>"Compromiso","accesskey"=>true,"commentary"=>"AAAA/MM/DD"),
+							"acemnomexpes"=>array("label"=>"Nombre expediente","accesskey"=>true,"commentary"=>""),
+							"acemnumexpes"=>array("label"=>"N&uacute;mero expediente","accesskey"=>true,"commentary"=>""),
+							"acemaperturs"=>array("label"=>"Apertura","accesskey"=>true,"commentary"=>"AAAA/MM/DD"),
+							"acticodigos"=>array("label"=>"C&oacute;digo","accesskey"=>false,"commentary"=>"AAAA/MM/DD"),
+							"actinombres"=>array("label"=>"Actividad","accesskey"=>false,"commentary"=>"AAAA/MM/DD"),
+                            "transferencia"=>array("label"=>"Transferencias","accesskey"=>false,"commentary"=>""),
+                            "trtafechan"=>array("label"=>"Fecha de registro","accesskey"=>false,"commentary"=>""),
+							"trtaobservas"=>array("label"=>"Observaciones","accesskey"=>true,"commentary"=>""),
+							"actafechinin"=>array("label"=>"Fecha de inicio","accesskey"=>false,"commentary"=>""),
+							"actafechvenn"=>array("label"=>"Fecha de vencimiento","accesskey"=>false,"commentary"=>""),);
+
+?>

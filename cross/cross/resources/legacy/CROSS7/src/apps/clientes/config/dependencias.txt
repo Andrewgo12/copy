@@ -1,0 +1,7 @@
+DEPENDENCIAS DEL MODULO DE COSTUMERS
+
+1. MODULO GENERAL
+   servicio: General.class.php
+   Funcionalidad: La forma de ingreso de cliente lo utiliza en la lista desplegable de localizacion.
+   plugins: select_localizacion
+2. 

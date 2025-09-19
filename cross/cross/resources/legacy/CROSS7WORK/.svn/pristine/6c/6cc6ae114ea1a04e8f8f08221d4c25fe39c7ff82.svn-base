@@ -1,0 +1,986 @@
+<?php   
+/**
+	Copyright 2004 � FullEngine
+	
+	Servicio de manejo de perfiles de usuario
+	@author creyes <cesar.reyes@parquesoft.com>
+	@date 25-ago-2004 10:31:44
+	@location Cali-Colombia
+*/
+
+class General {
+
+	var $appName;
+	var $appDir;
+	function General() {
+		//Guarda los datos anteriores
+		$this->appDir = Application :: getBaseDirectory();
+		$this->appName = Application :: getName();
+
+		//Cambia la configuracion de la aplicaci�n
+		$dir_name = dirname(__FILE__)."/../../../applications/general";
+		$name = "general";
+		$objTmp = new Application($name, $dir_name, true);
+	}
+	/**
+		Copyright 2004 � FullEngine
+		
+		Muestra toda la informaci�n del servicio
+		@author creyes <cesar.reyes@parquesoft.com>
+		@date 25-ago-2004 13:55:48
+		@location Cali-Colombia
+	*/
+	/**
+		Copyright 2004 � FullEngine
+	*/
+	function serviceInfo() {
+		$rcinfo = array ("getAllLocations" => "Copyright 2004 � FullEngine<br>
+											Obtiene el listado de las localidades<br>
+											@return array<br>
+											@author cazapata <cazapata@parquesoft.com><br>
+											@date 01-Sep-2004 13:53:25<br>
+											@location Cali-Colombia",  
+							"getSqlEmail" => '*Copyright 2004 � FullEngine
+										 	Obtiene el sql del email
+											@param array $ircdata (Arreglo con los datos necesario para elaborar el e-mail)
+											$ircdata[tipo] = tipo del e-mail (requerido)
+											$ircdata[asunto] = Asunto (requerido)
+											$ircdata[texto] = mensaje (requerido)
+											$ircdata[requerimiento] = Numero de requerimiento (opcional)
+											$ircdata[responsable] = Responsable (requerido)
+											$ircdata[dir_origen] = Direccion electronica origen (requerido)
+											$ircdata[dir_destino] = Direccion electronica destino (requerido)
+											$ircdata[usuario] = Usuario quien registra el email (requerido)
+											$ircdata[adjunto] = Direccion absoluta de los documentos adjuntos opcional)
+											@param boolean $ibflag (true se cierra el servicio, false se deja abierto)
+											@return cadena $osbresult (Cadena con el sql)
+											@author freina <freina@parquesoft.com>
+											@date 07-Oct-2004 15:47
+											@location Cali-Colombia',
+						"getSqlCommunication"=>'Copyright 2004 � FullEngine
+																Obtiene el sql del comunicacion
+																@param string $isbordenumeros (Codigo del requerimiento)
+																@param string $isbfocacodigos (Codigo del formato)
+																@param array $ircdata (Arreglo con los datos necesario para elaborar la comunicacion)
+																@param boolean $ibflag (Bandera que indica si se cierra el servicio)
+																@return cadena $osbresult (Cadena con el sql)
+																@author freina <freina@parquesoft.com>
+																@date 29-Oct-2004 18:01
+																@location Cali-Colombia',
+						 "getAllActiveLocations"=>'Copyright 2004 � FullEngine
+						 										 Obtiene el listado de las localidades activas
+						 										 @return array
+						 										 @author freina <freina@parquesoft.com>
+						 										 @date 02-Nov-2004 10:38
+						 										 @location Cali-Colombia',
+						 "getParam"=>'@copyright Copyright 2004 &copy; FullEngine
+										Obtiene un parametro
+										@param string \$module Nombre del modulo
+										@param string \$param Nombre del parametro
+										@return mixed
+										@author creyes <cesar.reyes@parquesoft.com>
+										@date 04-nov-2004 16:42:13
+										@location Cali-Colombia',
+						"getDateStart"=>'@copyright Copyright 2004 &copy; FullEngine
+										Evelua y modifica una fecha con respecto al horario y a los dias inhabiles
+										@param integer \$date fecha en entero timestamp
+										@return integer fecha en entero timestamp
+										@author creyes <cesar.reyes@parquesoft.com>
+										@date 04-nov-2004 16:11:01
+										@location Cali-Colombia',
+						"getDateEnd"=>'@copyright Copyright 2004 &copy; FullEngine
+										Suma, evelua y adelanta una fecha con respecto a los dias inahbiles 
+										@param integer \$date fecha en entero timestamp
+										@param integer \$time cantidad de tiempo a sumar en segundos
+										@return datatype Name desc
+										@author creyes <cesar.reyes@parquesoft.com>
+										@date 04-nov-2004 16:12:44
+										@location Cali-Colombia',
+						"getByIdLocalizacion" =>'Copyright 2004 � FullEngine
+												Obtiene una localidad
+												@return array
+												@author freina <freina@parquesoft.com>
+												@date 02-Nov-2004 10:38
+												@location Cali-Colombia',
+						"getLocation"=>'@copyright Copyright 2004 &copy; FullEngine" .
+								"Consulta localizaciones para cargar los combos" .
+								"@param string $isbTipo Cadena con el tipo de localizacion" .
+								"@param string $isbNivel Cadena con el nivel de inicio" .
+								"@param string $isbLocacodpadrs Cadena con el codigo padre" .
+								"@return array $orcReturn Areglo con la data" .
+								"@author freina<freina@parquesoft.com>" .
+								"@date 06-Jun-2005 13:20" .
+								"@location Cali-Colombia',
+								
+								"getTextfield"=>'@copyright Copyright 2004 &copy; FullEngine<br>
+														  Toma un vector unidimensional con indices asociativos y retorna la cadena con el<br>
+														  Html de una ficha  <br>
+														 @param array \$rcDatos vector unidimensional con indices asociativos con los datos<br>
+														 @param array \$rcLabels Vector tipo lenguaje<br>
+														 @param array \$rcParams Parametros de visualizaci�n<br>
+																										[border] => Borde de la tabla<br>
+																									    [cols] => columnas de la ficha<br>
+																									    [size_label] => Tama�o en % del td de la etiqueta<br>
+																									    [size_table] => Tama�o en % de la tabla<br>
+														 @return string Cadena con el html<br>
+														 @author creyes <cesar.reyes@parquesoft.com><br>
+														 @date 21-sep-2004 10:25:30<br>
+														 @location Cali-Colombia',
+								"InitiateClass"=>'Copyright 2004  FullEngine
+											Inicia una clase (Regla)
+											@param string $isbclass (Cadena con el nombre de la clase)
+											@author freina <freina@parquesoft.com>
+											@date 01-Dec-2005 12:56
+											@location Cali-Colombia',
+								"getTextEmail"=>'Copyright 2004  FullEngine' .
+										'Obtiene el texto de un email de acuerdo a el formato especificado' .
+										'@param String	$sbFoemcodigos	Cadena con el id del formato' .
+										'@param array $rcData Arreglo con los datos necesarios para armar' .
+										'el texto del email' .
+										'@return Cadena con el texto o null' .
+										'@author freina <freina@parquesoft.com>' .
+										'@date 04-Apr-2006 16:30' .
+										'@location Cali-Colombia',
+								"getSubjectEmail"=>'Copyright 2004  FullEngine' .
+										'Obtiene el asunto de un email de acuerdo a el formato especificado' .
+										'@param String	$sbFoemcodigos	Cadena con el id del formato' .
+										'@param array $rcData Arreglo con los datos necesarios para armar' .
+										'el texto del email' .
+										'@return Cadena con el asunto o null' .
+										'@author freina <freina@parquesoft.com>' .
+										'@date 04-Apr-2006 17:27' .
+										'@location Cali-Colombia',
+							"sendEmail"=>'Copyright 2004  FullEngine' .
+									'Obtiene el asunto de un email de acuerdo a el formato especificado' .
+									'@param	array	$rcData' .
+									'@return boolean true proceso exitoso false error' .
+									'@author freina <freina@parquesoft.com>' .
+									'@date 05-Apr-2006 16:01' .
+									'@location Cali-Colombia',
+							"getSubjectEmail_Employee"=>'Copyright 2004  FullEngine' .
+									'Obtiene el asunto para el email del personal' .
+									'@param array $rcData Arreglo con los datos necesarios para armar' .
+									'@return Cadena con el asunto o null' .
+									'@author freina <freina@parquesoft.com>' .
+									'@date 08-Apr-2006 15:02' .
+									'@location Cali-Colombia',
+							"getTextEmail_Employee"=>"Copyright 2004  FullEngine" .
+									"Obtiene el texto para el email del personal" .
+									"@param array $rcData Arreglo con los datos necesarios para armar el texto del email" .
+									"@return Cadena con el texto o null" .
+									"@author freina <freina@parquesoft.com>" .
+									"@date 08-Apr-2006 14:58" .
+									"@location Cali-Colombia",
+							"getTipolocalizaByLocacodigos"=>'Copyright 2004  FullEngine' .
+									'Obtiene los tipo de localizacion que son hijas del tipo de localizacion' .
+									'de una localizacion' .
+									'@param string $sbLocacodigos Cadena con el id de la localizacion' .
+									'@param string $sbFlag Determina si se cierra o no el servicio' .
+									'@return array  arreglo con el par codigo - label de la localizacion' .
+									'@author freina <freina@parquesoft.com>' .
+									'@date 17-Jul-2006 18:31' .
+									'@location Cali-Colombia',
+				"SendSMS"=>'Copyright 2010 FullEngine
+				Envio de mensjes de texto
+				@param array $rcData (Arreglo con el numero celular y el mensaje)
+				@author frina<freina@parquesoft.com>
+				@date 17-Aug-2010 16:51
+				@location Cali-Colombia',
+		"get_Time_Progress"=>'Copyright 2010  FullEngine
+							Determina el porcentaje de avance y el tiempo restante en tre dod fechas
+							@param integer $nuDateIni Timestamp de la fecha de inicio
+							@param integer $nuDateFin Timestamp de la fecha de fin
+							@param boolean $sbFlag True cierra el servicio, false lo dea abierto
+							@return $rcResult array con el resultado [avance] porcentaje con el avance, [restante] el tiempo que falta o por encima de la fecha de cierre
+							@author freina <freina@parquesoft.com>
+							@date 02-Nov-2010 14:29
+							@location Cali-Colombia',
+		"setMemoryLimit"=>'@copyright Copyright 2011 &copy; FullEngine
+		Actualiza el limite de memoria del php de acuerdo a la constante MEMORY_LIMIT o al valor pasado como parametro
+		@param $sbNewSize string Cadena con el valor al cual se quiere cambiar el limite de memoria 
+		debe ser un numero seguido de la unidad de bytes ejemplo 8M las unidades son K,M o G
+		@param $sbFlag boolean Determina si se debe cerrar el servicio.
+		@author freina <freina@parquesoft.com>
+		@date 27-Mar-2011 13:37
+		@location Cali-Colombia',
+		"dateIsInhabil"=>'Propiedad intelectual del FullEngine.
+	   determina si un dia es inhabil
+	   @param $nuDay entero timestamp con el dia a evaluar
+	   @param $sbFlag indica si se cierra o no el servicio
+	   @author freina<freina@fullengine.com>
+	   @return boolean true dia inhabil false dia habil
+	   @date 04-Nov-2011 11:07:00
+	   @location Cali-Colombia',
+		"saveEquivalenciaCaso"=>'Copyright 2012 FullEngine
+		* Ingresa la informacion de equivalencias relacioandas al caso
+		* @param array $rcequivalencias (Arreglo con la data de las equivalencias)
+		* 2param string $sbOrdenumeros (Cadena con el numero del caso)
+		* @author fruina<freina@parquesoft.com>
+		* @date 10-Apr-2012 10:45
+		* @location Cali-Colombia',
+		"loadEquivalencias"=>'Copyright 2012 FullEngine
+		* Ingresa la informacion de equivalencias relacioandas al caso
+		* @param array $rcequivalencias (Arreglo con la data de las equivalencias)
+		* 2param string $sbOrdenumeros (Cadena con el numero del caso)
+		* @author fruina<freina@parquesoft.com>
+		* @date 10-Apr-2012 10:45
+		* @location Cali-Colombia',
+		"saveIntegraLog"=>'Copyright 2012 FullEngine
+		* Almacena el log de la integracion CROSS-DOCUNET
+		* @param array $rcData (Arreglo con los datos de la integrarcion)
+		* @return array $rcResult (result:true,false - message)
+		* @author freina <freina@parquesoft.com>
+		* @date 10-Apr-2012 11:21
+		* @location Cali-Colombia');
+	
+		echo "<table border=1>";
+		foreach ($rcinfo as $key => $data) 	
+			echo "<tr><td>$key</td><td>$data</td></td>";
+		echo "</table>";
+	}
+	/**
+		Copyright 2004 � FullEngine
+		
+		Regresa a la aplicaci�n su configuracion
+		@author creyes <cesar.reyes@parquesoft.com>
+		@date 25-ago-2004 14:32:20
+		@location Cali-Colombia
+		@note NOTA: Este m�todo debe ser ejecutado una vez termine la ejecucion de esta clase
+	*/
+	function close() {
+		$objTmp = new Application($this->appName, $this->appDir, true);
+	}
+	/**
+		Copyright 2004 � FullEngine
+		
+		Obtiene el listado de las localidades
+		@return array
+		@author cazapata <cazapata@parquesoft.com>
+		@date 01-Sep-2004 13:53:25
+		@location Cali-Colombia		
+	*/
+	function getAllLocations() {
+		
+		//Instancio la compuerta de localizacion
+		$gateway = Application :: getDataGateway("localizacion");
+		
+		//Llamo el metodo que hace la consulta
+		$rcElemens = $gateway->getAllLocalizacion();
+		$this->close();
+		return $rcElemens;
+	}
+	/**
+	*Copyright 2004 � FullEngine
+	*	
+	*	Obtiene el listado de las localidades activas
+	*	@return array
+	*	@author freina <freina@parquesoft.com>
+	*	@date 02-Nov-2004 10:38
+	*	@location Cali-Colombia
+	*/
+	function getAllActiveLocations(){
+		settype($gateway,"object");
+		settype($orcreturn,"array");
+		$gateway = Application :: getDataGateway("localizacionExtended");
+		$orcreturn = $gateway->getAllActiveLocations();
+		$this->close();
+		return $orcreturn;
+	}
+	
+	/**
+		*Copyright 2004 � FullEngine
+		*
+		* Obtiene el sql del email
+		*@param array $ircdata (Arreglo con los datos necesario para elaborar el e-mail)
+		
+		*$ircdata["tipo"] = tipo del e-mail (requerido)
+		*$ircdata["asunto"] = Asunto (requerido)
+		*$ircdata["texto"] = mensaje (requerido)
+		*$ircdata["requerimiento"] = Numero de requerimiento (opcional)
+		*$ircdata["responsable"] = Responsable (requerido)
+		*$ircdata["dir_origen"] = Direccion electronica origen (requerido)
+		*$ircdata["dir_destino"] = Direccion electronica destino (requerido)
+		*$ircdata["usuario"] = Usuario quien registra el email (requerido)
+		*$ircdata["adjunto"] = Direccion absoluta de los documentos adjuntos opcional)
+		
+		*@param boolean $ibflag (true se cierra el servicio, false se deja abierto)
+		* @return cadena $osbresult (Cadena con el sql)
+		* @author freina <freina@parquesoft.com>
+		* @date 07-Oct-2004 15:47
+		* @location Cali-Colombia		
+	*/
+	function getSqlEmail($ircdata, $ibflag = false) {
+		settype($objdomain, "object");
+		settype($osbresult, "string");
+		
+		// domain para los email
+		$objdomain = Application :: getDomainController('AdministerEmailManager');
+		$osbresult = $objdomain->fncGenerateSQLEmail($ircdata);
+		if ($ibflag) {
+			$this->close();
+		}
+		return $osbresult;
+	}
+	/**
+		*Copyright 2004 � FullEngine
+		*
+		* Obtiene el sql del comunicacion
+		*@param string $isbordenumeros (Codigo del requerimiento)
+		*@param string $isbfocacodigos (Codigo del formato)
+		*@param array $ircdata (Arreglo con los datos necesario para elaborar la comunicacion)
+		*@param boolean $ibflag (Bandera que indica si se cierra el servicio)
+		* @return cadena $osbresult (Cadena con el sql)
+		* @author freina <freina@parquesoft.com>
+		* @date 29-Oct-2004 18:01
+		* @location Cali-Colombia		
+	*/
+	function getSqlCommunication($isbordenumeros, $isbfocacodigos, $ircdata, $ibflag = true) {
+
+		settype($objdomain, "object");
+		settype($osbresult, "string");
+
+		// domain para las comunicaciones
+		$objdomain = Application :: getDomainController('CentroComunicacionManager');
+		$osbresult = $objdomain->fncCreateComunicacionSql($isbordenumeros, $isbfocacodigos, $ircdata);
+		if ($ibflag) {
+			$this->close();
+		}
+		return $osbresult;
+	}
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	* Trae la lista de dias inhabiles en formato timestamp sin horas
+	* @return array
+	* @author creyes <cesar.reyes@parquesoft.com>
+	* @date 02-nov-2004 10:48:14
+	* @location Cali-Colombia
+	*/
+	function getDiasInhabiles() {
+		$manager = Application :: getDomainController('DiasInhabilesManager');
+		$result = $manager->getDiasInhabiles();
+		$this->close();
+		return $result;
+	}
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	* Obtiene un parametro
+	* @param string $module Nombre del modulo
+	* @param string $param Nombre del parametro
+	* @return mixed
+	* @author creyes <cesar.reyes@parquesoft.com>
+	* @date 04-nov-2004 16:42:13
+	* @location Cali-Colombia
+	*/
+	function getParam($module,$param,$close=true){
+		$params = Application :: getDomainController("ParamsManager");
+		$result = $params->getParam($module,$param);
+		if($close)
+			$this->close();
+		return $result;
+	}
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	* Evelua y modifica una fecha con respecto al horario y a los dias inhabiles
+	* @param integer $date fecha en entero timestamp
+	* @return integer fecha en entero timestamp
+	* @author creyes <cesar.reyes@parquesoft.com>
+	* @date 04-nov-2004 16:11:01
+	* @location Cali-Colombia
+	*/
+	function getDateStart($date,$close=true) {
+		$manager = Application :: getDomainController("DiasInhabilesManager");
+		$result = $manager->getDateStart($date);
+		if(!$result)
+			$result = $date;
+		if($close)
+			$this->close();
+		return $result;
+	}
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	* Suma, evelua y adelanta una fecha con respecto a los dias inahbiles 
+	* @param integer $date fecha en entero timestamp
+	* @param integer $time cantidad de tiempo a sumar en segundos
+	* @return datatype Name desc
+	* @author creyes <cesar.reyes@parquesoft.com>
+	* @date 04-nov-2004 16:12:44
+	* @location Cali-Colombia
+	*/
+	function getDateEnd($date, $time) {
+		$manager = Application :: getDomainController("DiasInhabilesManager");
+		$result = $manager->getDateEnd($date, $time);
+		if(!$result)
+			$result = $date + $time;
+		$this->close();
+		return $result;
+	}
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	* Determina la cantidad de d�as habiles entre 2 fechas, 
+	* @param integer $date1 fecha en entero timestamp
+	* @param integer $date2 fecha en entero timestamp
+	* @param bool $flag Indica si se deba cerrar el servicio
+	* @param bool $leftOpen indica si se debe incluir la fecha inicial (por defecto es cerrado) 
+	* @param bool $rightOpen indica si no e debe incluir la fecha final (por defecto es cerrado)
+	* @return int days cantidad de d�as 
+	* @author creyes <cesar.reyes@parquesoft.com>
+	* @date 04-nov-2004 16:12:44
+	* @location Cali-Colombia
+	*/
+	function getDiasHabiles($date1, $date2, $leftOpen=false, $rightOpen=false,$flag=true) {
+		$manager = Application :: getDomainController("DiasInhabilesManager");
+		$rcResult = $manager->getDiasHabiles($date1, $date2, $leftOpen, $rightOpen);
+        if($flag == true)
+            $this->close();
+		return $rcResult;
+	}
+    
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	* Consulta localizaciones
+	* @param string $tilocodigos
+	* @param string $locacodpadrs
+	* @return array
+	* @author creyes <cesar.reyes@parquesoft.com>
+	* @date 10-nov-2004 16:44:00
+	* @location Cali-Colombia
+	*/		
+	function getLocalizaciones($tipo, $nivel,$locacodpadrs)
+	{
+		//Carga las constantes de niveles de localizacion
+		$rcNiveles =  Application :: getConstant("LOCALIZACION");
+		if($nivel)
+			$tilocodigos = $rcNiveles[$tipo][$nivel];
+		else
+			$tilocodigos = $rcNiveles[$tipo][0];
+		$gateway = Application :: getDataGateway("localizacionExtended");
+		$orcreturn = $gateway->getLocalizaciones($tilocodigos, $locacodpadrs);
+		$this->close();
+		return $orcreturn;
+	}
+	/**
+	*Copyright 2004 � FullEngine
+	*	
+	*	Obtiene una localidad
+	*	@return array
+	*	@author freina <freina@parquesoft.com>
+	*	@date 02-Nov-2004 10:38
+	*	@location Cali-Colombia
+	*/
+	function getByIdLocalizacion($locacodigos,$flag=false){
+		settype($gateway,"object");
+		settype($orcreturn,"array");
+		$gateway = Application :: getDataGateway("localizacion");
+		$orcreturn = $gateway->getByIdLocalizacion($locacodigos);
+		if($flag == false)
+			$this->close();
+		return $orcreturn;
+	}
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	* Consulta localizaciones para cargar los combos
+	* @param string $isbTipo Cadena con el tipo de localizacion
+	* @param string $isbNivel Cadena con el nivel de inicio
+	* @param string $isbLocacodpadrs Cadena con el codigo padre
+	* @return array $orcReturn Areglo con la data
+	* @author freina<freina@parquesoft.com>
+	* @date 06-Jun-2005 13:20
+	* @location Cali-Colombia
+	*/		
+	function getLocation($isbTipo, $isbNivel,$isbLocacodpadrs){
+		
+		settype($objGateway,"object");
+		settype($rcNiveles,"array");
+		settype($orcReturn,"array");
+		settype($sbTilocodigos,"string");
+		
+		//Carga las constantes de niveles de localizacion
+		$rcNiveles = Application :: getConstant("LOCALIZACION");
+		
+		if($isbNivel){
+			$sbTilocodigos = $rcNiveles[$isbTipo][$isbNivel];
+		}else{
+			$sbTilocodigos = $rcNiveles[$isbTipo][0];
+		}
+			
+		$objGateway = Application :: getDataGateway("localizacionExtended");
+		$orcReturn = $objGateway->getLocation($sbTilocodigos, $isbLocacodpadrs);
+		$this->close();
+		return $orcReturn;
+	}
+	
+	function getTextfield($type,$typeData,$disabled,$id,$maxlength,$name,$onBlur,$onClick,$onFocus,$readonly,$size,$value,$blClose=false)
+    {
+		settype($objManager,"object");
+		settype($osbResult,"string");
+		
+		$objManager = Application :: getDomainController("AdministerHTMLControlsManager");
+		$osbResult = $objManager->getTextfield($type,$typeData,$disabled,$id,$maxlength,$name,$onBlur,$onClick,$onFocus,$readonly,$size,$value);
+		
+		if($blClose)
+		{
+			$this->close();
+		}
+		return $osbResult;    	
+    }
+	/**
+	* @copyright Copyright 2004 &copy; FullEngine
+	*
+	* Crea una interfaz con un gateway del modulo
+	* Nota: despues de usar este motodo se debe cerrar este servicio manual mente con el metodo close()
+	* @param string $gateway nombre del gateway a cargar
+	* @return object
+	* @author creyes <cesar.reyes@parquesoft.com>
+	* @date 24-nov-2004 12:11:38
+	* @location Cali-Colombia
+	*/
+	function loadGateway($gateway) {
+		return Application :: getDataGateway($gateway);
+	}
+	
+	/**
+    * Copyright 2005 FullEngine
+    * 
+    * Carga una compuerta de esta modulo
+    * @author creyes
+    * @param type name desc
+    * @return type name desc
+    * @date 23-December-2005 12:56:3
+    * @location Cali-Colombia
+    */
+    function getGateWay($gatewayName){
+        return Application :: getDataGateway($gatewayName);
+    }
+    
+    /**
+    * Copyright 2005 FullEngine
+    * 
+    * Retorna el valor de una constante del modulo
+    * @author creyes
+    * @param string $nameConstant
+    * @return mixed
+    * @date 7-December-2005 23:31:25
+    * @location Cali-Colombia
+    */
+    function getConstant($nameConstant){
+        $constant = Application::getConstant($nameConstant);
+        $this->close();
+        return $constant;
+    }
+    /**
+		Copyright 2004  FullEngine
+		
+		Inicia una clase (Regla)
+		@param string $isbclass (Cadena con el nombre de la clase)
+		@author freina <freina@parquesoft.com>
+		@date 08-Dec-2005 12:56
+		@location Cali-Colombia		
+	*/
+	function InitiateClass($isbclass) {
+		
+		settype($objtmp,"object");
+		
+		//Instancio la clase
+		$objtmp = Application :: getDomainController($isbclass);
+		
+		if(is_object($objtmp)){
+			return $objtmp;
+		}
+		return null;
+	}
+	/**
+	*	Copyright 2004  FullEngine
+	*	
+	*	Obtiene el texto de un email de acuerdo a el formato especificado
+	*	@param String	$sbFoemcodigos	Cadena con el id del formato
+	*	@param array $rcData Arreglo con los datos necesarios para armar 
+	*	el texto del email
+	*	@return Cadena con el texto o null
+	*	@author freina <freina@parquesoft.com>
+	*	@date 04-Apr-2006 16:30
+	*	@location Cali-Colombia		
+	*/
+	function getTextEmail($sbFoemcodigos, $rcData, $sbFlag=true){
+		
+		settype($objManager,"object");
+		settype($sbResult,"string");
+		
+		if($sbFoemcodigos && $rcData){
+			
+			$objManager = Application :: getDomainController("AdministerEmailManager");
+			$sbResult = $objManager->getMessage($sbFoemcodigos, $rcData);
+			echo "De getTextEmail";
+			var_dump($sbResult);
+		}
+		
+		if($sbFlag){
+			$this->close();
+		}
+		return $sbResult;
+	}
+	/**
+	*	Copyright 2004  FullEngine
+	*	
+	*	Obtiene el asunto de un email de acuerdo a el formato especificado
+	*	@param String	$sbFoemcodigos	Cadena con el id del formato
+	*	@param array $rcData Arreglo con los datos necesarios para armar 
+	*	el texto del email
+	*	@return Cadena con el asunto o null
+	*	@author freina <freina@parquesoft.com>
+	*	@date 04-Apr-2006 17:27
+	*	@location Cali-Colombia		
+	*/
+	function getSubjectEmail($sbFoemcodigos, $rcData, $sbFlag=true){
+		
+		settype($objManager,"object");
+		settype($sbResult,"string");
+		
+		if($sbFoemcodigos && $rcData){
+			
+			$objManager = Application :: getDomainController("AdministerEmailManager");
+			$sbResult = $objManager->getSubject($sbFoemcodigos, $rcData);
+		}
+		
+		if($sbFlag){
+			$this->close();
+		}
+		return $sbResult;
+	}
+	/**
+	*	Copyright 2004  FullEngine
+	*	
+	*	Obtiene el asunto de un email de acuerdo a el formato especificado
+	*	@param	array	$rcData
+	*	@return boolean true proceso exitoso false error
+	*	@author freina <freina@parquesoft.com>
+	*	@date 05-Apr-2006 16:01
+	*	@location Cali-Colombia		
+	*/
+	function sendEmail($rcData){
+	 	
+	 	settype($objManager,"object");
+	 	settype($sbResult,"string");
+	 	settype($sbEmaiparas,"string");
+	 	settype($sbEmaidesdes,"string");
+	 	settype($sbEmaiasuntos,"string");
+	 	settype($sbOrdenumeros,"string");
+	 	settype($sbEmaitextos,"string");
+	 	settype($sbFoemcodigos,"string");
+	 	settype($nuResult,"integer");
+	 	
+	 	$sbResult = true;
+	 	if($rcData){
+	 		$sbEmaidesdes = $rcData["dir_origen"];
+	 		$sbEmaiparas = $rcData["dir_destino"];
+	 		$sbEmaiasuntos = $rcData["asunto"];
+	 		$sbOrdenumeros = $rcData["caso"];
+	 		$sbEmaitextos = $rcData["texto"];
+	 		$sbFoemcodigos = $rcData["formato"];
+	 		$objManager = Application :: getDomainController("CentroEmailManager");
+	 		$nuResult = $objManager->fncSendRuleEmail($sbEmaidesdes, $sbEmaiparas, $sbEmaiasuntos, $sbOrdenumeros, $sbEmaitextos, $sbFoemcodigos, $rcData);
+	 		if($nuResult!=3){
+	 			$sbResult = false;
+	 		} 
+	 	}
+	 	return $sbResult;
+	}
+	/**
+	*	Copyright 2004  FullEngine
+	*	
+	*	Obtiene el texto para el email del personal
+	*	@param array $rcData Arreglo con los datos necesarios para armar 
+	*	el texto del email
+	*	@return Cadena con el texto o null
+	*	@author freina <freina@parquesoft.com>
+	*	@date 08-Apr-2006 14:58
+	*	@location Cali-Colombia		
+	*/
+	function getTextEmail_Employee($rcData, $sbFlag=true){
+		
+		settype($objManager,"object");
+		settype($sbResult,"string");
+		
+		if($rcData){
+			
+			$objManager = Application :: getDomainController("AdministerEmailManager");
+			$sbResult = $objManager->getMessage_Employee($rcData);
+		}
+		
+		if($sbFlag){
+			$this->close();
+		}
+		return $sbResult;
+	}
+	/**
+	*	Copyright 2004  FullEngine
+	*	
+	*	Obtiene el asunto para el email del personal
+	*	@param array $rcData Arreglo con los datos necesarios para armar 
+	*	@return Cadena con el asunto o null
+	*	@author freina <freina@parquesoft.com>
+	*	@date 08-Apr-2006 15:02
+	*	@location Cali-Colombia		
+	*/
+	function getSubjectEmail_Employee($rcData, $sbFlag=true){
+		
+		settype($objManager,"object");
+		settype($sbResult,"string");
+		
+		if($rcData){
+			
+			$objManager = Application :: getDomainController("AdministerEmailManager");
+			$sbResult = $objManager->getSubject_Employee($rcData);
+		}
+		
+		if($sbFlag){
+			$this->close();
+		}
+		return $sbResult;
+	}
+	/**
+	*	Copyright 2004  FullEngine
+	*	
+	*	Obtiene los tipo de localizacion que son hijas del tipo de localizacion
+	*	de una localizacion
+	*	@param string $sbLocacodigos Cadena con el id de la localizacion 
+	*	@param string $sbFlag Determina si se cierra o no el servicio
+	*	@return array  arreglo con el par codigo - label de la localizacion
+	*	@author freina <freina@parquesoft.com>
+	*	@date 17-Jul-2006 18:31
+	*	@location Cali-Colombia		
+	*/
+	function getTipolocalizaByLocacodigos($sbLocacodigos, $sbFlag=true){
+		
+		settype($objGateway,"object");
+		settype($rcResult,"array");
+		
+		if($sbLocacodigos){
+			
+			$objGateway = Application :: getDataGateway("tipolocalizaExtended");
+			$rcResult = $objGateway->getTipolocalizaByLocacodigos($sbLocacodigos);
+		}
+		
+		if($sbFlag){
+			$this->close();
+		}
+		return $rcResult;
+	}
+	/**
+	*	Copyright 2004  FullEngine
+	*	
+	*	Consulta los hijos de una localizacion
+	*	@param string $sbLocacodigos Cadena con el id de la localizacion 
+	*	@param string $sbFlag Determina si se cierra o no el servicio
+	*	@return array
+	*	@author creyes <careyes@parquesoft.com>
+	*	@date 17-Jul-2006 18:31
+	*	@location Cali-Colombia		
+	*/
+	
+	function getLocaltionSons($locacodigos, $flag=true){
+		$localManager = Application :: getDomainController("LocalizacionManager");
+		
+		$rcResult = $localManager->fncinicio($locacodigos);
+		if($flag){
+			$this->close();
+		}
+		return $rcResult;
+	}
+	
+	function get2LevelsUpLocalizacion($locacodigos)
+	{
+		$objGateway = Application :: getDataGateway("localizacionExtended");
+		$rcResult = $objGateway->get2LevelsUpLocalizacion($locacodigos);
+		return $rcResult[0]["hijo"]." - ".$rcResult[0]["padre"]." - ".$rcResult[0]["abuelo"];
+	}
+	
+	/**
+		*Copyright 2010 FullEngine
+		*
+		* Envio de mensjes de texto
+		* @param array $rcData (Arreglo con el numero celular y el mensaje)
+		* @author frina<freina@parquesoft.com>
+		* @date 17-Aug-2010 16:51
+		* @location Cali-Colombia		
+	*/
+	function SendSMS ($rcData) {
+		
+		settype($objManager,"object");
+		settype($objClient,"object");
+		settype($rcParams,"array");
+		settype($sbPathWS,"string");
+		settype($sbSentMess,"string");
+		
+		//COMO NO ES OBLIGATORIO EL MOVIL, SOLO ENVIAMOS EL SMS SI VIENE UN MOVIL V�LIDO
+		if(strlen($rcData["celular"])<10)
+			return false;
+		
+		//PAR�METROS GENERALES
+		$objManager = Application::getDomainController("ParamsManager");
+		$sbPathWS = $objManager->getParam("general","SMS_WS_PATH");
+		
+		//SE CONECTA AL WS
+    	include_once('nusoap.php');
+		$objClient = new nusoap_client($sbPathWS);
+		
+		//ARMA LOS PAR�METROS DEL WS
+		$rcParams["rcInfo"] = array( 
+						'numero'=>      $rcData["celular"],
+						'mensaje'=>     $rcData["mensaje"],
+						'aplicodigos'=> '001APP'
+						);
+		
+		//CONSUME EL WS
+		$sbSentMess = $objClient->call("sendMessage",$rcParams);
+		return $sbSentMess;
+	}
+	/**
+		Copyright 2010  FullEngine
+		
+		Determina el porcentaje de avance y el tiempo restante en tre dod fechas
+		@param integer $nuDateIni Timestamp de la fecha de inicio
+		@param integer $nuDateFin Timestamp de la fecha de fin
+		@param boolean $sbFlag True cierra el servicio, false lo dea abierto
+		@return $rcResult array con el resultado [avance] porcentaje con el avance, [restante] el tiempo que falta o por encima de la fecha de cierre
+		@author freina <freina@parquesoft.com>
+		@date 02-Nov-2010 14:29
+		@location Cali-Colombia		
+	*/
+	function get_Time_Progress($nuDateIni,$nuDateFin,$sbFlag=true){
+		
+		settype($objManager,"object");
+		settype($rcResult,"array");
+		
+		if($nuDateIni && $nuDateFin){
+			$objManager = Application :: getDomainController("DiasInhabilesManager");
+			$rcResult = $objManager->get_Time_Progress($nuDateIni,$nuDateFin);	
+		}
+		if($sbFlag){
+			$this->close();
+		}
+		
+		return $rcResult;
+	}
+	
+	/**
+	 * @copyright Copyright 2011 &copy; FullEngine
+	 *
+	 *  Actualiza el limite de memoria del php de acuerdo a la constante MEMORY_LIMIT o al
+	 *  valor pasado como parametro; 
+	 *  @param $sbNewSize string Cadena con el valor al cual se quiere cambiar el limite de memoria
+	 *  debe ser un numero seguido de la unidad de bytes ejemplo 8M las unidades son K,M o G
+	 *  @param $sbFlag boolean Determina si se debe cerrar el servicio.
+	 * @author freina <freina@parquesoft.com>
+	 * @date 27-Mar-2011 13:37
+	 * @location Cali-Colombia
+	 */
+	function setMemoryLimit($sbNewSize=null,$sbFlag=true){
+		
+		settype($objManager,"object");
+		settype($sbResult,"string");
+		
+		$objManager = Application :: getDomainController("EnvConfigurationManager");
+		if($sbNewSize){
+			$objManager->setData(array("sbNewSize" => $sbNewSize));
+		}
+		$sbResult = $objManager->setMemoryLimit();
+			
+		if($sbFlag){
+			$this->close();
+		}
+		
+		return $sbResult;
+	}
+/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   determina si un dia es inhabil
+	*   @param $nuDay entero timestamp con el dia a evaluar
+	*   @param $sbFlag indica si se cierra o no el servicio
+	*   @author freina<freina@fullengine.com>
+	*   @return boolean true dia inhabil false dia habil
+	*   @date 04-Nov-2011 11:07:00
+	*   @location Cali-Colombia
+	*/
+	function dateIsInhabil($nuDay,$sbFlag=true){
+		
+		settype($objManager,"object");
+		settype($rcData,"array");
+		settype($sbResult,"string");
+		
+		$sbResult = false;
+		
+		$objManager = Application :: getDomainController('DiasInhabilesManager');
+		$rcData = $objManager->getDiasInhabiles();
+		
+		if(is_array($rcData) && $rcData){
+			$sbResult = $objManager->dateIsInhabil($rcData, $nuDay);
+		}
+		
+		if ($sbFlag) {
+			$this->close();
+		}
+		return $sbResult;
+	}
+	/**
+		*Copyright 2012 FullEngine
+		*
+		* Obtiene las equivalencias de datos para el ingreso de archivos en docunet
+		* @param array $rcData (Arreglo con la data del caso)
+		* @author freina<freina@parquesoft.com>
+		* @date 10-Apr-2012 10:45
+		* @location Cali-Colombia		
+	*/
+	function loadEquivalencias($rcData) {
+		settype($objGateway,"object");
+		$objGateway = $this->getGateWay("sqlExtended");
+		return $objGateway->loadEquivalencias($rcData);
+	}
+	/**
+		*Copyright 2012 FullEngine
+		*
+		* Ingresa la informacion de equivalencias relacioandas al caso
+		* @param array $rcequivalencias (Arreglo con la data de las equivalencias)
+		* 2param string $sbOrdenumeros (Cadena con el numero del caso)
+		* @author fruina<freina@parquesoft.com>
+		* @date 10-Apr-2012 10:45
+		* @location Cali-Colombia		
+	*/
+	function saveEquivalenciaCaso($rcequivalencias,$sbOrdenumeros) {
+		settype($objGateway,"object");
+		$objGateway = $this->getGateWay("sqlExtended");
+		return $objGateway->saveEquivalenciaCaso($rcequivalencias,$sbOrdenumeros);
+	}
+	/**
+		*Copyright 2012 FullEngine
+		*
+		* Almacena el log de la integracion CROSS-DOCUNET
+		* @param array $rcData (Arreglo con los datos de la integrarcion)
+		* @return array $rcResult (result:true,false - message)
+		* @author freina <freina@parquesoft.com>
+		* @date 10-Apr-2012 11:21
+		* @location Cali-Colombia		
+	*/
+	function saveIntegraLog($rcData, $sbFlag = true) {
+		settype($objManager, "object");
+		settype($rcResult, "array");
+		
+		// domain para los email
+		$objManager = Application :: getDomainController('IntegraLogManager');
+		$objManager->setData($rcData);
+		$objManager->addIntegraLog();
+		$rcResult = $objManager->getResult();
+		if ($sbFlag) {
+			$this->close();
+		}
+		return $rcResult;
+	}
+}
+?>

@@ -1,0 +1,200 @@
+<?php  
+class FeCrListadoOrdenManager {
+	
+	function FeCrListadoOrdenManager() {
+		$this->gateway = Application :: getDataGateway("SqlExtended");
+	}
+
+	function getListadoOrden($rcParams,$rcParamsDate,$rcOrder, $rcKeys, $children = null, $tareacc = null){
+		
+		settype($rcView,"array");
+		settype($rcReturn,"array");
+		
+		//Determina los indices que se exigen para el ordenamiemto
+        if(is_array($rcOrder) && $rcOrder){
+			$rcView = $rcOrder;
+		}else{
+			$rcView = $rcKeys;
+			$rcOrder = null;
+		}
+		
+		if(sizeof($rcParams) == 0){
+			$rcParams = null;
+		}
+		
+		$rcReturn = $this->gateway->getListadoOrdenes($rcParams,$rcParamsDate,$rcView,$rcOrder, $children, $tareacc);
+		$this->nuTotal = $this->gateway->nuTotal;
+		$this->nuOffset = $this->gateway->nuOffset;
+		$this->sql = $this->gateway->sql;
+		return $rcReturn;
+	}
+	
+	/**
+	* @copyright Copyright 2015 &copy; FullEngine
+	*
+	* Determina la cantidad de dias que lleva un caso hasta el día de hoy o hata su cierre
+	* Se determino que solo se realiza el calculo de días por lo tanto el calculo de horas se comenta. 
+	* @author freina <freina@fullengine.com>
+	* @date 26-May-2015 15:26:00
+	* @location Cali-Colombia
+	*/
+	function getTime(){
+		
+		settype($objService, "object");
+		settype($objGateway, "object");
+		settype($objDate, "object");
+		settype($rcTime, "array");
+		settype($rcTmp, "array");
+		settype($rcTmpHora, "array");
+		settype($rcDiasH, "array");
+		settype($sbFlag, "string");
+		settype($sbFlagF, "string");
+		settype($sbFlagE, "string");
+		settype($nuDateFin, "integer");
+		settype($nuHours, "integer");
+		settype($nuHoraFin, "integer");
+		settype($nuHoraIni, "integer");
+		settype($nuHoraReg, "integer");
+		settype($nuHoraEnd, "integer");
+		settype($nuDateEnd, "integer");
+		settype($nuDateReg, "integer");
+		settype($nuCantHI, "integer");
+		settype($nuCantHF, "integer");
+		settype($nuCantDias, "integer");
+		settype($nuCantHT, "integer");
+		settype($nuCantHTot, "integer");
+		
+		
+		$sbFlag = false;
+		$sbFlagF = false;
+		//asume que el caso esta cerrado
+		$sbFlagE = true;
+		
+		if($this->ordenumeros){
+			
+			$objGateway = Application :: getDataGateway("Orden");
+			$rcTmp = $objGateway->getByIdOrden($this->ordenumeros);
+			
+			if(is_array($rcTmp) && $rcTmp){
+				
+				$rcTmp = $rcTmp[0];				
+				$objDate = Application :: loadServices("DateController");
+				
+				//lo primero a determinar es si el dia de inicio se debe contar completo
+				$nuHoraReg = $objDate->getHour2DateInSecs($rcTmp["ordefecregd"]);
+				$nuDateReg = $rcTmp["ordefecregd"] - $nuHoraReg;
+				
+				//si existe la fecha de fin de caso se toma como la de fin de intervalo
+				//sino se debe trabajar con la fecha del dia.
+				if($rcTmp["ordefecfinad"]){
+					$nuDateFin = $rcTmp["ordefecfinad"];
+				}else{
+					$nuDateFin = $this->nuToday;
+					$sbFlagE = false;
+				}
+				
+				//hora fecha fin intervalo
+				$nuHoraEnd = $objDate->getHour2DateInSecs($nuDateFin);
+				$nuDateEnd = $nuDateFin - $nuHoraEnd;
+				
+				//horarios de atencion
+				/*$objService = Application :: loadServices("General");
+				
+				$rcTmpHora = $objService->getParam("general", "horario_atencion");
+				if (is_array($rcTmpHora)){
+					//Convierte la hora final a segundos
+					$nuHoraFin = $objDate->hour2secs($rcTmpHora["hora_fin"]);
+					$nuHoraIni = $objDate->hour2secs($rcTmpHora["hora_ini"]);
+				}else{
+					$nuHoraFin = $objDate->hour2secs("23:59:59");
+					$nuHoraIni = $objDate->hour2secs("00:00:00");
+				}*/
+				
+				//se valida que la fecha final no sea menor o igual a la del dia inicial
+				
+				if($nuDateReg > $nuDateEnd){
+					$nuCantDias = 0;
+					$nuCantHTot = 0;
+				}else{
+					if($nuDateReg == $nuDateEnd){
+						if($nuHoraReg < $nuHoraEnd){
+							$nuCantHTot = $nuHoraEnd - $nuHoraReg;
+							$nuCantDias = 0;
+						}else{
+							$nuCantDias = 0;
+							$nuCantHTot = 0;
+						}
+					}else{
+						$sbFlag = true;
+						
+						//si la hora de la fecha final es menor a la hora de registro entonces
+						//no se cuenta el día final						
+						if($nuHoraReg > $nuHoraEnd){
+							//no se debe contar el dia de inicio.
+							$sbFlagF = true; 
+						}
+						
+						//si la hora de la fecha de inicio es mayor la hora de inicio 
+						//de turno entonces no se debe considerar el dia iniical en el conteo
+						/*if($nuHoraReg > $nuHoraIni){
+							//no se debe contar el dia de inicio.
+							$sbFlag = true;
+							//cuantas horas del dia inicial
+							$nuCantHI = $nuHoraFin - $nuHoraReg; 
+						}*/
+						
+						/*if($nuHoraEnd < $nuHoraFin){
+							//no se debe contar el dia final
+							$sbFlagF = true;
+							//cuantas horas del dia final
+							$nuCantHF = $nuHoraEnd - $nuHoraIni;
+						}*/
+						
+						//cantidad de dias habiles 
+						//Cuantos dias total de ejecucion para la orden
+						$objService = Application :: loadServices("General");
+			            $rcDiasH = $objService->getDiasHabiles($nuDateReg, $nuDateEnd, $sbFlag, $sbFlagF);
+			            if(is_array($rcDiasH) && $rcDiasH){
+			            	$nuCantDias = sizeof($rcDiasH);
+			            	
+			            }
+			            //cantidad de horas del turno
+		            	//$nuCantHT  = $nuHoraFin - $nuHoraIni; 
+		            	//$nuCantHTot = $nuCantHI + $nuCantHF;
+			            /*if($nuCantHTot > $nuCantHT){
+			            	$nuCantDias = $nuCantDias + 1;
+			            	$nuCantHTot = $nuCantHTot - $nuCantHT;
+			            }*/
+					}
+				}				
+        		
+				//$rcTmp = $objDate->seconds2days($nuCantHTot);//en segundos
+        		//$rcTime["total"] = $nuCantDias." D ".$rcTmp["hours"]." H ".$rcTmp["minutes"]." M ".$rcTmp["seconds"]." S ";
+        		$rcTime["total"] = $nuCantDias;
+        		$rcTime["status"] = $sbFlagE; //false caso abierto.
+				$this->rcTime[$this->ordenumeros] = $rcTime;
+			}
+		}
+		return true;
+	}
+	
+	function UnsetRequest() {
+		settype($sbKey,"string");
+		settype($sbValue,"string");
+		foreach($_REQUEST as $sbKey => $sbValue){
+			if(strpos($sbKey,"__")!==false){
+				unset($_REQUEST[$sbKey]);
+			}if(strpos($sbKey,"check")!==false){
+				unset($_REQUEST[$sbKey]);
+			}
+		}
+		unset($_REQUEST["orgacodigos_desc"]);
+		unset($_REQUEST["ordenempresa_locacodigos_desc"]);
+		unset($_REQUEST["contidentis_desc"]);
+		unset($_REQUEST["children"]);                   
+		unset($_REQUEST["orden_ordesitiejes_desc"]);
+		return true;
+	}
+}
+?>	
+ 	

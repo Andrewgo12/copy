@@ -1,0 +1,258 @@
+<html>
+	{loadlabels table_name=Orden&controls[]=CmdAdd&controls[]=CmdUpdate&controls[]=CmdClean&controls[]=CmdShow}
+	{head}
+		<title>Orden</title>
+		{putstyle style=""}
+		{putjsfiles files[]=libCalendar.js&files[]=libCalendarPopupCode.js&files[]=fncWindowOpen.js&files[]=AutoCompletar.js&files[]=jsLoadSelect.js&files[]=jsdrawDynamicColumns.js&files[]=encode.js&files[]=jsDrawdiv.js&files[]=prototype/dist/prototype.js&files[]=jsOrden.js&files[]=SelectControl.js}
+	{/head}
+{body onkeydown="return doKeyDown(event)" onload="putFocus();drawDynamicColumns('dynamic_columns');" onunload=""}
+<br>
+{form name="frmOrden" enctype="multipart/form-data" method="post"}
+<table border="0" align="center" width="80%">
+	<tr>
+		<td class="piedefoto" colspan="3">
+			<div align="center">{help_context}</div>
+		</td>
+	</tr>
+	&nbsp;
+	<tr>
+		<td class="piedefoto">
+			<table border="0" align="center" width="100%">
+				<tr><th colspan="3"><div align="left">{printtitle}</div></th></tr>
+				<tr>
+					<td width='25%'>{printlabel name=ordenumeros}</td>
+					<td width='60%'>{textfield_ordenumeros id="ordenumeros" name="orden__ordenumeros" maxlength="30"}</td>
+					<td class="piedefoto" width='15%'>{printcoment name=ordenumeros}</td>
+				</tr>
+				<tr>
+					<td>{printlabel name=tiorcodigos&blBold=true}</td>
+					<td>{select_row_table id="tiorcodigos" name="ordenempresa__tiorcodigos" sqlid="tipoorden" table_name="tipoorden" 
+	                      value="tiorcodigos" label="tiornombres" is_null="true" 
+                            onchange="if(this.value!='')LoadSelect('tipoorden_evento','tiorcodigos',Array(this),document.frmOrden.ordenempresa__evencodigos,'ordenempresa__evencodigos,ordenempresa__causcodigos'); 
+                             if(this.value!='')LoadDescTipoorden(this.value);
+                             drawDynamicColumns('dynamic_columns');"}<b>*</b>
+						<br>
+						<div id="tiordescrips"></div>
+					</td>
+					<td class="piedefoto">{printcoment name=tiorcodigos}</td>
+				</tr>
+				<tr>
+					<td>{printlabel name=evencodigos&blBold=true}</td>
+					<td>
+						{select_son name="ordenempresa__evencodigos"
+		                            table_hijo="evento" 
+		                            id_hijo="evencodigos"
+		                            label_hijo="evennombres"
+		                            foreign_name=""
+		                            select_papa="ordenempresa__tiorcodigos"
+		                            sqlid="tipoorden_evento"
+		                            onchange="if(this.value)LoadSelect('tipoorden_evento_causa','evencodigos|tiorcodigos',Array(this,document.frmOrden.ordenempresa__tiorcodigos),document.frmOrden.ordenempresa__causcodigos,'ordenempresa__causcodigos');
+		                 drawDynamicColumns('dynamic_columns');"}<b>*</b>
+					</td>
+					<td class="piedefoto">{printcoment name=evencodigos}</td>
+				</tr>
+				<tr>
+				  <td>Campo</td>
+				</tr>
+				<tr>
+					<td>{printlabel name=causcodigos}</td>
+					<td>
+						{select_son name="ordenempresa__causcodigos"
+		                      table_hijo="causa" 
+							  id_hijo="causcodigos"
+							  label_hijo="causnombres"
+							  foreign_name=""
+							  select_papa="ordenempresa__tiorcodigos,ordenempresa__evencodigos"
+							  sqlid="tipoorden_evento_causa"
+							  onchange="drawDynamicColumns('dynamic_columns');"}  
+					</td>
+					<td class="piedefoto">{printcoment name=causcodigos}</td>
+				</tr>
+				<tr>
+					<td>{printlabel name=ordefecregd&blBold=true}</td>
+					<td>{date_set_proc name="orden__ordefecregd" id="ordefecregd" form_name="frmOrden"}<b>*</b></td>
+					<td class="piedefoto">{printcoment name=ordefecregd}</td>
+				</tr>
+				<tr>
+					<td>{printlabel name=merecodigos&blBold=true}</td>
+					<td>{select_row_mediorecepcion id="merecodigos" name="ordenempresa__merecodigos" value="merecodigos" label="merenombres" is_null="true"}<b>*</b></td>
+					<td class="piedefoto">{printcoment name=merecodigos}</td>
+				</tr>
+				<tr>
+					<td>{printlabel name=ordeobservs&blBold=true}</td>
+					<td>{textarea_ext id="ordeobservs" name="orden__ordeobservs" cols="100" rows="10" }{/textarea_ext}<b>*</b></td>
+					<td class="piedefoto">{printcoment name=ordeobservs}</td>
+				</tr>
+				<tr>
+					<td>{printlabel name=orgacodigos}</td>
+					<td>
+						{select_entes_esp id="orgacodigos" name="ordenempresa__orgacodigos" form="frmOrden" is_null=true}
+					</td>  
+					<td class="piedefoto">{printcoment name=orgacodigos}</td>
+				</tr>
+				<tr>
+					<td>{printlabel name=priocodigos}</td>
+					<td>{select_row_table id="priocodigos" name="ordenempresa__priocodigos" sqlid="prioridad" table_name="priocodigos" value="priocodigos" label="prionombres" is_null="true"}</td>
+					<td class="piedefoto">{printcoment name=priocodigos}</td>
+				</tr>
+				<tr>
+					<td>{printlabel name="grincodigos" blBold="true"}</td>
+					<td>{select_row_table id="grincodigos" name="ordengruposinteres__grincodigos" sqlid="gruposinteres" table_name="gruposinteres" value="grincodigos" label="grinnombres" is_null="true"}<b>*</b></td>
+					<td class="piedefoto">{printcoment name=grincodigos}</td>
+				</tr>
+				<tr>
+					<td>{printlabel name=ordesitiejes&blBold=true}</td>
+					<td>
+						{textfield id="ordesitiejes" name="orden__ordesitiejes" onBlur="if(this.value)autoReference('dep_fisica','orgacodigos',Array(this),this.form.orden_ordesitiejes_desc)"}
+						{href 
+							label="<img src='web/images/menu.gif' border='0' align='middle'></img>"
+							onclick="javascript:fncopenwindows('FeCrCmdTreeHelp','table=organizacion&sqlid=dep_fisica&return_obj=orden__ordesitiejes&return_key=orgacodigos&father=orgacgpads&son=orgacodigos&label=organombres&param=geografia&value='+document.frmOrden.orden__ordesitiejes.value+'&visibility=ancestry:1');"
+						}
+						{textfield name="orden_ordesitiejes_desc"}<B>*</B>
+					</td>
+					<td class="piedefoto">{printcoment name=ordesitiejes}</td>
+				</tr>
+				<tr>
+					<td colspan="2"><br></td>
+					<td class="piedefoto">{printcoment name=denunciante}</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						{printlabel name=question}&nbsp;
+						{printlabel name=yes}&nbsp;<input type="radio" id="radio_paciente" name="answer" value="1" onClick="setDenunciante('1')">&nbsp;
+						{printlabel name=no}&nbsp;<input type="radio" id="radio_denunciante" name="answer" value="2" onClick="setDenunciante('2')">&nbsp;
+						{printlabel name=anonimo}&nbsp;<input type="radio" id="radio_anonimo" name="answer" value="0" onClick="setDenunciante('0')">
+					</td>
+					<td class="piedefoto"></td>
+				</tr>
+				<tr>
+					<td colspan="2">&nbsp;</td>
+					<td class="piedefoto"></td>
+				</tr>
+				<!-- Paciente -->
+				<tr>
+					<td colspan="2">
+					<div id="paciente" style="visibility:hidden; display:none ">
+						<table border="0" align="center" width="100%">
+							<tr>
+								<td colspan="2"><strong>{printlabel name=paciente_info}</strong></td>
+							</tr>
+							<tr>
+								<td>{printlabel name=paciente&blBold=true}</td>
+								<td> 
+									{dataselectdojo htmlid="paciindentis" name="ordenempresa__paciindentis" sqlid="paciente_ref" value="paciindentis" label="pacinombres" forceautoreference="true"} 
+									{href 
+										label="<img src='web/images/crear.gif' border='0' align='absmiddle'></img>"
+										onclick="javascript:OpenWindows('../customers/index.php?action=FeCuCmdDefaultPaciente','');"
+									}
+								</td>
+							</tr>
+							<tr>
+								<td>{printlabel name=sesocodigos&blBold=true}</td>
+								<td>
+									{select_row_table name="ordenempresa__sesocodigos" id="sesocodigos" label="sesonombres" sqlid="segurisocial" is_null="true" value="sesocodigos"}<B>*</B>
+								</td>
+							</tr>
+							<tr>	
+								<td>{printlabel name=couscodigos&blBold=true}</td>
+								<td>
+									{select_row_table name="ordenempresa__couscodigos" id="couscodigos" label="cousnombres" sqlid="condiusuario" is_null="true" value="couscodigos"}<B>*</B>
+								</td>
+							</tr>
+							<tr>
+								<td>{printlabel name=ipscodigos&blBold=true}</td>
+								<td>
+									{select_row_table name="ordenempresa__ipsecodigos" id="ipsecodigos" label="ipsenombres" sqlid="ips" is_null="true" value="ipsecodigos"}<B>*</B>
+								</td>
+							</tr>
+							<tr>
+								<td>{printlabel name=contidentis_p}</td>
+								<td>
+									{dataselectdojo htmlid="contidentis_p" name="ordenempresa__contidentis_p" sqlid="contacto_ref" value="contcodigon" label="contnombre" forceautoreference="true"} 
+									{href 
+										label="<img src='web/images/crear.gif' border='0' align='absmiddle'></img>"
+										onclick="javascript:OpenWindowsSol('../customers/index.php?action=FeCuCmdDefaultSolicitante','');"
+									}
+								</td>
+							</tr>
+						</table>
+					</div>
+					</td>
+					<td class="piedefoto"></td>
+				</tr>
+				<!-- Fin paciente -->
+				<!-- Denunciante -->
+				<tr>
+					<td colspan="2">
+						<div id="denunciante"  style="visibility:hidden; display:none ">
+						<table border="0" align="center" width="100%">
+							<tr>
+								<td colspan="2"><strong>{printlabel name=denunciante_info}</strong></td>
+							</tr>
+							<tr>
+								<td>{printlabel name=contidentis&blBold=true}</td>
+								<td>
+									{dataselectdojo htmlid="contidentis" name="ordenempresa__contidentis" sqlid="contacto_ref" value="contcodigon" label="contnombre" forceautoreference="true"}<B>*</B> 
+									{href 
+										label="<img src='web/images/crear.gif' border='0' align='absmiddle'></img>"
+										onclick="javascript:OpenWindowsSol('../customers/index.php?action=FeCuCmdDefaultSolicitante','');"
+									}
+								</td>
+							</tr>
+						</table>
+						</div>
+					</td>
+					<td class="piedefoto"></td>
+				</tr>
+				<!-- Fin Denunciante -->
+				<tr>
+					<td colspan="2" class="piedefoto">
+						{div id="dynamic_columns" align="justify"}
+						{/div}
+					</td>
+					<td class="piedefoto"></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td class="piedefoto">
+			<table border="0" align="center" width="100%">
+				<tr>
+					<td colspan="2">
+						<div align="center">
+						{btn_button value="Adicionar" id="CmdAdd" name="FeCrCmdAddOrden" onClick="jsAddOrden();"}
+						{btn_command type="button" value="Modificar" id="CmdUpdate" name="FeCrCmdUpdateOrden" form_name="frmOrden" loadFields="orden__ordenumeros,ordenempresa__tiorcodigos,ordenempresa__evencodigos,orden__ordefecregd,orden__ordeobservs,orden__ordesitiejes,ordenempresa__merecodigos" confirm="33"}
+						{btn_command type="button" value="Consultar" id="CmdShow" name="FeCrCmdShowListOrden" form_name="frmOrden"}
+						{btn_clean table_name="Orden" form_name="frmOrden"}
+						</div>
+					</td>
+					<td width='15%' class="piedefoto"></td>
+				</tr>
+				<tr><td colspan="3" class="piedefoto">&nbsp;</td></tr>
+				<tr><td colspan="2" class="piedefoto">{register_attachment form="frmOrden"}</td><td valign="bottom" class="piedefoto">{printcoment name=add}</td></tr>
+			</table>
+		</td>
+	</tr>
+</table>
+{hidden name="action" value="" id="action"}
+{hidden name="focusposition"}
+{hidden name="deleteattachment" value=""}
+{hidden name="consult" value=""}
+{hidden name="ordenumeros_load"} 
+{hidden name="loadMerecodigos" value=""} 
+{hidden name="orden__llave" id="llave" value=""}
+{hidden name="ordenempresa__oremradicas"}
+{hidden name="customer_type" id="customer_type"}
+<script language="javascript">
+	setDenunciante('{php}echo $_REQUEST['customer_type'];{/php}');
+	activeRadio('{php}echo $_REQUEST['customer_type'];{/php}');
+</script>
+{/form}
+{putjsacceskey}
+{fieldset legend="Resultado"}
+   {message_orden id=$cod_message param=$param signal=$signal error_field=$error_field label_file="fichaord"}
+{/fieldset}
+<br>
+{/body}
+</html>

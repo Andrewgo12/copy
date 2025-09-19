@@ -1,0 +1,18 @@
+<?php
+require_once "Web/WebRequest.class.php";
+class FeGeCmdDefaultPermisosPersonal {
+    function execute()
+    {
+    	extract($_REQUEST);
+    	
+		//SI limpia el $_REQUEST
+		if($clean_table)
+		{
+			$cargo_manager = Application::getDomainController("ParamsManager"); 
+			$cargo_manager->UnsetRequestPersonal();
+			unset($_REQUEST["clean_table"]);
+		}
+        return "success";  
+    }
+}
+?>

@@ -1,0 +1,41 @@
+<?php
+/*
+ This is the language's file to the  Orden table
+*/
+$rclabels = array("title"=>"Centro de reportes","consulttitle"=>"",
+                "context_help"=>"<B>Nota: </B>Recuerde que los campos marcados con asterisco (*) son obligatorios.",
+"text_14"=>array("label"=>"Cantidad de casos por frecuencia (horario, diario, semanal, mensual).","accesskey"=>false,"commentary"=>""),
+"text_15"=>array("label"=>"Cantidad de casos por localizaci&oacute;n","accesskey"=>false,"commentary"=>""),
+"text_16"=>array("label"=>"Cantidad de denuncias por localizaci&oacute;n","accesskey"=>false,"commentary"=>""),
+"text_17"=>array("label"=>"Actividades por tarea","accesskey"=>false,"commentary"=>""),
+"text_18"=>array("label"=>"Cantidad de Casos por usuario.","accesskey"=>false,"commentary"=>""),
+"text_19"=>array("label"=>"Indicador de satisfacci&oacute;n del cliente.","accesskey"=>false,"commentary"=>""),
+"text_20"=>array("label"=>"Hist&oacute;rico de rotaci&oacute;n de personal.","accesskey"=>false,"commentary"=>""),
+"text_21"=>array("label"=>"Reporte de autorizaciones.","accesskey"=>false,"commentary"=>""),
+"year"=>array("label"=>"A&ntilde;o","accesskey"=>true,"commentary"=>""),
+"grafico"=>array("label"=>"Gr&aacute;fico","accesskey"=>true,"commentary"=>""),
+"period"=>array("label"=>"Periodo","accesskey"=>true,"commentary"=>""),
+"month"=>array("label"=>"Mes","accesskey"=>true,"commentary"=>""),
+"frequency"=>array("label"=>"Frecuencia","accesskey"=>true,"commentary"=>""),
+
+"report_14"=>array("label"=>"Frecuencia","accesskey"=>false,"commentary"=>""),
+"report_15"=>array("label"=>"Localizaci&oacute;n","accesskey"=>false,"commentary"=>""),
+"report_16"=>array("label"=>"Localizaci&oacute;n","accesskey"=>false,"commentary"=>""),
+"report_17"=>array("label"=>"Actividad","accesskey"=>false,"commentary"=>""),
+"report_18"=>array("label"=>"Usuario","accesskey"=>false,"commentary"=>""),
+"report_19"=>array("label"=>"Tipo de Caso","accesskey"=>false,"commentary"=>""),
+"report_19"=>array("label"=>"Tipo de Caso","accesskey"=>false,"commentary"=>""),
+"report_20"=>array("label"=>"Hist&oacute;rico de rotaci&oacute;n de personal","accesskey"=>false,"commentary"=>""),
+"report_21"=>array("label"=>"Reporte de autorizaciones","accesskey"=>false,"commentary"=>""),
+"locacodigos"=>array("label"=>"Localizaci&oacute;n","accesskey"=>false,"commentary"=>""),
+"tilocodigos"=>array("label"=>"Tipo de localizaci&oacute;n","accesskey"=>false,"commentary"=>""),
+"orgacodigos"=>array("label"=>"Dependencia","accesskey"=>true,"commentary"=>""),
+"tiorcodigos"=>array("label"=>"Tipo de Caso","accesskey"=>true,"commentary"=>""),
+"llavusuauts"=>array("label"=>"Usuario que autoriza","accesskey"=>true,"commentary"=>""),
+"llavususols"=>array("label"=>"Usuario que solicita","accesskey"=>true,"commentary"=>""),
+"ini_date"=>array("label"=>"Fecha registro inicial","accesskey"=>true,"commentary"=>""),
+"fin_date"=>array("label"=>"Fecha registro final","accesskey"=>true,"commentary"=>""),
+"ordefecdiginin"=>array("label"=>"Fecha-hora digitaci&oacute;n inicial","accesskey"=>true,"commentary"=>"AAAA/MM/DD"),
+"ordefecdigfinn"=>array("label"=>"Fecha-hora digitaci&oacute;n final","accesskey"=>true,"commentary"=>"AAAA/MM/DD"),
+);
+?>

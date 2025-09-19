@@ -1,0 +1,112 @@
+BODY {
+        FONT-SIZE: 12px; 
+		margin-left: 0px; 
+		margin-top: 0px;	
+		margin-right: 0px; 
+		margin-bottom: 0px; 
+		COLOR: #FFFF00; 
+		FONT-FAMILY: Helvetica
+}
+TD {
+	BACKGROUND: #FFFFFF; 
+	FONT: 16px Arial, Helvetica, sans-serif; 
+	TEXT-TRANSFORM: none; 
+	COLOR: #666666; 
+	TEXT-DECORATION: none
+}
+TH {
+	BACKGROUND-COLOR: #FFFFFF; 
+	FONT-WEIGHT: bold; 
+	FONT-SIZE: 16px; 
+	COLOR: #31338f; 
+	FONT-FAMILY: Helvetica; 
+	ALIGN: left
+}
+SELECT {
+	FONT-SIZE: 14px; 
+	COLOR: #1c4ab9; 
+	FONT-FAMILY: Helvetica
+}
+INPUT {
+	FONT-SIZE: 10px; 
+	COLOR: #1c4ab9; 
+	FONT-FAMILY: Helvetica
+}
+TEXTAREA{
+	FONT-SIZE: 10px; 
+	COLOR: #1c4ab9; 
+	FONT-FAMILY: Helvetica
+}
+.titulofila {
+	FONT-SIZE: 11px; 
+	BACKGROUND: #1c49bc; 
+	COLOR: #ffffff; 
+	FONT-FAMILY: Helvetica
+}
+.celda2 {
+	BACKGROUND: #ffffff; 
+	FONT: 12px Arial, Helvetica, sans-serif; 
+	TEXT-TRANSFORM: none; 
+	COLOR: #666666; 
+	TEXT-DECORATION: none
+}
+.celda {
+	BACKGROUND: #e8f5ff; 
+	FONT: 12px Arial, Helvetica, sans-serif; 
+	TEXT-TRANSFORM: none; 
+	COLOR: #666666; 
+	TEXT-DECORATION: none
+}
+.boton {
+	FONT-SIZE: 14px;
+	COLOR: #ffffff;
+	FONT-FAMILY: Helvetica;
+	BACKGROUND-COLOR: #313380;
+	border-radius: 30px;
+}
+.piedefoto {
+	BACKGROUND: #ffffff; 
+	FONT-SIZE: 10px; 
+	COLOR: #888888; 
+	FONT-FAMILY: Helvetica
+}
+DIV.content {
+	BACKGROUND-IMAGE: url(../images/trees/tree-mientrasTanto/left_line.gif); 
+	BACKGROUND-REPEAT: repeat-y; 
+	HEIGHT: 90%; 
+	BACKGROUND-COLOR: #efefef
+}
+DIV.boxcontrol {
+	PADDING-RIGHT: 1px; 
+	BACKGROUND-POSITION: right 50%; 
+	PADDING-LEFT: 15px; 
+	BACKGROUND-IMAGE: url(../images/trees/tree-mientrasTanto/right_line.gif); 
+	PADDING-BOTTOM: 0px; 
+	PADDING-TOP: 0px; 
+	BACKGROUND-REPEAT: repeat-y; 
+	HEIGHT: 100%
+}
+FIELDSET.context_help {
+	BACKGROUND: #ffffff; 
+	FONT-SIZE: 10px; 
+	COLOR: #888888; 
+	FONT-FAMILY: Helvetica
+}
+.tdlabels {
+	font-family: Helvetica;
+	font-size: 14px;
+	color: #FFFFFF;
+	text-decoration: none;
+	background-color: #074FAB;
+	align-content: flex-end;
+}
+.bordertable {
+	border: thin dotted #666666;
+}
+b {
+	color: red;
+	font-size: 14px;
+}
+.tdlabels b {
+	color: inherit;
+}

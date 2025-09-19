@@ -1,0 +1,75 @@
+<?php
+
+require_once "Web/WebRegistry.class.php";
+require_once "Web/WebSession.class.php";
+
+set_time_limit(0);
+
+class ProvitionalLog {
+    const FILE_ROUTE = "/var/www/html/provitional_log.txt";
+
+    public static function write_log($message){
+        $file = fopen(ProvitionalLog::FILE_ROUTE, "a"); 
+        fwrite($file, time()." ".$message."\n");
+        fclose($file);
+    }   
+}
+
+
+class FrontController {
+
+    public static function execute() {
+        $command = WebRegistry::getWebCommand();
+        if (PEAR::isError($command)) {
+            // $view_name = WebRegistry::getErrorView();
+            echo "command not found";
+        }
+		
+        $result = $command->execute();
+        if (PEAR::isError($result)) {
+
+            echo $result->getMessage();
+        } else {
+
+            $view_name = WebRegistry::getWebCommandView($result);
+		    ProvitionalLog::write_log(print_r($view_name, true));
+            
+            if (PEAR::isError($view_name)) {
+                echo $view_name->getMessage();
+            } else {
+                $view = WebRegistry::getWebView($view_name);
+    		    ProvitionalLog::write_log(print_r($view, true));
+                if (PEAR::isError($view)){
+                    echo $view->getMessage();
+                } else {
+                    $view->show();
+                }
+            }
+        }
+        
+        /*
+        // an error ??
+        if (!PEAR::isError($command)) {
+                $view_name = $command->execute();
+
+                $view =& Application::get_Web_View($_REQUEST["action"], $view_name);
+
+                // there is an error getting the command ??
+                if (!PEAR::isError($view)) {
+                    $view_name = $view->show();
+                }
+        // need to call a view
+        } else if (!isset($_REQUEST["view"])) {
+            $view =& Application::get_Web_View($_REQUEST["view"]);
+
+            // there is an error getting the command ??
+            if (!PEAR::isError($view)) {
+                $view_name = $view->show();
+            }
+        }
+        */
+    }
+
+}
+
+?>

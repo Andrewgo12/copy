@@ -1,0 +1,14 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-09-23T06:07:57.426340Z
+K 7
+svn:log
+V 293
+Se eliminan campos que estan relacionados al paciente del formulario de registro de casos. Se eliminan ítems del menú, se eliminan comando, manager, archivos de idioma, compuertas, relacionados a los campos que no aplican para la versión genérica de CROSS7. Se cambia el logo de empresa. 
+
+END

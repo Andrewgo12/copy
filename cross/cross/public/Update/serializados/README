@@ -1,0 +1,20 @@
+Revision: 1
+Author: cazapata
+Date: 01:39:15 p.m., sabado, 19 de diciembre de 2020
+Message:
+Número de Caso : 12020
+Observaciones : Se debe realizar un componente que reemplace el actual manejo de archivos en CROSS para la version 7. Dicho componente no debe guardar en base de datos los archivos anexos
+R/
+Modificación en el ingreso de archivos en el sistema CROSS.
+ La forma como se almacenan los archivos en el sistema CROSS se modifica; anteriormente los archivos anexos se almacenaban en la base de datos, ahora se deben almacenar en disco duro.
+Para realizar este cambio  se hace necesario crear una regla  que funcione como una capa sobre la compuerta de acceso a la tabla de archivos, esta regla se encargara de almacenar, actualizar y eliminar  el contenido del archivo en disco duro  de acuerdo a la petición realizada.
+El registro en la tabla archivos se mantiene, el contenido del archivo es el que se almacena en disco.
+Los archivos son almacenados sin extensión y se usa como nombre del archivo el número de registro con el que quedo almacenado en la tabla de archivos.
+Todos los archivos se guardan en el modulo general en una carpeta llamada anexo que está dentro de la carpeta data del modulo, esta ruta se almacena en una constante del modulo general llamada ANEXOS, también se crean las constantes ARCH_P y ARCH_F.
+El control de archivos se planteo de tal forma que solo se hacen las modificaciones de disco duro si las transacciones de ingreso o actualización en la tabla registro se realizan de forma efectiva.
+
+------------------------
+Added : /trunk/ASAP/applications/general/data/Pgsql/FeGePgsqlArchivoaux.class.php
+Added : /trunk/ASAP/applications/general/data/anexos
+Added : /trunk/ASAP/applications/general/domain/FeGeArchivosManager.class.php
+Modified : /trunk/ASAP/applications/general/config/SaveConstantFile.php

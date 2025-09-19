@@ -1,0 +1,379 @@
+<?php                              
+class FeGeAdministerEmailManager {
+	var $objgateway;
+	var $objtmp;
+	var $objtmpf;
+	var $objdate;
+	function FeGeAdministerEmailManager() {
+		$this->objgateway = Application :: getDataGateway("EmailExtended");
+		$this->objtmp = Application :: getDomainController('NumeradorManager');
+		$this->objdate = Application :: loadServices("DateController");
+		$this->objtmpf = Application :: getDomainController("FormatoemailManager");
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Genera el sql para la tabla email
+	*   @author freina
+	*	@param array $ircdata (Arreglo con la data necesaria para obtener generar el email)
+	*	@return string $osbresult (Cadena con el sql del e-mail)
+	*   @date 07-Oct-2004 08:10
+	*   @location Cali-Colombia
+	*/
+	function fncGenerateSQLEmail($ircdata) {
+
+		settype($objService, "object");
+		settype($rcFormatoemail, "array");
+		settype($osbresult, "string");
+		settype($sbordenumeros, "string");
+		settype($sbemaiparas, "string");
+		settype($sbemaidesdes, "string");
+		settype($sbemaiasuntos, "string");
+		settype($sbemaitextos, "string");
+		settype($sbemaiestados, "string");
+		settype($sborgacodigos, "string");
+		settype($sbusuacodigos, "string");
+		settype($sbemaiadjuntos, "string");
+		settype($sbemaicodigos, "string");
+		settype($nuemaifecregn, "integer");
+		settype($nuemaifecenvn, "integer");
+
+		if ($ircdata["formato"] && $ircdata["texto"]) {
+			
+			//Requerimiento
+			$sbordenumeros = $ircdata["requerimiento"];
+
+			//Responsable
+			$sborgacodigos = $ircdata["responsable"];
+
+			//Direccion de origen
+			$sbemaidesdes = $ircdata["dir_origen"];
+
+			//Direccion de destino
+			$sbemaiparas = $ircdata["dir_destino"];
+
+			//se obtiene el formato
+			$rcFormatoemail = $this->objtmpf->getByIdFormatoemail($ircdata["formato"]);
+
+			if ($rcFormatoemail) {
+				
+				$objService = Application :: loadServices("Data_type");
+				
+				//Asunto
+				$sbemaiasuntos = $this->fncgetSubject($rcFormatoemail[0], $ircdata["asunto"]);
+				if($sbemaiasuntos){
+					$sbemaiasuntos = $objService->formatString($sbemaiasuntos);
+				}
+
+				//Texto
+				$sbemaitextos = $this->fncgetMessage($rcFormatoemail[0], $ircdata["texto"]);
+				$sbemaitextos = $objService->formatString($sbemaitextos);
+
+				//Estado
+				$sbemaiestados = Application :: getConstant("E-MAIL_NOE");
+
+				//Tipo
+				$sbemaitipos = $ircdata["formato"];
+
+				//usuario
+				$sbusuacodigos = $ircdata["usuario"];
+
+				//fecha hora de registro
+				$nuemaifecregn = $this->objdate->fncintdatehour();
+
+				//fecha hora de envio
+				$nuemaifecenvn = Application :: getConstant("DB_NULL");
+
+				//adjuntos
+				$sbemaiadjuntos = $ircdata["adjunto"];
+
+				//codigo
+				$sbemaicodigos = $this->objtmp->fncgetByIdNumerador("email");
+
+				if ($sbemaicodigos && $sborgacodigos && $sbemaiparas && $sbemaidesdes && $sbemaitextos && $sbemaiestados && $sbusuacodigos && $nuemaifecregn) {
+					// se genera el insert
+					$osbresult = $this->objgateway->addEmailSql($sbemaicodigos, $sbordenumeros, $sbemaitipos, $sborgacodigos, $sbemaiparas, $sbemaidesdes, $sbemaiasuntos, $sbemaitextos, $sbemaiestados, $sbusuacodigos, $nuemaifecregn, $nuemaifecenvn, $sbemaiadjuntos);
+				}
+			}
+		}
+
+		return $osbresult;
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Obtiene el mensage de un email
+	*   @author freina
+	*	@param array $ircdata (Arreglo con la data necesaria para armar mensaje)
+	*	@param array $ircDataFormato (Areglo con la configuracion)
+	*	@return string $osbresult (Cadena con el mensaje)
+	*   @date 08-Oct-2004 15:36
+	*   @location Cali-Colombia
+	*/
+	function fncgetMessage($ircDataFormato, $ircdata) {
+
+		settype($sbtmp, "string");
+		settype($osbresult, "string");
+
+		$sbtmp = $ircDataFormato["foemplantils"];
+
+		$osbresult = $this->fncReplaceTemplate($sbtmp, $ircdata);
+
+		return $osbresult;
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Obtiene el asunto de un email
+	*   @author freina
+	*	@param array $ircdata (Arreglo con la data necesaria para armar el subject)
+	*	@param array $ircDataFormato (Arreglo conel formato de la configuracion)
+	*	@return string $osbresult (Cadena con el subject)
+	*   @date 08-Oct-2004 15:36
+	*   @location Cali-Colombia
+	*/
+	function fncgetSubject($ircDataFormato, $ircdata) {
+
+		settype($sbtmp, "string");
+		settype($osbresult, "string");
+
+		$sbtmp = $ircDataFormato["foemasuntos"];
+
+		$osbresult = $this->fncReplaceTemplate($sbtmp, $ircdata);
+
+		return $osbresult;
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Reemplaza la data en una plantila
+	*   @author freina
+	*	@param string $isbplantilla (Cadena con la plantilla)
+	*	@param array $ircdata (Arreglo con la data)
+	*	@return string $osbresult (Cadena con el subject)
+	*   @date 08-Oct-2004 15:36
+	*   @location Cali-Colombia
+	*/
+	function fncReplaceTemplate($isbplantilla, $ircdata) {
+
+		settype($rctags, "array");
+		settype($rctmp, "array");
+		settype($osbresult, "string");
+		settype($sbindex, "string");
+
+		if ($ircdata && $isbplantilla) {
+
+			$osbresult = $isbplantilla;
+			$rctags = Application :: getConstant("EMAIL_TAGS");
+
+			foreach ($rctags as $sbindex => $rctmp) {
+				$osbresult = str_replace("<".$rctmp["value"].">", $ircdata[$rctmp["equivalence"]], $osbresult);
+			}
+		}
+		var_dump($osbresult);
+		return $osbresult;
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Verifica si existe una coneccion a internet  abriendo un socket a google
+	*   @author freina
+	*	@return boolean $osbresult (true si hay coneccion, false si no la hay)
+	*   @date 14-Oct-2004 06:02
+	*   @location Cali-Colombia
+	*/
+	function fncValidateConnection() {
+
+		settype($sbhost, "string");
+		settype($sbport, "string");
+		settype($sbfp, "string");
+		settype($sbtimedelay, "string");
+		settype($sberrno, "string");
+		settype($sberrstr, "string");
+		settype($osbresult, "string");
+
+		$osbresult = true;
+		$sbhost = Application :: getConstant("HOST_PROBE");
+		$sbport = Application :: getConstant("PORT_PROBE");
+		$sbtimedelay = Application :: getConstant("TIME_DELAY");
+		error_reporting(0);
+		$sbfp = fsockopen($sbhost, $sbport, $sberrno, $sberrstr, $sbtimedelay);
+		if (!$sbfp) {
+			$osbresult = false;
+		}
+		fclose($sbfp);
+		return $osbresult;
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Obtiene el mensage de un email
+	*   @author freina
+	*	@param array $rcData Arreglo con la data necesaria para armar mensaje
+	*	@param string $sbFoemcodigos Cadena con el id de la configuracion
+	*	@return string $osbresult Cadena con el mensaje
+	*   @date 04-Apr-2006 16:45
+	*   @location Cali-Colombia
+	*/
+	function getMessage($sbFoemcodigos, $rcData) {
+
+		settype($rcFormat, "array");
+		settype($sbTemplate, "string");
+		settype($sbResult, "string");
+		
+		if($sbFoemcodigos && $rcData){
+			
+			//se obtiene el formato
+			$rcFormat = $this->objtmpf->getByIdFormatoemail($sbFoemcodigos);
+			$sbTemplate = $rcFormat[0]["foemplantils"];
+			$sbResult = $this->fncReplaceTemplate($sbTemplate, $rcData);
+		}
+		
+		return $sbResult;
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Obtiene el asunto de un email
+	*   @author freina<freina@parquesoft.com>
+	*	@param array $rcData (Arreglo con la data necesaria para armar el subject)
+	*	@param string $sbFoemcodigos Cadena con el id de la configuracion
+	*	@return string $osbresult (Cadena con el subject)
+	*   @date 08-Oct-2004 15:36
+	*   @location Cali-Colombia
+	*/
+	function getSubject($sbFoemcodigos, $rcData) {
+		
+		settype($rcFormat, "array");
+		settype($sbTemplate, "string");
+		settype($sbResult, "string");
+		
+		if($sbFoemcodigos && $rcData){
+			
+			//se obtiene el formato
+			$rcFormat = $this->objtmpf->getByIdFormatoemail($sbFoemcodigos);
+			$sbTemplate = $rcFormat[0]["foemasuntos"];
+			$sbResult = $this->fncReplaceTemplate($sbTemplate, $rcData);
+		}
+		
+		return $sbResult;
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Obtiene el mensage de un email
+	*   @author freina
+	*	@param array $rcData Arreglo con la data necesaria para armar mensaje
+	*	@return string $osbresult Cadena con el mensaje
+	*   @date 08-Apr-2006 15:05
+	*   @location Cali-Colombia
+	*/
+	function getMessage_Employee($rcData) {
+
+		settype($objService, "object");
+		settype($rcUser, "array");
+		settype($rcTmp, "array");
+		settype($sbTemplate, "string");
+		settype($sbTmp, "string");
+		settype($sbResult, "string");
+		settype($sbPath, "string");
+		
+		if($rcData){
+			
+			$objService = Application :: loadServices("Data_type");
+			
+			//Parametros del usuario
+			$rcUser = Application :: getUserParam();
+				if (!is_array($rcUser)) {
+				//Si no existe usuario en sesion 
+				$rcUser["lang"] = Application :: getSingleLang();
+			}
+			
+			$sbPath = Application :: getLanguageDirectory();
+			$sbPath .="/".$rcUser["lang"]."/".$rcUser["lang"].".messages.php";
+			include ($sbPath);
+			
+			if($rcmessages){
+				$sbTmp = $rcmessages[58];
+				$rcTmp = explode("|",$sbTmp);
+				$sbTemplate = $objService->my_html_entity_decode($rcTmp[1]);
+				$sbResult = $this->replaceTemplate_Employee($sbTemplate, $rcData);
+			}
+		}
+		return $sbResult;
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Obtiene el asunto de un email
+	*   @author freina<freina@parquesoft.com>
+	*	@param array $rcData (Arreglo con la data necesaria para armar el subject)
+	*	@return string $osbresult (Cadena con el subject)
+	*   @date 08-Oct-2004 15:36
+	*   @location Cali-Colombia
+	*/
+	function getSubject_Employee($rcData) {
+		
+		settype($objService, "object");
+		settype($rcUser, "array");
+		settype($rcTmp, "array");
+		settype($sbTemplate, "string");
+		settype($sbTmp, "string");
+		settype($sbResult, "string");
+		settype($sbPath, "string");
+		
+		if($rcData){
+			
+			$objService = Application :: loadServices("Data_type");
+			
+			//Parametros del usuario
+			$rcUser = Application :: getUserParam();
+				if (!is_array($rcUser)) {
+				//Si no existe usuario en sesion 
+				$rcUser["lang"] = Application :: getSingleLang();
+			}
+			$sbPath = Application :: getLanguageDirectory();
+			$sbPath .="/".$rcUser["lang"]."/".$rcUser["lang"].".messages.php";
+			include ($sbPath);
+			
+			if($rcmessages){
+				$sbTmp = $rcmessages[58];
+				$rcTmp = explode("|",$sbTmp);
+				$sbTemplate = $objService->my_html_entity_decode($rcTmp[0]);
+				$sbResult = $this->replaceTemplate_Employee($sbTemplate, $rcData);
+			}
+		}
+		
+		return $sbResult;
+	}
+	/**
+	*   Propiedad intelectual del FullEngine.
+	*
+	*   Reemplaza la data en una plantila
+	*   @author freina
+	*	@param string $sbPlantilla (Cadena con la plantilla)
+	*	@param array $rcData (Arreglo con la data)
+	*	@return string $osbresult (Cadena con el subject)
+	*   @date 08-Oct-2004 15:36
+	*   @location Cali-Colombia
+	*/
+	function replaceTemplate_Employee($sbPlantilla, $rcData) {
+
+		settype($rcTags, "array");
+		settype($rcTmp, "array");
+		settype($sbResult, "string");
+		settype($sbIndex, "string");
+
+		if ($rcData && $sbPlantilla) {
+
+			$sbResult = $sbPlantilla;
+			$rcTags = Application :: getConstant("EMAIL_EMPLOYEE_TAGS");
+			
+			foreach ($rcTags as $sbIndex => $rcTmp) {
+				$sbResult = str_replace("<".$rcTmp["value"].">", $rcData[$rcTmp["equivalence"]], $sbResult);
+			}
+		}
+		return $sbResult;
+	}
+}
+?>

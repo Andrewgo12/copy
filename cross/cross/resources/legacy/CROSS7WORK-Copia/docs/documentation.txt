@@ -1,0 +1,136 @@
+Version de Producción o pruebas de CRM de PS.BPO (Agosto 2009)
+
+REQUERIMIENTOS
+==============
+
+Para instlar CROSS, se debe realizar sobre un servidor Linux, el cual tenga soporte
+Apache+PHP+Postgres y librerías como XML, XLST, PNG, SABLOT.
+
+El usuario con la que se va a crear la base de datos, debe tener contraseña y 
+permisode crear base de datos. No es necesario que tenga permisos de crear nuevos 
+usuarios yaque el aplicativo la conexión la realiza con un solo usuario de base de 
+datos.
+
+El usuario de la base de datos, además debe tener permisos en el archivo pg_hba.conf 
+para ejecutar comandos SQL desde consola (localhost) para esa BD. Un ejemplo de la 
+línea en este archivo que debe estar en $HOME/pgsql/data  es la siguiente:
+
+local   db17PRO01   crossvossdb                      password
+local   postgres    crossvossdb                      password
+
+Con la segunda línea nos aseguramos que el usuario crossvossdb pueda escribir en las 
+tablas del sistema al crear la BD db17PRO01. Con la segunda línea, permitimos que 
+pueda ingresar por consola a la BD y ejecutar comandos SQL.
+
+INSTALACION
+===========
+
+Para iniciar la instalación de CROSS se requiere 
+1. Sacar un export desde el repositorio con el usuario wwwmngr:
+
+[wwwmngr@fullengine apps]$ svn export file:///svn/customers/CVOSS/trunk 171070501
+
+2. Crear la base de datos del schema profiles.
+
+[wwwmngr@fullengine 171070501]$ createdb db17PRO01 -E LATIN1 -U crossvossdb
+
+Luego, se ingresa a la ruta /ASAP/applications/profiles/data/dbscripts/postgres y
+se debe correr los scripts con el contenido de la BD.
+
+[wwwmngr@fullengine 171070501]$ cd ASAP/applications/profiles/data/dbscripts/postgres/
+[wwwmngr@fullengine postgres]$
+
+[wwwmngr@fullengine postgres]$ psql db17PRO01 < tablas.sql -U crossvossdb
+[wwwmngr@fullengine postgres]$ psql db17PRO01 < data.sql -U crossvossdb
+[wwwmngr@fullengine postgres]$ psql db17PRO01 < constraint.sql -U crossvossdb
+
+3. Dar permisos de ejecución
+
+Otorgamos permisos de ejecución a los dos scripts que se encuentran en el raíz del 
+producto.
+El archivo set_config.sh es el instalador del mismo y el archivo permisos.sh permite 
+dar permisos a los directorios que el aplicativo requiere que tengan permisos de 
+escritura por el servidor Web Apache.
+
+Vamos a la raíz del aplicativo y le damos permiso de ejecución a ambos archivos:
+
+[wwwmngr@fullengine 171070501]$ chmod 755 set_config.sh
+[wwwmngr@fullengine 171070501]$ chmod 755 permisos.sh
+
+4. Dar permisos de escritura
+
+Debemos asegurar que los directorios temporales tengan permisos de escritura.
+
+Para eliminar los caractéres extraños en el script, se debe correr el siguiente comando:
+
+[wwwmngr@fullengine 171070501]$ dos2unix permisos.sh
+
+Luego se debe ejecutar el archivo permisos.sh de la siguiente forma:
+
+[wwwmngr@fullengine 171070501]$ ./permisos.sh
+
+5. Instalación del código fuente
+
+Se debe ejecutar archivo de configuración set_config teniendo los datos de cual es 
+el PATH del aplicativo, el nombre de la base de datos, el nombre del usuario de la 
+base de datos, la clave del usuario de base de datos, el nombre del servidor, el 
+puerto, el driver (para postgres es pgsql).
+
+Para verificar, para saber cual es el PATH, se debe dar la instrucción "pwd" y para 
+listar las BD que hay instaladas y cual es el usuario de base de datos dueño de la 
+misma se debe dar el comando "psql -l -U postgres". Postgres por default maneja el 
+puerto en el 5432.
+
+[wwwmngr@fullengine 171070501]$ ./set_config.sh
+
+6. Dar permisos de conexión a la BD para el servidor Web
+
+Se debe ingresar al archivo ph_hba.conf que se encuentra en pgsql/data/ y dar 
+permisos de acceso por host (TCP-IP) a localhost para el usaurio de base de datos con 
+que se creo la BD del aplicativo.
+
+Un ejemplo de como debe quedar la línea es la siguiente:
+
+host    db17PRO01   crossvossdb     127.0.0.1/32      password
+
+6. Crear el lenguaje
+
+Si es primera vez que se crea la base de datos, debe crear el lenguaje que requiere 
+el aplicativo, ejecutando el SQL que se encuentra en el archivo:
+
+ASAP/applications/profiles/data/dbscripts/templates/lenguaje.sql
+
+Nota: Solo se ejecuta una vez por base de datos, no por esquema y lo debe ejecutar el
+usuario postgres.
+
+7. Crear esquemas por interfaz.
+
+Se debe ingresar con el usuario AdminVOSS y crear los contextos que se necesitan.
+
+8. Crear perfiles
+
+Si se requiere aparte de los que tiene por estándar el aplicativo, se puede crear otros 
+perfiles.
+
+9. Crear usuarios del aplicativo
+
+Si no se ha hecho por script, debe crear por lo menos un usuario y asociarlo al contexto 
+en el cual va a trabajar.
+
+Sino, debe ejecutarse el siguiente script, pero despues de haber creado los esquemas por
+interfaz: ASAP/applications/general/data/dbscripts/postgres/adicionales/usuarios_bpo.sql
+
+10. Permisos del perfil
+
+Se debe buscar el perfil en la interfaz de permisos y dar permisos del menú.
+
+11. Crear datos de recursos humanos
+
+Por cada cliente se deben encontrar en la siguiente dirección 4 archivos:
+ASAP/applications/general/data/dbscripts/postgres/adicionales/
+
+-Archivo de recursos humanos donde aparecen los usuarios del cliente y los entes
+organizacionales.
+-Archivo donde se encuentra la configuración del proceso
+-Archivo donde se encuentra las dimensiones
+-Archivo donde se encuentra SQL adicionales de actualización de los datos ya ingresados.

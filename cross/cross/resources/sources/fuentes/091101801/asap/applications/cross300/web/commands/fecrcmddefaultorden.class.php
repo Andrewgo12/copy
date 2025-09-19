@@ -1,0 +1,40 @@
+<?php 
+/*
+  // you can define the commando extending the WebCommand
+  require_once "Web/WebCommand.php";
+  class DefaultCommand extends WebCommand {
+  }
+  // really... is not neccesary extend the WebCommand
+*/
+require_once "Web/WebRequest.class.php";
+class FeCrCmdDefaultOrden {
+	function execute() {
+		
+		extract($_REQUEST);
+		settype($rcFileName, "array");
+		settype($rcTmp, "array");
+		settype($nuCont, "integer");
+		
+		//SI limpia el $_REQUEST
+		if (($clean_table)) {
+			$orden_manager = Application :: getDomainController("OrdenManager");
+			$ordenempresa_manager = Application :: getDomainController("OrdenempresaManager");
+			$orden_manager->UnsetRequest();
+			$ordenempresa_manager->UnsetRequest();
+			unset ($_REQUEST["clean_table"]);
+		}
+		if ((WebSession :: issetProperty("_rcCasosFileList"))) {
+			//se obtienen los archivos ya guardados
+			$rcFileName = WebSession :: getProperty("_rcCasosFileList");
+			foreach ($rcFileName as $nuCont => $rcTmp) {
+				if(!$rcTmp["id"]){
+					WebSession :: unsetProperty($rcTmp["index"]);
+				}
+			}
+			$rcTmp =array();
+			WebSession :: setProperty("_rcCasosFileList",$rcTmp);
+		}
+		return "success";
+	}
+}
+?>	

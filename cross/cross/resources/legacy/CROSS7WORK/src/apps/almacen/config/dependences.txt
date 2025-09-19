@@ -1,0 +1,10 @@
+DEPENDENCIAS DEL MODULO DE STORAGE
+
+	- MODULO NO
+	Servicio: Pager
+	Funcionalidad: Es usado para pintar grillas y las listas de ayuda
+	
+- MODULO DE human_resources 
+	Servicio: Human_resources
+	Funcionalidad: Forma de bodegas para traer los entes organizacionales
+	plug-in: select_dataservices

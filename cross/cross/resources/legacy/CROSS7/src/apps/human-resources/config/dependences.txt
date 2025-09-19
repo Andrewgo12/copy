@@ -1,0 +1,8 @@
+DEPENDENCIAS DEL MODULO DE HUMAN RESOURCES
+
+	- MODULO DE general
+		Servicio: General
+		Funcionalidad: Se llama para obtener lo codigos de estado de ente organizacional que se consideran inactivos,
+								se obtienen del metodo getParam.				
+		Conpuerta: FeHrPgsqlSqlExtended.class.php
+	

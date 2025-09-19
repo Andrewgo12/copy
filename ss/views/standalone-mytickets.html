@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyTickets - Sistema de Gestión</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .min-h-screen { min-height: 100vh; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .bg-white { background-color: white; }
+        .border-b { border-bottom-width: 1px; }
+        .border-gray-200 { border-color: #e5e7eb; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .bg-blue-100 { background-color: #dbeafe; }
+        .text-blue-800 { color: #1e40af; }
+        .text-blue-600 { color: #2563eb; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .p-8 { padding: 2rem; }
+        .text-center { text-align: center; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .font-bold { font-weight: 700; }
+        .mt-2 { margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        // Estado global simple
+        const globalTickets = [
+            { id: "BIO-001", origin: "Biomédico 2024", description: "Mantenimiento preventivo de ventilador mecánico", date: "2024-05-08", time: "14:30:07", status: "Abierto", type: "biomedicos" },
+            { id: "BIO-002", origin: "Biomédico 2024", description: "Calibración de monitor de signos vitales", date: "2024-05-07", time: "10:15:30", status: "En Proceso", type: "biomedicos" },
+            { id: "IND-001", origin: "Industrial 2024", description: "Mantenimiento de sistema de aire acondicionado", date: "2024-05-08", time: "08:00:00", status: "Abierto", type: "industriales" },
+            { id: "TRA-001", origin: "Transporte 2024", description: "Mantenimiento de ambulancia", date: "2024-05-08", time: "07:15:30", status: "Abierto", type: "transporte" }
+        ];
+
+        function MyTicketsStandalone() {
+            const [selectedTicketType, setSelectedTicketType] = React.useState("biomedicos");
+            const [tickets, setTickets] = React.useState(globalTickets);
+
+            const getCurrentTickets = () => {
+                return tickets.filter(t => t.type === selectedTicketType);
+            };
+
+            const currentTickets = getCurrentTickets();
+
+            return (
+                <div className="min-h-screen bg-gray-50">
+                    <div className="bg-white border-b border-gray-200 px-6 py-4">
+                        <div className="bg-blue-100 rounded-lg p-8 text-center">
+                            <h2 className="text-2xl font-bold text-blue-800">Mis Tickets</h2>
+                            <p className="text-blue-600 mt-2">Sistema de Gestión de Tickets</p>
+                        </div>
+                        
+                        <div style={{marginTop: '1rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap'}}>
+                            <button 
+                                onClick={() => setSelectedTicketType("biomedicos")}
+                                style={{
+                                    padding: '0.5rem 1rem',
+                                    backgroundColor: selectedTicketType === "biomedicos" ? '#3b82f6' : 'white',
+                                    color: selectedTicketType === "biomedicos" ? 'white' : '#374151',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '0.375rem',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Biomédicos
+                            </button>
+                            <button 
+                                onClick={() => setSelectedTicketType("industriales")}
+                                style={{
+                                    padding: '0.5rem 1rem',
+                                    backgroundColor: selectedTicketType === "industriales" ? '#3b82f6' : 'white',
+                                    color: selectedTicketType === "industriales" ? 'white' : '#374151',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '0.375rem',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Industriales
+                            </button>
+                            <button 
+                                onClick={() => setSelectedTicketType("transporte")}
+                                style={{
+                                    padding: '0.5rem 1rem',
+                                    backgroundColor: selectedTicketType === "transporte" ? '#3b82f6' : 'white',
+                                    color: selectedTicketType === "transporte" ? 'white' : '#374151',
+                                    border: '1px solid #d1d5db',
+                                    borderRadius: '0.375rem',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Transporte
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style={{padding: '1.5rem'}}>
+                        <div style={{backgroundColor: 'white', borderRadius: '0.5rem', padding: '1.5rem', boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'}}>
+                            <h3 style={{fontSize: '1.125rem', fontWeight: '600', marginBottom: '1rem'}}>
+                                Tickets {selectedTicketType.charAt(0).toUpperCase() + selectedTicketType.slice(1)}
+                            </h3>
+                            
+                            <div style={{display: 'grid', gap: '1rem'}}>
+                                {currentTickets.map(ticket => (
+                                    <div key={ticket.id} style={{
+                                        border: '1px solid #e5e7eb',
+                                        borderRadius: '0.5rem',
+                                        padding: '1rem',
+                                        backgroundColor: '#f9fafb'
+                                    }}>
+                                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.5rem'}}>
+                                            <h4 style={{fontWeight: '600', color: '#111827'}}>{ticket.id}</h4>
+                                            <span style={{
+                                                padding: '0.25rem 0.5rem',
+                                                borderRadius: '9999px',
+                                                fontSize: '0.75rem',
+                                                fontWeight: '500',
+                                                backgroundColor: ticket.status === 'Abierto' ? '#fef2f2' : ticket.status === 'En Proceso' ? '#fef3c7' : '#f0fdf4',
+                                                color: ticket.status === 'Abierto' ? '#dc2626' : ticket.status === 'En Proceso' ? '#d97706' : '#16a34a'
+                                            }}>
+                                                {ticket.status}
+                                            </span>
+                                        </div>
+                                        <p style={{color: '#6b7280', marginBottom: '0.5rem'}}>{ticket.description}</p>
+                                        <div style={{fontSize: '0.875rem', color: '#9ca3af'}}>
+                                            <span>{ticket.date} - {ticket.time}</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<MyTicketsStandalone />);
+    </script>
+</body>
+</html>

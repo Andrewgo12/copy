@@ -1,0 +1,214 @@
+PLAIN
+K 5
+Pgsql
+V 21
+dir 18w-2.0.r122/7938
+K 18
+Sql_especiales.txt
+V 23
+file 19w-2.0.r2/8795422
+K 5
+cache
+V 22
+dir 19x-2.0.r2/8797733
+K 9
+dbscripts
+V 21
+dir 1a4-2.0.r30/12386
+END
+ENDREP
+id: 18v-2.0.r124/186
+type: dir
+pred: 18v-2.0.r122/8560
+count: 4
+text: 124 0 173 173 95f196166570f3fcae09d2862977480e
+cpath: /trunk/ASAP/applications/general/data
+copyroot: 0 /
+
+PLAIN
+K 6
+config
+V 21
+dir 16x-2.0.r122/5224
+K 4
+data
+V 20
+dir 18v-2.0.r124/186
+K 6
+domain
+V 22
+dir 1ak-2.0.r122/11417
+K 9
+index.php
+V 23
+file 1bl-2.0.r2/8817460
+K 2
+rs
+V 22
+dir 1bm-2.0.r2/8818477
+K 11
+templates_c
+V 22
+dir 1bq-2.0.r2/8818943
+K 3
+tmp
+V 22
+dir 1bu-2.0.r2/8819107
+K 3
+web
+V 20
+dir 1bv-2.0.r3/48544
+K 4
+xslt
+V 22
+dir 1of-2.0.r2/8996937
+END
+ENDREP
+id: 16w-2.0.r124/722
+type: dir
+pred: 16w-2.0.r122/11964
+count: 8
+text: 124 363 346 346 416fe90cf1264f9c9ad68c9650674fd1
+cpath: /trunk/ASAP/applications/general
+copyroot: 0 /
+
+PLAIN
+K 8
+cross300
+V 19
+dir 5-2.0.r123/3456
+K 9
+customers
+V 19
+dir ib-2.0.r62/2853
+K 7
+docunet
+V 21
+dir tm-2.0.r2/8592456
+K 9
+encuestas
+V 21
+dir uk-2.0.r2/8756566
+K 7
+general
+V 20
+dir 16w-2.0.r124/722
+K 15
+human_resources
+V 22
+dir 1ol-2.0.r2/9092412
+K 8
+products
+V 22
+dir 1vv-2.0.r2/9121700
+K 8
+profiles
+V 20
+dir 1yp-2.0.r78/3137
+K 8
+schedule
+V 22
+dir 27p-2.0.r2/9358758
+K 7
+storage
+V 22
+dir 2h0-2.0.r2/9477419
+K 8
+workflow
+V 20
+dir 2pr-2.0.r68/3804
+END
+ENDREP
+id: 3-2.0.r124/1358
+type: dir
+pred: 3-2.0.r123/4093
+count: 97
+text: 124 897 448 448 e13b6ac2a654b47ba281d5fd97a8094d
+cpath: /trunk/ASAP/applications
+copyroot: 0 /
+
+PLAIN
+K 12
+applications
+V 19
+dir 3-2.0.r124/1358
+K 3
+lib
+V 23
+dir 2wi-2.0.r2/10042403
+K 6
+system
+V 20
+dir 412-2.0.r92/2335
+END
+ENDREP
+id: 1-2.0.r124/1656
+type: dir
+pred: 1-2.0.r123/4393
+count: 122
+text: 124 1522 121 121 c92c9565df3e75ae07661dd3bec49883
+cpath: /trunk/ASAP
+copyroot: 0 /
+
+PLAIN
+K 4
+ASAP
+V 19
+dir 1-2.0.r124/1656
+K 6
+README
+V 24
+file 42i-2.0.r2/10058589
+K 7
+VERSION
+V 21
+file 42j-2.0.r3/57017
+K 9
+index.php
+V 24
+file 42k-2.0.r2/10059166
+K 19
+provitional_log.php
+V 20
+file 1-43.0.r45/2287
+K 13
+set_config.sh
+V 24
+file 42l-2.0.r2/10059455
+END
+ENDREP
+id: 0-1.0.r124/2084
+type: dir
+pred: 0-1.0.r123/4822
+count: 123
+text: 124 1809 262 262 5155a70399da82baad091354a25afa1e
+cpath: /trunk
+copyroot: 0 /
+
+PLAIN
+K 8
+branches
+V 14
+dir 2-1.0.r1/0
+K 4
+tags
+V 15
+dir 3-1.0.r1/66
+K 5
+trunk
+V 19
+dir 0-1.0.r124/2084
+END
+ENDREP
+id: 0.0.r124/2347
+type: dir
+pred: 0.0.r123/5086
+count: 124
+text: 124 2232 102 102 42e023b3899e949ed4bf25861b1dc1c4
+cpath: /
+copyroot: 0 /
+
+8-122.0.r122/8174 delete-dir false false /trunk/ASAP/applications/general/data/anexos
+
+
+2347 2486

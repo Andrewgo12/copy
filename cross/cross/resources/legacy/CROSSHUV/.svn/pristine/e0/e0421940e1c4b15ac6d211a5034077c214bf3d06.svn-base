@@ -1,0 +1,266 @@
+<html>
+{loadlabels table_name=listadoorden&controls[]=CmdShow&controls[]=CmdPrint&controls[]=CmdClean}
+{head}
+      <title>{printtitle}</title>
+{putstyle style=""}
+{putjsfiles files[]=libCalendar.js&files[]=libCalendarPopupCode.js&files[]=fncWindowOpen.js&files[]=AutoCompletar.js&files[]=jsLoadSelect.js&files[]=jsdrawDynamicColumns.js&files[]=encode.js&files[]=jsDrawdiv.js&files[]=prototype/dist/prototype.js&files[]=SelectControl.js}
+
+{/head}
+{body onkeydown="return doKeyDown(event)" onload="putFocus();" onunload=""}
+<br>
+{form name="frmListadoOrden" method="post"}
+<table border="0" align="center" width="80%">
+  	<tr><td class="piedefoto" colspan="3"><div align="center">
+		{help_context}
+  	</div></td></tr>
+	&nbsp;
+	<tr><th colspan="3"><div align="left">{printtitle}</div></th></tr>
+	<tr><th colspan="3"><div align="left">&nbsp;</div></th></tr>
+   <tr>
+      <td width='25%'>{printlabel name=usuacodigos}</td>
+      <td width='60%'>
+      {checkbox name="check1" value="orden__usuacodigos"}
+      {select_dataservices id="usuacodigos" name="orden__usuacodigos" service="Human_resources" method="getAllActiveAuthPersonal" table_name="personal" value="persusrnams" label="persusrnams" is_null="true"}</td>
+  	<td width='15%' class="piedefoto">{printcoment name=usuacodigos}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=ordefecingd}</td>
+      <td>
+      {checkbox name="check2" value="orden__ordefecingd"}
+      {calendar id="ordefecingd1" name="orden__ordefecingd1" is_null="true" form_name ="frmListadoOrden" }
+      {calendar id="ordefecingd2" name="orden__ordefecingd2" is_null="true" form_name ="frmListadoOrden" }
+      </td>
+  	<td class="piedefoto">{printcoment name=ordefecingd}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=ordefecregd}</td>
+      <td>
+      {checkbox name="check3" checked=true value="orden__ordefecregd"}
+      {calendar id="ordefecregd1" name="orden__ordefecregd1" is_null="true" form_name ="frmListadoOrden" }
+      {calendar id="ordefecregd2" name="orden__ordefecregd2" is_null="true" form_name ="frmListadoOrden" }
+      </td>
+  	<td class="piedefoto">{printcoment name=ordefecregd}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=ordefecvend}</td>
+      <td>
+      {checkbox name="check4" checked=true value="orden__ordefecvend"}
+      {calendar id="ordefecvend1" name="orden__ordefecvend1" is_null="true" form_name ="frmListadoOrden" }
+      {calendar id="ordefecvend2" name="orden__ordefecvend2" is_null="true" form_name ="frmListadoOrden" }
+      </td>
+  	<td class="piedefoto">{printcoment name=ordefecvend}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=ordefecfinad}</td>
+      <td>
+      {checkbox name="check5" checked=true value="orden__ordefecfinad"}
+      {calendar id="ordefecfinad1" name="orden__ordefecfinad1" is_null="true" form_name ="frmListadoOrden" }
+      {calendar id="ordefecfinad2" name="orden__ordefecfinad2" is_null="true" form_name ="frmListadoOrden" }
+      </td>
+  	<td class="piedefoto">{printcoment name=ordefecfinad}</td>
+   </tr>
+
+
+   <tr>
+      <td>{printlabel name=contidentis}</td>
+      <td>
+      	{checkbox name="check6" checked=true value="view_solicitante__contcodigon"}
+      	{dataselectdojo htmlid="view_solicitante__contcodigon" name="view_solicitante__contcodigon" sqlid="contacto_ref_c" value="contcodigon" label="contnombre" forceautoreference="true"}
+     </td>
+  	<td class="piedefoto">{printcoment name=contidentis}</td>
+   </tr>
+
+
+   <tr>
+      <td>{printlabel name=tiorcodigos}</td>
+      <td>
+      {checkbox name="check7" checked=true value="ordenempresa__tiorcodigos"}
+      {select_row_table id="tiorcodigos" name="ordenempresa__tiorcodigos" sqlid="tipoorden" table_name="tipoorden" value="tiorcodigos" label="tiornombres" is_null="true" command_default="FeCrCmdDefaultListadoOrden"}</td>
+  	<td class="piedefoto">{printcoment name=tiorcodigos}</td>
+   </tr>
+   <tr>
+   	  <td>{printlabel name=evencodigos}</td>
+   	  <td>
+   	  	{checkbox name="check8" value="ordenempresa__evencodigos"}
+		{select_son name="ordenempresa__evencodigos"
+		     table_hijo="evento" 
+		     id_hijo="evencodigos"
+		     label_hijo="evennombres"
+		     foreign_name=""
+		     select_papa="ordenempresa__tiorcodigos"
+		     sqlid="tipoorden_evento"
+		     command_default="FeCrCmdDefaultListadoOrden"}
+  	<td class="piedefoto">{printcoment name=evencodigos}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=causcodigos}</td>
+      <td>
+      {checkbox name="check9" value="ordenempresa__causcodigos"}
+		{select_son name="ordenempresa__causcodigos"
+		     table_hijo="causa" 
+		     id_hijo="causcodigos"
+		     label_hijo="causnombres"
+		     foreign_name=""
+		     select_papa="ordenempresa__tiorcodigos,ordenempresa__evencodigos"
+		     sqlid="tipoorden_evento_causa"}     
+      </td>
+  	<td class="piedefoto">{printcoment name=causcodigos}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=orgacodigos}</td>
+      <td>
+      	{checkbox name="check10" checked=true value="acta__orgacodigos"}
+          {select_entes_esp id="orgacodigos" name="acta__orgacodigos" form="frmListadoOrden"}
+          {checkbox name="children" value="OK"}
+      </td>
+  	<td class="piedefoto">{printcoment name=orgacodigos}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=merecodigos}</td>
+      <td>
+      {checkbox name="check11" value="ordenempresa__merecodigos"}
+      {select_row_table id="merecodigos" name="ordenempresa__merecodigos" sqlid="mediorecepcion" table_name="mediorecepcion" value="merecodigos" label="merenombres" is_null="true"}</td>
+  	<td class="piedefoto">{printcoment name=merecodigos}</td>
+   </tr>
+   <tr>
+   	  <td>{printlabel name=locacodigos}</td>
+   	  <td>
+   	  	{checkbox name="check12" value="ordenempresa__locacodigos"}
+      	{textfield id="locacodigos" name="ordenempresa__locacodigos" onBlur="if(this.value=='')document.frmListadoOrden.ordenempresa_locacodigos_desc.value=''; else autoReference('localizacion','locacodigos',Array(this),document.frmListadoOrden.ordenempresa_locacodigos_desc);"}
+	    {href 
+	      		label="<img src='web/images/menu.gif' border='0' align='middle'></img>"
+	      		onclick="javascript:fncopenwindows('FeCrCmdTreeHelp','table=localizacion&sqlid=localizacion&return_obj=ordenempresa__locacodigos&return_key=locacodigos&father=locacodpadrs&son=locacodigos&label=locanombres&param=geografia&value='+document.frmListadoOrden.locacodigos.value+'&locacodigos_desc='+document.frmListadoOrden.ordenempresa_locacodigos_desc.value);"
+	    }
+        {textfield name="ordenempresa_locacodigos_desc"}      
+      </td>
+  	<td class="piedefoto">{printcoment name=locacodigos}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=tarecodigos}</td>
+      <td>
+      {checkbox name="check13" checked=true value="acta__tarecodigos"}
+      {select_dataservices name="acta__tarecodigos" is_null="true" value="tarecodigos" label="tarenombres" id="tarecodigos" service="Workflow" method="getAllTarea"}</td>
+  	<td class="piedefoto">{printcoment name=tarecodigos}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=actaestacts}</td>
+      <td>
+      {checkbox name="check14" checked=true value="acta__actaestacts"}
+      {select_estadostareaSinActa name="acta__actaestacts" is_null="true" value="esaccodigos" label="esacnombres" id="actaestacts"}</td>
+  	<td class="piedefoto">{printcoment name=esaccodigos}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=ordesitiejes}</td>
+      <td>
+      {checkbox name="check15" value="orden__ordesitiejes"}
+      <!--  {textfield id="ordesitiejes" name="orden__ordesitiejes" size="50" maxlength="100"}-->
+      	{textfield id="ordesitiejes" name="orden__ordesitiejes" onBlur="if(this.value)autoReference('dep_fisica','orgacodigos',Array(this),this.form.orden_ordesitiejes_desc)"}
+	    {href 
+	      		label="<img src='web/images/menu.gif' border='0' align='middle'></img>"
+	      		onclick="javascript:fncopenwindows('FeCrCmdTreeHelp','table=organizacion&sqlid=dep_fisica&return_obj=orden__ordesitiejes&return_key=orgacodigos&father=orgacgpads&son=orgacodigos&label=organombres&param=geografia&value='+document.frmListadoOrden.orden__ordesitiejes.value+'&visibility=ancestry:1');"
+	    }
+	    {textfield name="orden_ordesitiejes_desc"}
+      </td>
+  	<td class="piedefoto">{printcoment name=ordesitiejes}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=priocodigos}</td>
+      <td>
+      {checkbox name="check16" value="ordenempresa__priocodigos"}
+      {select_row_table id="priocodigos" name="ordenempresa__priocodigos" sqlid="prioridad" table_name="prioridad" value="priocodigos" label="prionombres" is_null="true" command="FeCrCmdDefaultListadoOrden"}</td>
+  	<td class="piedefoto">{printcoment name=priocodigos}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=paciindentis}</td>
+      <td>
+      	<!--{checkbox name="check17" value="cliente__cliecodigos"}
+      	{dataselectdojo htmlid="cliecodigos" name="cliente__cliecodigos" sqlid="cliente_ref" value="cliecodigos" label="clienombres" forceautoreference="true"}-->
+      	{checkbox name="check17" value="ordenempresa__paciindentis"}
+      	{dataselectdojo htmlid="paciindentis" name="ordenempresa__paciindentis" sqlid="paciente_ref" value="paciindentis" label="pacinombres" forceautoreference="true"}
+     </td>
+  	<td class="piedefoto">{printcoment name=paciindentis}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=pacihisclis}</td>
+      <td>
+      {checkbox name="check18" value="paciente__pacihisclis"}
+      {textfield id="pacihisclis" name="paciente__pacihisclis" size="50" maxlength="100"}
+      </td>
+  	<td class="piedefoto">{printcoment name=pacihisclis}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=cliecodigos}</td>
+      <td>
+      	{checkbox name="check19" value="view_solicitante__cliecodigos"}
+      	{dataselectdojo htmlid="cliecodigos" name="view_solicitante__cliecodigos" sqlid="cliente_ref" value="cliecodigos" label="clienombres" forceautoreference="true"}
+     </td>
+  	<td class="piedefoto">{printcoment name=clieidentifs}</td>
+   </tr>
+
+   <tr>
+      <td>{printlabel name=grincodigos}</td>
+      <td>
+      {checkbox name="check20" value="ordengruposinteres__grincodigos"}
+      {select_row_table id="grincodigos" name="ordengruposinteres__grincodigos" sqlid="gruposinteres" table_name="gruposinteres" value="grincodigos" label="grinnombres" is_null="true"}</td>
+  	<td class="piedefoto">{printcoment name=grincodigos}</td>
+   </tr>
+
+   <tr>
+      <td>{printlabel name=ordeobservs}</td>
+      {literal}
+      <td><input type='checkbox' name='ordeobservs' checked=true></td>
+      {/literal}
+  	<td class="piedefoto">{printcoment name=ordeobservs}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=tareacc}</td>
+      {literal}
+      <td><input type='checkbox' name='tareacc' value=1></td>
+      {/literal}
+  	<td class="piedefoto">{printcoment name=tareacc}</td>
+   </tr>
+   <tr>
+      <td>{printlabel name=seltodos}</td>
+      {literal}
+      <td><input type='checkbox' name='all' onClick="with(document.frmListadoOrden){for(var i=0;i<elements.length;i++){if(elements[i].disabled==false){if(elements[i].type == 'checkbox'){if(this.checked == true)elements[i].checked = true;else elements[i].checked = false;}}}}"></td>
+      {/literal}
+  	<td class="piedefoto">{printcoment name=esaccodigos}</td>
+   </tr>
+	<tr>
+		<td colspan="2">&nbsp;</td>
+		<td class="piedefoto"></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<div align="center">
+				{btn_command type="button" value="Consultar" onClick="consult__flag.value = 1;total.value = '';" id="CmdShow" name="FeCrCmdDefaultListadoOrden" form_name="frmListadoOrden"}
+				{btn_command type="button" value="Imprimir" onClick="consult__flag.value = 2;" id="CmdPrint" name="FeCrCmdDefaultListadoOrden" form_name="frmListadoOrden"}
+				{btn_clean table_name="ListadoOrden" form_name="frmListadoOrden"}
+			</div>
+		</td>
+		<td class="piedefoto"></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="piedefoto">&nbsp;</td>
+		<td class="piedefoto"></td>
+	</tr>
+	<tr>
+		<td colspan="2" class="piedefoto">{listadoorden}</td>
+		<td class="piedefoto">&nbsp;</td>
+	</tr>
+</table><br><br>
+{hidden name="action" value=""}
+{hidden name="consult__flag" value=""}
+{hidden name="total" value=""}
+{hidden name="orden__ordenumeros" value=""}
+{hidden name="orderby" value=""}
+{hidden name="page" value="1"}
+{/form}
+{putjsacceskey}
+{fieldset}
+   {message id=$cod_message}
+{/fieldset}
+<br>
+{/body}
+{droptmpfile table_name=Orden}
+</html>

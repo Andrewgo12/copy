@@ -1,0 +1,102 @@
+{
+  "name": "areas-completo",
+  "version": "1.0.0",
+  "description": "Sistema completo de gestión de áreas hospitalarias con funcionalidad avanzada",
+  "main": "vista-areas-principal.jsx",
+  "dependencies": {
+    "react": "^18.0.0",
+    "lucide-react": "^0.263.1"
+  },
+  "peerDependencies": {
+    "@radix-ui/react-dialog": "^1.0.0",
+    "@radix-ui/react-select": "^1.0.0",
+    "@radix-ui/react-label": "^2.0.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^1.14.0"
+  },
+  "files": [
+    "vista-areas-principal.jsx",
+    "modals/",
+    "README.md",
+    "INSTALACION.md"
+  ],
+  "keywords": [
+    "react",
+    "hospital",
+    "areas",
+    "healthcare",
+    "shadcn",
+    "tailwind",
+    "responsive",
+    "modal",
+    "table",
+    "crud",
+    "search",
+    "pagination"
+  ],
+  "features": [
+    "15 áreas con datos completos",
+    "4 modales completamente funcionales",
+    "Búsqueda inteligente en tiempo real",
+    "Tabla completamente responsiva",
+    "Header adaptativo con menú móvil",
+    "Paginación avanzada",
+    "Estados coloridos por área",
+    "Formularios con 11 campos",
+    "Vista detallada con cards",
+    "Confirmación de eliminación segura",
+    "100% responsive design",
+    "Accesibilidad completa"
+  ],
+  "areas_data": {
+    "total_areas": 15,
+    "servicios_incluidos": [
+      "ACONDICIONAMIENTO FISICO",
+      "SUBESTACION ELECTRICA", 
+      "RADIOTERAPIA",
+      "LABORATORIO CLINICO",
+      "AMBULANCIA CARTAGO",
+      "MORGUE",
+      "HEMODINAMIA",
+      "COMUNICACIONES",
+      "COORDINACION ACADEMICA",
+      "CONSULTA EXTERNA",
+      "CIRUGIA GENERAL",
+      "UNIDAD CUIDADOS INTENSIVOS",
+      "FARMACIA",
+      "IMAGENOLOGIA"
+    ],
+    "sedes_incluidas": [
+      "HUV EVARISTO GARCÍA - SEDE PRINCIPAL",
+      "HUV NORTE",
+      "HUV CARTAGO"
+    ],
+    "zonas_incluidas": [
+      "ZONA MOLANO1",
+      "ZONA CRISTIAN", 
+      "ZONA SALUD1",
+      "ZONA NORTE",
+      "ZONA CENTRAL",
+      "ZONA SUR"
+    ],
+    "estados_disponibles": [
+      "ACTIVA",
+      "INACTIVA", 
+      "MANTENIMIENTO"
+    ]
+  },
+  "responsive_breakpoints": {
+    "mobile": "320px+",
+    "tablet": "768px+",
+    "desktop": "1024px+"
+  },
+  "modals_included": {
+    "agregar": "Formulario completo con 11 campos organizados",
+    "editar": "Pre-carga datos y permite modificación completa", 
+    "ver": "Vista detallada con cards informativos",
+    "eliminar": "Confirmación con información completa del área"
+  },
+  "author": "Hospital System Developer",
+  "license": "MIT"
+}

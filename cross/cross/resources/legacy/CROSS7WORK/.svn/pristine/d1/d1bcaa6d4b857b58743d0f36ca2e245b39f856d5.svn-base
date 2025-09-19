@@ -1,0 +1,156 @@
+<html>
+{loadlabels_pub table_name="WebUser" controls="CmdAdd,CmdClean"}
+{head}
+      <title>{printtitle_pub}</title>
+{putstylepub}
+{putjsfiles files[]=libCalendar.js&files[]=libCalendarPopupCode.js&files[]=fncWindowOpen.js&files[]=AutoCompletar.js&files[]=jsLoadSelect.js&files[]=jsdrawDynamicColumns.js&files[]=encode.js&files[]=jsDrawdiv.js&files[]=prototype/dist/prototype.js&files[]=jsOrden.js&files[]=SelectControl.js}
+{/head}
+{body onkeydown="return doKeyDown(event)" onload="putFocus();drawDynamicColumns('dynamic_columns');" onunload=""}
+<br>
+{form name="frmOrden" enctype="multipart/form-data" method="post"}
+<table border="0" align="center" width="70%">
+	<tr>
+		<td class="piedefoto">
+			<table border="0" style="border-spacing: 10px;" align="center" width="100%">
+				<tr><td class="piedefoto" colspan="3">
+						<div align="justify">
+							{help_context_pub}
+  						</div>
+					</td>
+				</tr>
+				<tr><th colspan="3">&nbsp;</th></tr>
+				<tr><th colspan="3"><div align="center"><u>{printtitle_pub}</u></div></th></tr>
+				<tr><th colspan="3">&nbsp;</th></tr>
+   				<tr>
+      				<td width='25%' class="tdlabels">{printlabel_pub name="tiorcodigos"}</td>
+      				<td width='60%'>
+      					{select_row_table_lang id="tiorcodigos" name="ordenempresa__tiorcodigos" sqlid="tipoorden_web" table_name="tipoorden" value="tiorcodigos" label="tiornombres" is_null="true" param="pto" 
+      						onchange="if(this.value!='')LoadSelect_lang('tipoorden_evento','tiorcodigos',Array(this),this.form.ordenempresa__evencodigos,'evento_evencodigos_evennombres','ordenempresa__evencodigos,ordenempresa__causcodigos');
+      					if(this.value!='')LoadDescTipoorden(this.value);
+      					drawDynamicColumns('dynamic_columns');"}<b>*</b>
+      					<br>
+      					<div id="tiordescrips"></div>
+      				</td>
+  	  				<td class="piedefoto" width='15%'>{printcoment_pub name="tiorcodigos"}</td>
+   				</tr>
+   				<tr>
+   	  				<td class="tdlabels">{printlabel_pub name="evencodigos"}</td>
+   	  				<td>
+   	  					{select_son name="ordenempresa__evencodigos"
+		     				table_hijo="evento" 
+		     				id_hijo="evencodigos"
+		     				label_hijo="evennombres"
+		     				foreign_name=""
+		     				select_papa="ordenempresa__tiorcodigos"
+		     				sqlid="tipoorden_evento"
+		     				onchange="if(this.value)LoadSelect_lang('tipoorden_evento_causa','evencodigos|tiorcodigos',Array(this,this.form.ordenempresa__tiorcodigos),this.form.ordenempresa__causcodigos,'causa_causcodigos_causnombres');
+		     				drawDynamicColumns('dynamic_columns');"}<b>*</b>
+   	  				</td>
+  					<td class="piedefoto">{printcoment_pub name="evencodigos"}</td>
+   				</tr>
+   				<tr>
+      				<td class="tdlabels">{printlabel_pub name="causcodigos"}</td>
+      				<td>
+      					{select_son name="ordenempresa__causcodigos"
+		     				table_hijo="causa" 
+		     				id_hijo="causcodigos"
+		     				label_hijo="causnombres"
+		     				foreign_name=""
+		     				select_papa="ordenempresa__tiorcodigos,ordenempresa__evencodigos"
+		     				sqlid="tipoorden_evento_causa"
+		     				onchange="drawDynamicColumns('dynamic_columns');"} 
+      				</td>
+  					<td class="piedefoto">{printcoment_pub name="causcodigos"}</td>
+   				</tr>
+   				<tr>
+      				<td class="tdlabels">{printlabel_pub name="ordeobservs"}</td>
+      				<td>{textarea_ext id="ordeobservs" name="orden__ordeobservs" cols="90" rows="10" }{/textarea_ext}<b>*</b></td>
+  					<td class="piedefoto">{printcoment_pub name="ordeobservs"}</td>
+   				</tr>
+<!--			<tr>
+					<td class="tdlabels">{printlabel_pub name="locacodigos"}</td>
+					<td> 
+						{textfield id="locacodigos" name="ordenempresa__locacodigos" value="" onBlur="if(this.value!='')autoReference('localizacion','locacodigos',Array(this),document.frmOrden.ordenempresa_locacodigos_desc);else document.frmOrden.ordenempresa_locacodigos_desc.value='';"}
+						{href 
+							label="<img src='web/images/menu.gif' border='0' align='absmiddle'></img>"
+							onclick="javascript:fncopenwindows('FeCrCmdTreeHelp','table=localizacion&sqlid=localizacion&return_obj=ordenempresa__locacodigos&return_key=locacodigos&father=locacodpadrs&son=locacodigos&label=locanombres&param=geografia&value='+document.frmOrden.ordenempresa__locacodigos.value+'&locacodigos_desc='+document.frmOrden.ordenempresa_locacodigos_desc.value);"
+						}
+						{textfield name="ordenempresa_locacodigos_desc" value=""}<B>*</B>
+					</td>
+					<td class="piedefoto">{printcoment name=locacodigos}</td>
+   				</tr>				
+   				<tr>
+      				<td class="tdlabels">{printlabel_pub name="ordesitiejes"}</td>
+      				<td>{textfield id="ordesitiejes" name="orden__ordesitiejes" size="50" maxlength="100"}</td>
+  					<td class="piedefoto">{printcoment_pub name=ordesitiejes}</td>
+   				</tr>
+-->
+   				<tr>
+      				<td colspan="2">&nbsp;</td>
+      				<td class="piedefoto">{printcoment_pub name="denunciante"}</td>
+   				</tr>
+				<!-- Denunciante -->
+				<tr>
+					<th colspan="3"><strong>{printlabel_pub name="denunciante_info"}</strong></th>
+				</tr>
+				<tr>
+	      			<td class="tdlabels" align="left">{printlabel_pub name="contidentis"}</td>
+	      			<td>
+	      				{dataselectdojo htmlid="contidentis" name="ordenempresa__contidentis" sqlid="contacto_ident" value="contcodigon" label="contindentis" forceautoreference="true"} 
+		    			{href label="<img src='web/images/crear.gif' border='0' align='absmiddle'></img>"
+		      				onclick="javascript:OpenWindowsSol('../customers/index.php?action=FeCuCmdDefaultSolicitantePub','');"  }
+	     			</td>
+    				<td class="piedefoto"></td>
+	   			</tr>
+				<!-- Fin Denunciante -->
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td class="piedefoto">
+			{div id="dynamic_columns" align="justify"}
+				<table border="0" align="center" width="100%">
+					<tr><td width='25%'>&nbsp;</td><td width='60%'>&nbsp;</td><td width='15%' class="piedefoto"></td></tr>
+				</table>
+   			{/div}
+		</td>
+	</tr>
+	<tr>
+		<td class="piedefoto">
+			<table border="0" style="border-spacing: 10px;" align="center" width="100%">
+				<tr><td colspan="3">
+						<div align="center">
+		    				{btn_command type="button" value="Adicionar" id="CmdAdd" name="FeCrCmdAddOrdenWeb" form_name="frmOrden"}
+							{btn_clean table_name="WebUser" form_name="frmOrden"}
+	   					</div>
+					</td>
+				</tr>
+				<tr><td colspan="3" class="piedefoto">{register_attachment_web form="frmOrden"}</td> <!--tabla de Anexos-->
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+{hidden name="action" value="FeCrCmdDefaultWebUser"}
+{hidden name="deleteattachment" value=""}
+{hidden name="consult"}
+{hidden name="ordenempresa__orgacodigos"}
+{hidden name="ordenempresa__merecodigos"}
+{hidden name="orden__ordefecregd"}
+{hidden name="ordenempresa__oremradicas"}
+{hidden name="ordenempresa__infrcodigos"}
+{hidden name="langcodigos"}
+{hidden name="pto"}
+{hidden name="ordenempresa__locacodigos" value="76001"}
+{hidden name="orden__ordesitiejes"}
+
+{hidden name="customer_type" id="customer_type"}
+{/form}
+{putjsacceskey_pub}
+{fieldset legend="Resultado"}
+   {message_orden id=$cod_message param=$param signal=$signal error_field=$error_field label_file="fichaord"}
+{/fieldset}
+<br>
+{/body}
+{droptmpfile table_name=WebUser}
+</html>

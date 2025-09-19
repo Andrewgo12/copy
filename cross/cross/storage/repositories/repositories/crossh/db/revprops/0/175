@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-10-30T04:11:07.985599Z
+K 7
+svn:log
+V 204
+Se comienza debug para ficha de la orden para grupos de interes. Se modifica la compuerta para traer el contacto con el grupo de interés y la compuerta de ordenempresa para devolver la data del contacto.
+END

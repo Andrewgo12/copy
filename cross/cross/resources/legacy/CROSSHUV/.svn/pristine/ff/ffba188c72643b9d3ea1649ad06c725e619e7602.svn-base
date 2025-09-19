@@ -1,0 +1,20 @@
+
+--Creamos la tabla para almacenar los grupos de interés
+CREATE TABLE gruposinteres (
+    "grincodigos"  VARCHAR(30) NOT NULL,
+    "grinnombres"  VARCHAR(150),
+    "grindescrips" TEXT,
+    "grinactivos"  CHAR(1) NOT NULL DEFAULT 'A'
+);
+ALTER TABLE ONLY "gruposinteres" ADD CONSTRAINT "gruposinteres_pkey" PRIMARY KEY ("grincodigos");
+
+
+ALTER TABLE "gruposinteres" OWNER TO juguete2_postgres;
+
+REVOKE ALL ON TABLE gruposinteres FROM PUBLIC;
+REVOKE ALL ON TABLE gruposinteres FROM juguete2_postgres;
+GRANT ALL ON TABLE "gruposinteres" TO juguete2_postgres;
+GRANT ALL ON TABLE "gruposinteres" TO "juguete2_db09PRO01";
+
+
+

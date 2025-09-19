@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-10-11T02:46:14.776202Z
+K 7
+svn:log
+V 101
+Se valida que no elimine tablas que no existen y evitar error en la admón de tareas en la consulta. 
+END

@@ -1,0 +1,167 @@
+<?php
+class WebRegistry
+{
+	function getWebCommand()
+	{
+		// set the action name
+		$action_name = isset($_REQUEST["action"])?$_REQUEST["action"]:WebRegistry::getDefaultAction();
+
+		//se hace la validacion de sesion activa
+  		if(($action_name != WebRegistry::getDefaultAction()) && (strpos($action_name, "CmdLogin")===false)){
+  			if((!array_key_exists("username",$_REQUEST) && !array_key_exists("context",$_REQUEST))){
+  				$user = Application :: getUserParam();
+  				if(!is_array($user) || !$user){
+  					//ENVIAR A AUTH
+  					$action_name = "CmdExit";
+  					$_REQUEST["cod_message"] = 102;
+  				}
+  			}
+  		}
+
+		//Se hace la valicion de perfiles
+		$security = Application::validateProfiles($action_name);
+		if($security == false){
+			//ENVIAR A AUTH
+			$action_name = "CmdExit";
+			$_REQUEST["cod_message"] = 103;
+		}
+
+		// get the command class name
+		$action_class_name = WebRegistry::getCommandClassName($action_name);
+
+		// get the command object
+		$filename = Application::getCommandsDirectory(). '/'. $action_class_name . '.class.php';
+
+		@include $filename;
+
+		if (!class_exists($action_class_name))
+		{
+			return PEAR::raiseError($action_name. ': Command not found');
+		}
+		else
+		{
+			return new $action_class_name();
+		}
+	}
+    
+    function getWebCommandView($view_name)
+    {
+        // set the action name
+        $action_name = isset($_REQUEST["action"])?$_REQUEST["action"]:WebRegistry::getDefaultAction();
+
+        // get the view name
+        $action_class_name = WebRegistry::getViewName($action_name, $view_name);
+        
+        return $action_class_name;
+    }
+    
+    function getDefaultAction()
+    {
+        return WebRegistry::__getVar('default_action');
+    }
+
+    function getErrorView()
+    {
+        return WebRegistry::__getVar('error_view');
+    }
+    
+    function getLoginView()
+    {
+        return WebRegistry::__getVar('login_view');
+    }
+    
+    function getCommandClassName($action)
+    {
+        // get the configuration array
+        $config = &WebRegistry::getConfig();
+		
+        // an error ??
+        if (PEAR::isError($config))
+        {
+            return $config;
+        }
+        return $config['commands'][$action]['class'];
+    }
+    
+    function getViewName($action, $view)
+    {
+        // get the configuration array
+        $config = &WebRegistry::getConfig();
+		
+        // an error ??
+        if (PEAR::isError($config))
+        {
+            return $config;
+        }
+        print($config['commands'][$action]['views'][$view]['view']);
+        return $config['commands'][$action]['views'][$view]['view'];
+    }
+    
+    function getWebView($view)
+    {
+        // get the configuration array
+        $config = &WebRegistry::getConfig();
+
+        // an error ??
+        if (PEAR::isError($config))
+        {
+            return $config;
+        }
+
+        // there is a class defined for that view ??
+        if (isset($config['views'][$view]['class']))
+        {
+            return $config['views'][$view]['class'];
+        }// there is a template for that view ??
+        else if (isset($config['views'][$view]['template']))
+        {
+            include 'Web/TemplateView.class.php';
+            return new TemplateView($config['views'][$view]['template']);
+        }
+        else if (isset($config['views'][$view]['xsl']))
+        {
+        	// there is a xsl for that view ??
+            include 'Web/XslTransformView.class.php';
+            return new XslTransformView($config['views'][$view]['xsl']);
+        }
+    }
+    
+    function &__getVar($nom_var)
+    {
+        // get the configuration array
+        $config = &WebRegistry::getConfig();
+
+        // an error ??
+        if (PEAR::isError($config))
+        {
+            return $config;
+        }
+
+        // return the variable
+        return $config[$nom_var];
+    }
+
+    function __setVar($name="", &$objVar)
+    {
+        $obj =& ASAP::getStaticProperty('Web', 'config');
+        $obj[$name] = $objVar;
+    }
+
+    function &getConfig()
+    {
+        $config = &ASAP::getStaticProperty('Web','config');
+
+        // if configuration data is not set
+        if (!isset($config))
+        {
+            // load the configuration data
+            $config = Serializer::load(Application::getBaseDirectory().'/config/web.conf.data');
+        }
+        if (!is_array($config))
+        {
+            return PEAR::raiseError('cannot load the configuration file');
+        }
+        return $config;
+    }
+}
+?>

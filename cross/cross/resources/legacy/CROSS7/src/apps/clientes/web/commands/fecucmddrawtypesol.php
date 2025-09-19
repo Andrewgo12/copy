@@ -1,0 +1,64 @@
+<?php
+require_once "Web/WebRequest.class.php";
+require_once "JSON/JSON.php";
+class FeCuCmdDrawTypeSol {
+	function execute() {
+		extract($_REQUEST);
+
+		settype($objJson, "object");
+		settype($objService,"object");
+		settype($rcResult, "array");
+		settype($rcUser,"array");
+		settype($rcTmp,"array");
+		settype($sbOutput, "string");
+		settype($sbHtml,"string");
+
+		//labels
+		//Trae los datos del usuario
+		$rcUser = Application :: getUserParam();
+		if (!is_array($rcUser)) {
+			//Si no existe usuario en sesion
+			$rcUser["lang"] = Application :: getSingleLang();
+		}
+
+		//se limpia la sesion
+		if(WebSession :: issetProperty("_rcSolicitante")){
+			WebSession :: unsetProperty("_rcSolicitante");
+		}
+
+		include ($rcUser["lang"]."/".$rcUser["lang"].".messages.php");
+
+		$objJson = new Services_JSON();
+		$objService = Application :: loadServices("Data_type");
+
+		if(isset($signal) && $signal){
+				
+			$rcTmp["signal"] = $signal;
+			WebSession :: setProperty("_rcSolicitante",$rcTmp);
+			$sbHtml = $this->drawList();
+
+			$rcResult[0]=1;
+			$rcResult[1]=$objService->encode($sbHtml);
+			$rcResult[2] = $objService->encode($signal);
+		}else{
+			$rcResult[0] = 0;
+			$rcResult[1]= $objService->encode(html_entity_decode($rcmessages[0]));
+			$rcResult[2] = "";
+		}
+
+		$sbOutput = $objJson->encode($rcResult);
+		die($sbOutput);
+	}
+
+	function drawList(){
+
+		settype($sbPath,"string");
+		settype($sbHtml,"string");
+			
+		$sbPath = Application::getPluginsDirectory()."/function.drawSolicitante.php";
+		include($sbPath);
+		$sbHtml = smarty_function_drawSolicitante(array(),$this,false);
+		return $sbHtml;
+	}
+}
+?>

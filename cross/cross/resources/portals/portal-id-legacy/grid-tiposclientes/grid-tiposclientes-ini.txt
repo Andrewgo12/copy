@@ -1,0 +1,7 @@
+index.php
+Portal_ID
+grid_tiposclientes
+NAO
+cons
+grid_tiposclientes
+LigMd5

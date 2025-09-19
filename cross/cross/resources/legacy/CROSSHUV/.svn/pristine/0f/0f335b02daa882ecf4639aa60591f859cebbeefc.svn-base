@@ -1,0 +1,366 @@
+<?php
+class FeCrAlertaCasosManager{
+	function FeCrAlertaCasosManager(){
+		$this->_loadApplication('cross300');
+	}
+	function _execute(){
+		settype($objService, "object");
+		settype($rcInfoCompany, "array");
+		settype($rcUser, "array");
+		settype($rcData, "array");
+		settype($sbResult, "string");
+		settype($nuDays, "integer");
+		$this->_setSessionDataUser('webuser',2);
+		if($this->sbResult){
+
+			$this->objGateway = Application :: getDataGateway("AlertaCasos");
+			$this->objDate = Application :: loadServices("DateController");
+			//Trae los datos del usuario
+			$rcUser = Application :: getUserParam();
+			if (!is_array($rcUser)){
+				$rcUser["lang"] = Application :: getSingleLang();
+			}
+			$this->rcUser = $rcUser;
+			//Incluye los  el archivo de lenguaje
+			include ($rcUser["lang"]."/".$rcUser["lang"].".alertacasos.php");
+			$this->rcLabels = $rclabels;
+			//Busca el email corporativo para el from del correo
+			$objService = Application :: loadServices('General');
+			$rcInfoCompany = $objService->getParam('general', 'empresa',false);
+			$this->emailComp = $rcInfoCompany['empremail'];
+			//obtenemos la cantidad de dias a evaluar
+			$this->nuCant = $objService->getParam('cross300', 'CANT_DIAS_ALERTA',false);
+			$this->email1 = $objService->getParam('cross300', 'EMAIL_ALERTA1',false);
+			$this->email2 = $objService->getParam('cross300', 'EMAIL_ALERTA2',false);
+			$objService->close();
+
+			///se obtiene la informacion de los procesos y s carga en un atributo
+			$this->_getDiasProcesos();
+			if($this->nuCant && $this->sbResult){
+				//determina los casos abiertos al momento de la consulta
+
+				$this->objGateway->setData(array("ordefecfinad"=>true));
+				$this->objGateway->getCasos();
+				$rcData = $this->objGateway->getResult();
+				
+				//se realiza el analisis de tiempos.
+				if(is_array($rcData) && $rcData){
+					//se recorren los casos para deteminar si estan por fuera el rango de tiempos
+					foreach($rcData as $rcTmp){
+						$this->ordenumeros = $rcTmp["ordenumeros"];
+
+						//Nuevo ajuste de Corpocaldas a HUV
+						$this->ordefecregd = $rcTmp["ordefecregd"];
+						$this->ordefecvend = $rcTmp["ordefecvend"];
+						
+						//obtiene la cantidad de dias que han pasado para la orden
+						$this->_getDiasCaso();
+						//si cumple debe generarse alerta
+						$nuDays = $this->rcDiasProceso[$rcTmp["proccodigos"]] - $this->nuDiasCaso;
+						if($nuDays <= $this->nuCant){
+							if($nuDays<0){
+								$nuDays=0;
+							}
+							$this->rcOrden[$rcTmp["ordenumeros"]] = $nuDays;
+							//se determina el encargado del caso
+							$this->_getDep();
+						}
+					}
+				}
+				
+				//si hay casos se procede a armar los textos de los email
+				if(!empty($this->rcOrden) && is_array($this->rcOrden) && $this->rcOrden){
+					$this->_getInfoEmail();
+					$this->_sendEmail();
+				}
+			}
+		}
+		return;
+	}
+	function _sendEmail(){
+		settype($objService,"object");
+		settype($rcResult,"array");
+		settype($rcEmail,"array");
+		settype($rcExec, "array");
+		settype($nuCont, "integer");
+
+		$rcEmail = $this->rcEmail;
+		if(is_array($rcEmail) && $rcEmail){
+			
+			foreach($rcEmail as $rcTmp){
+				$rcExec[$nuCont] = array(
+					"result" => true,
+					"type" => "execute",
+					"query" => "",
+					"parameters" => $rcTmp,
+					"service" => "General",
+					"method" => "sendGenericEmail",
+				);
+				$nuCont ++;
+			}
+			$objService = Application :: loadServices('ExecuteAction');
+			$objService->setParameters($rcExec);
+			$rcResult = $objService->execute();
+		}
+
+		return;
+	}
+	function _getInfoEmail(){
+
+		settype($rcOrden, "array");
+		$rcOrden = $this->rcOrden;
+		$this->sbResult = true;
+		if(is_array($rcOrden) && $rcOrden){
+			//arma los email para los encargados
+			$this->_getEmailEmp();
+			$this->_getEmailGen();
+		}else{
+			$this->sbResult = false;
+		}
+		return;
+	}
+	function _getEmailGen(){
+		settype($rcOrden, "array");
+		settype($rcEmail, "array");
+		settype($rcParams, "array");
+		settype($sbTmp, "string");
+		settype($nuCont, "integer");
+		settype($nuCant, "integer");
+		settype($nuCasos, "integer");
+
+		$rcOrden = $this->rcOrden;
+		$rcEmail = $this->rcEmail;
+		if(is_array($rcEmail) && $rcEmail){
+			$nuCont = sizeof($rcEmail);
+		}
+		foreach($rcOrden as $sbIndex=>$nuCant){
+			$nuCasos ++;
+			$sbTmp .=" ".$this->rcLabels["caso"]["label"]." ". $sbIndex;
+			$sbTmp .=" ".$this->rcLabels["cant"]["label"]. " ".$nuCant."\n";
+
+		}
+		$rcParams["dir_origen"] = $this->emailComp;
+		$rcParams["usuario"] = $this->rcUser["username"];
+		$rcParams["adjunto"] = null;
+		$rcParams["asunto"] = html_entity_decode($this->rcLabels["asunto"]["label"]);
+		$rcParams["texto"] = str_replace('<-CASO->', $sbTmp, $this->rcLabels["textog"]["label"]) ;
+		$rcParams["texto"] = html_entity_decode(str_replace('<-NUM_CASOS->', (string) $nuCasos, $rcParams["texto"])) ;
+		
+		if($this->email1){
+			$rcParams["dir_destino"] = $this->email1;
+			$rcEmail[$nuCont] = $rcParams;
+			$nuCont ++;	
+		}
+		
+		if($this->email2){
+			$rcParams["dir_destino"] = $this->email2;
+			$rcEmail[$nuCont] = $rcParams;	
+		}
+		
+		$this->rcEmail = $rcEmail;
+		return;
+	}
+	function _getEmailEmp(){
+		settype($rcDep, "array");
+		settype($rcCasos, "array");
+		settype($rcOrden, "array");
+		settype($rcEmail, "array");
+		settype($rcParams, "array");
+		settype($rcTmp, "array");
+		settype($sbIndex, "string");
+		settype($sbOrdenumeros, "string");
+		settype($sbTmp, "string");
+		settype($nuCont, "integer");
+		settype($nuCasos, "integer");
+
+		$rcDep = $this->rcDep;
+		$rcOrden = $this->rcOrden;
+		$rcEmail = $this->rcEmail;
+		if(is_array($rcEmail) && $rcEmail){
+			$nuCont = sizeof($rcEmail);
+		}
+		if(is_array($rcDep) && $rcDep){
+			foreach($rcDep as $sbIndex=>$rcTmp){
+				$sbTmp = null;
+				$rcParams = array();
+				$rcCasos = array();
+				$nuCasos = 0;
+				$rcParams["responsable"] = $sbIndex;
+				$rcParams["dir_origen"] = $this->emailComp;
+				$rcParams["dir_destino"] = $rcTmp["email"];
+				$rcParams["usuario"] = $this->rcUser["username"];
+				$rcParams["adjunto"] = null;
+				$rcParams["texto"] = str_replace('<-RESPONSABLE->', $rcTmp["nombre"], $this->rcLabels["textoe"]["label"]);
+				$rcParams["asunto"] = html_entity_decode($this->rcLabels["asunto"]["label"]);
+				$rcCasos = $rcTmp["casos"];
+				if(is_array($rcCasos) && $rcCasos){
+					$rcCasos = array_keys($rcCasos);
+					foreach($rcCasos as $sbOrdenumeros){
+						$nuCasos ++;
+						$sbTmp .=" ".$this->rcLabels["caso"]["label"]." ". $sbOrdenumeros;
+						$sbTmp .=" ".$this->rcLabels["cant"]["label"]. " ".$rcOrden[$sbOrdenumeros]."\n";
+					}
+					$rcParams["texto"] = str_replace('<-CASO->', $sbTmp, $rcParams["texto"]);
+					$rcParams["texto"] = html_entity_decode(str_replace('<-NUM_CASOS->', (string) $nuCasos, $rcParams["texto"])) ;
+				}
+				$rcEmail[$nuCont] = $rcParams;
+				$nuCont ++;
+			}
+			$this->rcEmail = $rcEmail;
+		}
+		return;
+	}
+	function _getDep(){
+		settype($objService, "object");
+		settype($rcData, "array");
+		settype($rcGroup, "array");
+		settype($rcEnc, "array");
+		settype($rcDep, "array");
+		settype($sbOrdenumeros, "string");
+		settype($sbFlag, "string");
+		$sbOrdenumeros = $this->ordenumeros;
+		if($sbOrdenumeros){
+			//obtiene la informacion de la dependencia encargada
+			$this->objGateway->setData(array("ordenumeros"=>$sbOrdenumeros,"sbStatusI"=>true));
+			$this->objGateway->getActa();
+			$rcData = $this->objGateway->getResult();
+			if(is_array($rcData) && $rcData){
+
+				$sbFlag = true;
+				$rcDep = $this->rcDep;
+
+				if(is_array($rcDep) && $rcDep){
+					if(array_key_exists($rcData[0]["orgacodigos"], $rcDep)){
+						$rcDep[$rcData[0]["orgacodigos"]]["casos"][$sbOrdenumeros] = null;
+						$sbFlag = false;
+					}
+				}
+
+				if($sbFlag){
+					//se obtiene el email
+					$objService = Application :: loadServices('Human_resources');
+					$rcGroup = $objService->getActiveGroup($rcData[0]["orgacodigos"],false);
+					if(is_array($rcGroup) && $rcGroup){
+						$rcEnc = $objService->getOrderedByGrupo($rcGroup[0]["grupcodigon"],false);
+					}
+					$objService->close();
+					//solo se condidera si tiene email
+					if($rcEnc["email"]){
+						$rcDep[$rcData[0]["orgacodigos"]]["nombre"] = $rcEnc["nombre"];
+						$rcDep[$rcData[0]["orgacodigos"]]["email"] = $rcEnc["email"];
+						$rcDep[$rcData[0]["orgacodigos"]]["casos"][$sbOrdenumeros] = null;	
+					}
+				}
+
+				$this->rcDep = $rcDep;
+			}
+		}
+		return;
+	}
+	function _getDiasCaso(){
+		settype($objManager, "object");
+		settype($rcTime, "array");
+		settype($sbOrdenumeros, "string");
+		$this->nuDiasCaso = 0;
+		$sbOrdenumeros = $this->ordenumeros;
+		$sbOrdefecregd = $this->ordefecregd;
+		$sbOrdefecvend = $this->ordefecvend;
+
+		if($sbOrdenumeros){
+           //Ajuste alertas para HUV
+		   $objService = Application :: loadServices("General"); //llamado a la funcion
+		   $rcTime = $objService->get_Time_Progress($sbOrdefecregd,$sbOrdefecvend);
+		
+			if(is_array($rcTime) && $rcTime){
+				$this->nuDiasCaso = $rcTime["restantes"];
+			}
+		}
+		return;
+	}
+	function _getDiasProcesos(){
+		settype($objService, "object");
+		settype($objGateWay, "object");
+		settype($rcData, "array");
+		$this->sbResult = true;
+		$this->objDate = Application :: loadServices("DateController");
+		$objService = Application :: loadServices('Workflow');
+		$objGateWay = $objService->getGateWay('Proceso');
+		$rcData = $objGateWay->getAllProceso();
+		$objService->close();
+		if(is_array($rcData) && $rcData){
+			foreach($rcData as $rcTmp){
+				if($rcTmp["proctiempon"]){
+					$rcTmp["proctiempon"] = (int) $rcTmp["proctiempon"];
+					$this->rcDiasProceso[$rcTmp["proccodigos"]] = floor($rcTmp["proctiempon"]/$this->objDate->nuSecsDay);
+				}else{
+					$this->rcDiasProceso[$rcTmp["proccodigos"]] = 0;
+				}
+			}
+		}else{
+			$this->sbResult = false;
+		}
+		return;
+	}
+	/**
+	 * Copyright 2017 FullEngine
+
+	 * Carga el controlador frontal
+	 * @param string $sbModule
+	 * @return boolean
+	 * @author freina<freina@parquesoft.com>
+	 * @date 05-Jun-2017 15:08:00
+	 * @location Cali-Colombia
+	 */
+	function _loadApplication($sbModule){
+		settype($sbPath,"string");
+		$sbPath = dirname(__FILE__)."/../../../applications/$sbModule";
+		include_once ("$sbPath/config/config.inc.php");
+		require_once "ASAP.class.php";
+		new Application($sbModule, $sbPath,true);
+		return true;
+	}
+	/**
+	 * Copyright 2017 FullEngine
+
+	 * Usuario en sesion
+	 * @param string $sbUser
+	 * @return boolean
+	 * @author freina<freina@parquesoft.com>
+	 * @date 05-Jun-2017 15:08:00
+	 * @location Cali-Colombia
+	 */
+	function _setSessionDataUser($sbUser,$sbSchema){
+
+		settype($objService, "object");
+		settype($objManager,"object");
+		settype($rcAuthsession,"array");
+		if(WebSession :: issetProperty("_authsession")){
+			WebSession :: unsetProperty("_authsession");
+		}
+		//Crea los datos del usuario
+		$objService = $objService = Application :: loadServices('Profiles');
+		$objManager = $objService->loadManager('LoginManager');
+		//Consulta los datos del usuario
+		$rcAuthsession = $objManager->getSessionDataUser($sbUser);
+		$objService->close();
+		if (!is_array($rcAuthsession)) {
+			$this->sbResult =  false;
+		}
+		$rcAuthsession["schema"] = $sbSchema;
+		$rcAuthsession["schecodigon"] = $sbSchema;
+		//Pone en sesion los datos del usuario
+		WebSession :: setProperty("_authsession", $rcAuthsession);
+		$this->sbResult = true;
+		return;
+	}
+}
+if(is_array($argv) && $argv){
+	if(is_array($_REQUEST) && $_REQUEST){
+		die();
+	}
+}else{
+	die();
+}
+$objRule = new FeCrAlertaCasosManager();
+$objRule->_execute();
+?>

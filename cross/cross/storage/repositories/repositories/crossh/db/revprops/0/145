@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-10-17T15:39:07.628663Z
+K 7
+svn:log
+V 80
+se resuelve el PHP Notice:  Undefined property: FeCrAlertaCasosManager::$rcOrden
+END

@@ -1,0 +1,296 @@
+/*
+ * Copyright 2010 FullEngine
+ * 
+ * Carga los registros de las solicitudes del sistema Silpa
+ * @author freina<freina@parquesoft.com>
+ * @param string action
+ * @date 30-Jan-2011 15:17
+ * @location Cali-Colombia
+ */
+
+function jsDrawTypeSolPub(sbSignal) {
+
+	var params = '';
+
+	var sbAction = 'FeCuCmdDrawTypeSolPub';
+
+	var params = 'action=' + sbAction + '&signal=' + sbSignal;
+
+	var opt = {
+		// Use POST
+		method : 'post',
+		// Send this lovely data
+		postBody : params,
+		// Handle successful response
+		onSuccess : showResponseDrawPub,
+		// Handle 404
+		on404 : function(t) {
+			alert('Error 404: location "' + t.statusText + '" was not found.');
+		},
+		// Handle other errors
+		onFailure : function(t) {
+			alert('Error ' + t.status + ' -- ' + t.statusText);
+		}
+	}
+
+	new Ajax.Request('index.php', opt);
+}
+function showResponseDrawPub(req) {
+
+	var rcRequest = eval(req.responseText);
+	var objValue = new Object;
+	var objValue1 = new Object;
+	
+	if (rcRequest[0] == 1) {
+		contenedor = document.getElementById("div_sol");
+		jsDrawdivPub("div_sol");
+		contenedor.innerHTML = decodeBase64(rcRequest[1]);
+
+		// signal
+		var objSignal = new Object;
+		objSignal = document.getElementById('signal');
+		objSignal.value = decodeBase64(rcRequest[2]);
+		
+		objValue = document.getElementById('contcodigon');
+		objValue.value='';
+		objValue1 = document.getElementById('cliecodigos');
+		objValue1 = '';
+
+	} else {
+		clearContainerPub('div_sol');
+		alert(decodeBase64(rcRequest[1]));
+	}
+}
+
+/**
+ * Propiedad intelectual de FullEngine
+ * 
+ * Muestra o esconde un div
+ * 
+ * @author freina
+ * @date
+ * @date 10-Jul-2009 13:59
+ * @location Cali-Colombia
+ */
+function jsDrawdivPub(sbId) {
+	var sbBrowser = '';
+	sbBrowser = jsBrowser();
+	contenedor = document.getElementById(sbId);
+	if (sbBrowser == 'IE') {
+		contenedor.style.visibility = 'visible';
+		contenedor.style.display = 'inline';
+	} else {
+		contenedor.style.visibility = 'visible';
+		contenedor.style.display = 'inline';
+	}
+	return true;
+}
+
+/**
+ * Propiedad intelectual de FullEngine
+ * 
+ * Esconde un div
+ * 
+ * @author freina
+ * @date
+ * @date 10-Jul-2009 13:59
+ * @location Cali-Colombia
+ */
+function jsErasedivPub(sbId) {
+	var sbBrowser = '';
+	sbBrowser = jsBrowser();
+	contenedor = document.getElementById(sbId);
+	if (sbBrowser == 'IE') {
+		contenedor.style.visibility = 'hidden';
+		contenedor.style.display = 'none';
+	} else {
+		contenedor.style.visibility = 'hidden';
+		contenedor.style.display = 'none';
+	}
+	return true;
+}
+function clearContainerPub(sbId) {
+	contenedor = document.getElementById(sbId);
+	contenedor.innerHTML = '';
+	jsErasedivPub(sbId);
+}
+
+/*
+ * Copyright 2011 FullEngine
+ * 
+ * Accion de cargar un contact o cliente @date 29-Aug-2012 15:55 @location
+ * Cali-Colombia
+ */
+function jsLoadSolicitantePub(sbType) {
+
+	var params ='';
+	var sbString='';
+	disableButtons();
+
+	var sbAction = 'FeCuCmdLoadSolicitantepub';
+	var objValue = new Object;
+
+	switch (sbType) {
+	case '1':
+		objValue = document.getElementById('contindentis');
+		sbString = encodeBase64(jsgetObject("cliente"));
+		break;
+	case '2':
+		objValue = document.getElementById('clieidentifs');
+		sbString = encodeBase64(jsgetObject("contacto"));
+		break;
+	}
+
+	var params = 'action=' + sbAction + '&objvalue=' + objValue.value+'&type='+sbType+'&sbData='+sbString;
+
+	var opt = {
+		// Use POST
+		method : 'post',
+		// Send this lovely data
+		postBody : params,
+		// Handle successful response
+		onSuccess : showResponseLoadSolicitantePub,
+		// Handle 404
+		on404 : function(t) {
+			alert('Error 404: location "' + t.statusText + '" was not found.');
+		},
+		// Handle other errors
+		onFailure : function(t) {
+			alert('Error ' + t.status + ' -- ' + t.statusText);
+		}
+	}
+
+	new Ajax.Request('index.php', opt);
+}
+function showResponseLoadSolicitantePub(req) {
+
+	enableButtons();
+	var rcRequest = eval(req.responseText);
+	var objValue = new Object;
+
+	contenedor = document.getElementById("div_sol");
+	jsDrawdivPub("div_sol");
+	contenedor.innerHTML = decodeBase64(rcRequest[1]);
+
+	if (rcRequest[0] == 1) {
+		
+		switch (rcRequest[3]) {
+		case '1':
+			objValue = document.getElementById('contcodigon');
+			break;
+		case '2':
+			objValue = document.getElementById('cliecodigos');
+			break;
+		}
+		
+		objValue.value = decodeBase64(rcRequest[2]);
+
+	} else {
+		switch (rcRequest[3]) {
+		case '1':
+			objValue = document.getElementById('contcodigon');
+			break;
+		case '2':
+			objValue = document.getElementById('cliecodigos');
+			break;
+		}
+		objValue.value = "";
+	}
+}
+/*
+ * Copyright 2012 FullEngine
+ * 
+ * In @date 29-Aug-2012 15:55 @location Cali-Colombia
+ */
+function jsAddSolicitantePub() {
+
+	var params = '';
+
+	var sbAction = 'FeCuCmdAddSolicitante';
+	var sbString1 = '';
+	var sbString2 = '';
+	disableButtons();
+	
+	sbString1 = encodeBase64(jsgetObject('contacto'));
+	sbString2 = encodeBase64(jsgetObject('cliente'));
+
+	var objSignal = new Object;
+	objSignal = document.getElementById('signal');
+
+	var params = 'action=' + sbAction + '&signal=' + objSignal.value+'&sbContacto=' + sbString1+'&sbCliente=' + sbString2;
+
+	var opt = {
+		// Use POST
+		method : 'post',
+		// Send this lovely data
+		postBody : params,
+		// Handle successful response
+		onSuccess : showResponseAddSolicitantePub,
+		// Handle 404
+		on404 : function(t) {
+			alert('Error 404: location "' + t.statusText + '" was not found.');
+		},
+		// Handle other errors
+		onFailure : function(t) {
+			alert('Error ' + t.status + ' -- ' + t.statusText);
+		}
+	}
+
+	new Ajax.Request('index.php', opt);
+}
+function showResponseAddSolicitantePub(req) {
+
+	enableButtons();
+	var rcRequest = eval(req.responseText);
+
+	if (rcRequest[0] == 1) {
+
+		alert(decodeBase64(rcRequest[1]));
+		window.close();
+
+	} else {
+		alert(decodeBase64(rcRequest[1]));
+	}
+}
+function jsgetObject(sbText){
+	
+	var nuElements = 0;
+	var nuCont = 0;
+	var nuRow = 0;
+	var sbName = '';
+	var sbResult = '';
+	var sbIndexOf='';
+	var objObject = new Object;
+	var rcTmp = new Array();
+	
+	sbIndexOf = sbText+"_";
+	
+	//Recorre el formulario
+	nuElements = document.forms[0].length;
+	for(nuCont;nuCont<nuElements;nuCont++){
+		objObject =document.forms[0].elements[nuCont]; 
+		if(objObject.type == "text" || objObject.type == "select-one" || objObject.type == "hidden"){
+			sbName = objObject.name;
+			if(sbName.indexOf(sbIndexOf)!=-1){
+				rcTmp[nuRow]=new Array(sbName,objObject.value);
+				nuRow ++;
+			}
+		}
+	}
+	if(nuRow){
+		sbResult = serialize(rcTmp);
+	}
+	return sbResult;
+}
+function serialize(rcArray){
+	var nuCont = 0;
+	var nuCant = 0;
+	nuCant = rcArray.length;
+	var sbString = 'a:'+nuCant+':{';
+	for(nuCont=0; nuCont<nuCant; nuCont++){
+		sbString += 's:'+rcArray[nuCont][0].length+':"'+rcArray[nuCont][0]+'";s:'+rcArray[nuCont][1].length+':"'+rcArray[nuCont][1]+'";';
+	}
+	sbString += '}';
+	
+	return sbString;
+}

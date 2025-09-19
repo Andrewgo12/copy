@@ -1,0 +1,1140 @@
+CREATE TABLE "acemcompromi" (
+    "compcodigos" varchar2(30) NOT NULL,
+    "acemcodigos" number NOT NULL,
+    "accofecrevn" number,
+    "accoobservas" varchar2(4000 BYTE),
+    "accoactivas" varchar2(2)
+);
+CREATE TABLE "acta" (
+    "actacodigos" varchar2(30) NOT NULL,
+    "ordenumeros" varchar2(30),
+    "tarecodigos" varchar2(30),
+    "actaestacts" varchar2(30),
+    "actaestants" varchar2(30),
+    "actafechingn" number,
+    "usuacodigos" varchar2(30),
+    "orgacodigos" varchar2(30),
+    "actaactivas" varchar2(30),
+    "actafechfinn" number DEFAULT NULL,
+    "actafechinin" number,
+    "actafechvenn" number
+);
+CREATE TABLE "actaempresa" (
+    "actacodigos" varchar2(30) NOT NULL,
+    "acemnumeros" varchar2(30) NOT NULL,
+    "esaccodigos" varchar2(30),
+    "acemfeccren" number,
+    "acemfecaten" number,
+    "acemhorainn" number,
+    "acemhorafin" number,
+    "orgacodigos" varchar2(30),
+    "acemusuars" varchar2(100),
+    "acemobservas" varchar2(4000 BYTE),
+    "acemusumods" varchar2(100),
+    "acemradicas" varchar2(30),
+    "acemactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "actaestorden" (
+    "acescodigos" varchar2(30) NOT NULL,
+    "actacodigos" varchar2(30),
+    "acesestrecis" varchar2(30),
+    "acesestentrs" varchar2(30),
+    "acesfechmovs" number
+);
+CREATE TABLE "activiacta" (
+    "acaccodigon" number NOT NULL,
+    "actacodigos" varchar2(30) NOT NULL,
+    "acemcodigos" number NOT NULL,
+    "acticodigos" varchar2(30) NOT NULL,
+    "acacactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "actividad" (
+    "acticodigos" varchar2(30) NOT NULL,
+    "actinombres" varchar2(100),
+    "activalorn" float(10),
+    "actiobservas" varchar2(4000 BYTE),
+    "actiactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "activitarea" (
+    "tarecodigos" varchar2(30) NOT NULL,
+    "acticodigos" varchar2(30) NOT NULL,
+    "actavalorn" float(10),
+    "actaobligats" varchar2(30),
+    "actaordenn" number,
+    "actaporcetan" float(10),
+    "actaactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "anexos" (
+    "ordenumeros" varchar2(30) NOT NULL,
+    "anexcodigon" number NOT NULL,
+    "anexnombarch" varchar2(100) NOT NULL,
+    "anexfechingn" number,
+    "usuacodigos" varchar2(30)
+);
+CREATE TABLE "archivos" (
+    "archcodigon" number NOT NULL,
+    "archidrefes" varchar2(30) NOT NULL,
+    "archreferes" varchar2(30) NOT NULL,
+    "archnombres" varchar2(100) NOT NULL,
+    "archmimetys" varchar2(100),
+    "archtamanon" number NOT NULL,
+    "archcontens" clob,
+    "archfechan" number NOT NULL,
+    "archextensis" varchar2(3)
+);
+CREATE TABLE "bodega" (
+    "bodecodigos" varchar2(30) NOT NULL,
+    "tibocodigos" varchar2(30) NOT NULL,
+    "bodenombres" varchar2(100) NOT NULL,
+    "orgacodigos" varchar2(30) NOT NULL,
+    "bodefechcred" varchar2(30) NOT NULL,
+    "bodefechfind" varchar2(30),
+    "bodedescrips" varchar2(4000 BYTE),
+    "bodeestados" char(1) DEFAULT 'A'
+);
+CREATE TABLE "campconffoem" (
+    "cacfcodigon" number NOT NULL,
+    "cacfnombres" varchar2(150) NOT NULL,
+    "cacfprocedes" varchar2(150) NOT NULL
+);
+CREATE TABLE "campconfform" (
+    "cacocodigon" number NOT NULL,
+    "caconombres" varchar2(150) NOT NULL,
+    "cacoprocedes" varchar2(150) NOT NULL
+);
+CREATE TABLE "campconfproc" (
+    "cacocodigon" number NOT NULL,
+    "caconombres" varchar2(150) NOT NULL,
+    "cacoprocedes" varchar2(150) NOT NULL
+);
+CREATE TABLE "cargo" (
+    "cargcodigos" varchar2(30) NOT NULL,
+    "cargnombres" varchar2(100),
+    "cargdescrips" varchar2(150),
+    "cargactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "causa" (
+    "tiorcodigos" varchar2(30) NOT NULL,
+    "evencodigos" varchar2(30) NOT NULL,
+    "causcodigos" varchar2(30) NOT NULL,
+    "causnombres" varchar2(150),
+    "causdescrips" varchar2(4000 BYTE),
+    "causactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "cliente" (
+    "cliecodigos" varchar2(30) NOT NULL,
+    "clieidentifs" varchar2(30),
+    "ticlcodigos" varchar2(30),
+    "clienombres" varchar2(150),
+    "clierepprnos" varchar2(20),
+    "clierepsenos" varchar2(30),
+    "cliereppraps" varchar2(30),
+    "clierepseaps" varchar2(30),
+    "clielocalizs" varchar2(100),
+    "clietelefons" varchar2(13),
+    "locacodigos" varchar2(30),
+    "cliepagwebs" varchar2(100),
+    "cliemails" varchar2(100),
+    "esclcodigos" varchar2(30),
+    "tiidcodigos" varchar2(2),
+    "grclcodigos" varchar2(30),
+    "clienumfaxs" varchar2(13),
+    "clieaparaers" varchar2(200),
+    "clieactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "compromiso" (
+    "compcodigos" varchar2(30) NOT NULL,
+    "compdescris" varchar2(255) NOT NULL,
+    "compactivos" varchar2(2) DEFAULT 'A'
+);
+CREATE TABLE "comunicacion" (
+    "comucodigos" varchar2(30) NOT NULL,
+    "ordenumeros" varchar2(30) NOT NULL,
+    "focacodigos" varchar2(30) NOT NULL,
+    "comuasuntos" varchar2(200) NOT NULL,
+    "comutextos" varchar2(4000 BYTE) NOT NULL,
+    "comuestados" varchar2(30),
+    "comuusuagen" varchar2(30) NOT NULL,
+    "usuacodigos" varchar2(30),
+    "comufecregn" number NOT NULL,
+    "comufecenvn" number
+);
+CREATE TABLE "concepmovimi" (
+    "comocodigos" varchar2(30) NOT NULL,
+    "comonombres" varchar2(100) NOT NULL,
+    "comosentidos" char(1) NOT NULL,
+    "comodescrips" varchar2(4000 BYTE),
+    "comoactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "configarchiv" (
+    "cogacodigos" varchar2(30) NOT NULL,
+    "coganombres" varchar2(200) NOT NULL,
+    "cogaobservas" varchar2(4000 BYTE),
+    "tiarcodigos" varchar2(30),
+    "cogamarmaess" varchar2(30),
+    "cogamardetas" varchar2(30),
+    "cogaposmaess" number,
+    "cogaposdetas" number,
+    "cogasepainis" varchar2(100),
+    "cogasepafins" varchar2(100),
+    "coarencabezs" char(1) DEFAULT 'S',
+    "coarextencis" varchar2(100)
+);
+CREATE TABLE "configdimension" (
+    "codicodigon" number NOT NULL,
+    "codidominios" varchar2(100) NOT NULL,
+    "codidomicams" varchar2(100),
+    "codidomivals" varchar2(100),
+    "codireglas" varchar2(4000 BYTE),
+    "codiexclusis" char(1),
+    "dimecodigon" number NOT NULL
+);
+CREATE TABLE "configforema" (
+    "cofecodigon" number NOT NULL,
+    "cofenombres" varchar2(150) NOT NULL,
+    "foemcodigos" varchar2(30) NOT NULL
+);
+CREATE TABLE "configformat" (
+    "cofocodigon" number NOT NULL,
+    "cofonombres" varchar2(150) NOT NULL,
+    "focacodigos" varchar2(30) NOT NULL
+);
+CREATE TABLE "configproces" (
+    "coprcodigon" number NOT NULL,
+    "coprnombres" varchar2(150) NOT NULL,
+    "proccodigos" varchar2(30) NOT NULL
+);
+CREATE TABLE "contacto" (
+    "contcodigon" number NOT NULL,
+    "contindentis" varchar2(100),
+    "tiidcodigos" varchar2(2),
+    "cliecodigon" varchar2(100),
+    "contprinoms" varchar2(20),
+    "contsegnoms" varchar2(30),
+    "contpriapes" varchar2(30),
+    "contsegapes" varchar2(30),
+    "contfecnacis" number,
+    "contedadn" number,
+    "contsexos" char(1),
+    "contemail" varchar2(100),
+    "locacodigos" varchar2(30),
+    "contdirecios" varchar2(100),
+    "conttelefons" varchar2(13),
+    "contnumcels" varchar2(13),
+    "contobservs" varchar2(4000 BYTE),
+    "contactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "contrato" (
+    "contnics" varchar2(30) NOT NULL,
+    "clieidentifs" varchar2(30) NOT NULL,
+    "ticocodigos" varchar2(30) NOT NULL,
+    "contobjetos" varchar2(350) NOT NULL,
+    "timocodigos" varchar2(30) NOT NULL,
+    "contmonton" float(10),
+    "fopacodigos" varchar2(30) NOT NULL,
+    "contfchainin" number NOT NULL,
+    "contfchafinn" number,
+    "contfchfirmn" number,
+    "contestados" char(1) DEFAULT 'A',
+    "contdescrips" varchar2(4000 BYTE)
+);
+CREATE TABLE "detaconfarch" (
+    "decocodigon" number NOT NULL,
+    "cogacodigos" varchar2(30),
+    "decodescris" varchar2(200) NOT NULL,
+    "decolon_posn" number,
+    "decotipos" varchar2(30),
+    "decoformats" varchar2(30),
+    "decovalinis" varchar2(100),
+    "decovalfins" varchar2(100)
+);
+CREATE TABLE "detaconffoem" (
+    "cofecodigon" number NOT NULL,
+    "cacfcodigon" number NOT NULL,
+    "decfoperados" varchar2(30) NOT NULL,
+    "decfvalors" varchar2(30)
+);
+CREATE TABLE "detaconfform" (
+    "cofocodigon" number NOT NULL,
+    "cacocodigon" number NOT NULL,
+    "decooperados" varchar2(30) NOT NULL,
+    "decovalors" varchar2(30) NOT NULL
+);
+CREATE TABLE "detaconfproc" (
+    "coprcodigon" number NOT NULL,
+    "cacocodigon" number NOT NULL,
+    "decooperados" varchar2(30) NOT NULL,
+    "decovalors" varchar2(4000 BYTE) NOT NULL
+);
+CREATE TABLE "detacttarest" (
+    "valicodigos" varchar2(30) NOT NULL,
+    "acticodigos" varchar2(30) NOT NULL
+);
+CREATE TABLE "detalledimens" (
+    "dimecodigon" number NOT NULL,
+    "dedinombres" varchar2(30) NOT NULL,
+    "deditipodats" varchar2(100) NOT NULL,
+    "deditamtips" number NOT NULL,
+    "dediformatos" varchar2(30),
+    "dediorigens" varchar2(4000 BYTE),
+    "deditipobjes" varchar2(100) NOT NULL,
+    "dedivalidas" varchar2(4000 BYTE),
+    "dedinotnulls" char(1) NOT NULL,
+    "dededidefaults" varchar2(100),
+    "dediordenn" number NOT NULL,
+    "dedijseventos" varchar2(255)
+);
+CREATE TABLE "detallvalida" (
+    "valicodigos" varchar2(30) NOT NULL,
+    "devacodigos" varchar2(30) NOT NULL,
+    "devanomcams" varchar2(50),
+    "devaoperados" varchar2(30),
+    "devavalors" varchar2(150)
+);
+CREATE TABLE "dimension" (
+    "dimecodigon" number NOT NULL,
+    "dimedescrips" varchar2(4000 BYTE),
+    "dimefechcren" number,
+    "dimeusuarios" varchar2(30),
+    "dimefechupdn" number
+);
+CREATE TABLE "ejetematico" (
+    "ejtecodigon" number NOT NULL,
+    "ejtenombres" varchar2(100) NOT NULL,
+    "ejtedescris" varchar2(4000 BYTE)
+);
+CREATE TABLE "email" (
+    "emaicodigos" varchar2(30) NOT NULL,
+    "ordenumeros" varchar2(30) NOT NULL,
+    "foemcodigos" varchar2(30),
+    "orgacodigos" varchar2(30),
+    "emaiparas" varchar2(100) NOT NULL,
+    "emaidesdes" varchar2(100) NOT NULL,
+    "emaiasuntos" varchar2(200) NOT NULL,
+    "emaitextos" varchar2(4000 BYTE) NOT NULL,
+    "emaiestados" varchar2(10) NOT NULL,
+    "usuacodigos" varchar2(30) NOT NULL,
+    "emaifecregn" number NOT NULL,
+    "emaifecenvn" number,
+    "emaiadjuntos" varchar2(500)
+);
+CREATE TABLE "estadoacta" (
+    "esaccodigos" varchar2(30) NOT NULL,
+    "esacnombres" varchar2(100),
+    "esacdescrips" varchar2(4000 BYTE),
+    "esacactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "estadoclient" (
+    "esclcodigos" varchar2(30) NOT NULL,
+    "esclnombres" varchar2(150),
+    "escldescrips" varchar2(4000 BYTE),
+    "esclactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "estadogrupo" (
+    "esgrcodigos" varchar2(30) NOT NULL,
+    "esgrnombres" varchar2(100),
+    "esgrdescrips" varchar2(4000 BYTE),
+    "esgractivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "estadoorgani" (
+    "esorcodigos" varchar2(30) NOT NULL,
+    "esornombres" varchar2(100),
+    "esordescrips" varchar2(4000 BYTE),
+    "esoractivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "estadoproces" (
+    "esprcodigos" varchar2(30) NOT NULL,
+    "esprnombres" varchar2(100),
+    "esprdescrips" varchar2(4000 BYTE),
+    "espractivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "estadotarea" (
+    "tarecodigos" varchar2(30) NOT NULL,
+    "esaccodigos" varchar2(30) NOT NULL
+);
+CREATE TABLE "estilo" (
+    "esticodigos" varchar2(30) NOT NULL,
+    "estinombres" varchar2(200) NOT NULL,
+    "estidescrips" varchar2(300),
+    "estiarchivos" varchar2(4000 BYTE) NOT NULL
+);
+CREATE TABLE "etapestaord" (
+    "etescodigos" varchar2(30) NOT NULL,
+    "ordenumeros" varchar2(30),
+    "etesestrecis" varchar2(30),
+    "etesestentrs" varchar2(30),
+    "etesfechmovs" varchar2(30)
+);
+CREATE TABLE "evento" (
+    "tiorcodigos" varchar2(30) NOT NULL,
+    "evencodigos" varchar2(30) NOT NULL,
+    "evennombres" varchar2(150),
+    "evendescrips" varchar2(4000 BYTE),
+    "evenactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "formapago" (
+    "fopacodigos" varchar2(30) NOT NULL,
+    "fopanombres" varchar2(150) NOT NULL,
+    "fopatiempon" varchar2(30),
+    "fopacancuotn" number,
+    "fopadescrips" varchar2(4000 BYTE),
+    "fopaactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "formatocarta" (
+    "focacodigos" varchar2(30) NOT NULL,
+    "focanombres" varchar2(100) NOT NULL,
+    "focaplantils" varchar2(4000 BYTE) NOT NULL,
+    "focaestados" char(1) DEFAULT 'A'
+);
+CREATE TABLE "formatoemail" (
+    "foemcodigos" varchar2(30) NOT NULL,
+    "foemnombres" varchar2(100) NOT NULL,
+    "foemasuntos" varchar2(200) NOT NULL,
+    "foemplantils" varchar2(4000 BYTE) NOT NULL,
+    "foemestados" char(1) DEFAULT 'A'
+);
+CREATE TABLE "formulario" (
+    "formcodigon" number DEFAULT 0 NOT NULL,
+    "formnombres" varchar2(255) DEFAULT '' NOT NULL,
+    "formfeccrean" number DEFAULT 0 NOT NULL,
+    "formintrodus" varchar2(4000 BYTE),
+    "formactivos" char(1) DEFAULT 'I'
+);
+CREATE TABLE "funciones" (
+    "reglcodigos" varchar2(30) NOT NULL,
+    "funccodigos" varchar2(30) NOT NULL,
+    "funcnombres" varchar2(100),
+    "funcdescrips" varchar2(4000 BYTE)
+);
+CREATE TABLE "grupo" (
+    "grupcodigon" number NOT NULL,
+    "grupcodigos" varchar2(30) NOT NULL,
+    "grupnombres" varchar2(100),
+    "esgrcodigos" varchar2(30),
+    "grupfchainin" number NOT NULL,
+    "grupfchafinn" number,
+    "grupactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "grupodetalle" (
+    "grupcodigon" number NOT NULL,
+    "perscodigos" varchar2(30) NOT NULL,
+    "persrespons" char(1) DEFAULT 'N'
+);
+CREATE TABLE "gruporecurso" (
+    "grrecodigos" varchar2(30) NOT NULL,
+    "grrenombres" varchar2(100) NOT NULL,
+    "grredescrips" varchar2(4000 BYTE),
+    "grreactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "hactividad" (
+    "hactcodigon" number NOT NULL,
+    "acticodigos" varchar2(30) NOT NULL,
+    "activalorn" float(10),
+    "hactfechregn" number
+);
+CREATE TABLE "hactivitarea" (
+    "hactcodigon" number NOT NULL,
+    "acticodigos" varchar2(30) NOT NULL,
+    "actavalorn" float(10),
+    "actaobligats" varchar2(30),
+    "actaordenn" number,
+    "actaporcetan" float(10),
+    "hactfechreg" number
+);
+CREATE TABLE "infractor" (
+    "tiidcodigos" varchar2(2),
+    "infrcodigos" varchar2(30) NOT NULL,
+    "ticlcodigos" varchar2(30),
+    "infrnombres" varchar2(150),
+    "infrrepreses" varchar2(100),
+    "infrlocalizs" varchar2(100),
+    "infrtelefons" varchar2(100),
+    "locacodigos" varchar2(30),
+    "infrnumfaxs" varchar2(100),
+    "infractivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "lenguaje" (
+    "lengcodigos" varchar2(30) NOT NULL,
+    "lengnombres" varchar2(200) NOT NULL,
+    "lengdescrips" varchar2(4000 BYTE)
+);
+CREATE TABLE "limcumtarea" (
+    "tarecodigos" varchar2(30) NOT NULL,
+    "licucodigos" varchar2(30) NOT NULL,
+    "litacantiemn" number,
+    "unticodigos" varchar2(30)
+);
+CREATE TABLE "limitecumpli" (
+    "licucodigos" varchar2(30) NOT NULL,
+    "licunombres" varchar2(100),
+    "licudescris" varchar2(4000 BYTE),
+    "licufeccrean" number,
+    "licuactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "llave" (
+    "llavcodigos" varchar2(30) NOT NULL,
+    "llavusuauts" varchar2(30) NOT NULL,
+    "llavususols" varchar2(30) NOT NULL,
+    "usuacodigos" varchar2(30),
+    "llavusuutis" varchar2(30),
+    "llavfecingd" number,
+    "llavfecinid" number,
+    "llavfecvend" number,
+    "llavfecusod" number,
+    "llavobservs" varchar2(4000 BYTE),
+    "llavvalors" varchar2(100),
+    "ordenumeros" varchar2(30),
+    "llavactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "localizacion" (
+    "locacodigos" varchar2(30) NOT NULL,
+    "locanombres" varchar2(200),
+    "locadescrips" varchar2(4000 BYTE),
+    "tilocodigos" varchar2(30),
+    "locacodpadrs" varchar2(30),
+    "locaordenn" number,
+    "locazonas" varchar2(30),
+    "locaestados" char(1) DEFAULT 'A'
+);
+CREATE TABLE "mediorecepcion" (
+    "merecodigos" varchar2(30) NOT NULL,
+    "merenombres" varchar2(150) NOT NULL,
+    "mereescrips" varchar2(4000 BYTE),
+    "mereactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "modeloresp" (
+    "morecodigon" number DEFAULT 0 NOT NULL,
+    "morenombres" varchar2(30) DEFAULT '' NOT NULL,
+    "moredescrips" varchar2(4000 BYTE)
+);
+CREATE TABLE "movimialmace" (
+    "moalcodigos" varchar2(30) NOT NULL,
+    "bodecodigos" varchar2(30) NOT NULL,
+    "recucodigos" varchar2(30) NOT NULL,
+    "moalfechmovd" number NOT NULL,
+    "comocodigos" varchar2(30) NOT NULL,
+    "moalcantrecf" float(10) NOT NULL,
+    "perscodigos" varchar2(30) NOT NULL,
+    "tidocodigos" varchar2(30) NOT NULL,
+    "moalnumedocs" varchar2(30) NOT NULL,
+    "moalsignos" char(1) NOT NULL
+);
+CREATE TABLE "numerador" (
+    "numecodigos" varchar2(30) NOT NULL,
+    "numedescrips" varchar2(4000 BYTE),
+    "numeproximon" number
+);
+CREATE TABLE "orden" (
+    "ordenumeros" varchar2(30) NOT NULL,
+    "proccodigos" varchar2(30),
+    "ordesitiejes" varchar2(100),
+    "usuacodigos" varchar2(30),
+    "ordeestaacs" varchar2(30),
+    "ordeobservs" varchar2(4000 BYTE),
+    "ordefecingd" number,
+    "ordefecregd" number,
+    "ordefecvend" number,
+    "ordefecfinad" number,
+    "ordefecentn" number
+);
+CREATE TABLE "orden_log" (
+    "orlonumeron" number NOT NULL,
+    "orlousuarios" varchar2(30),
+    "orlofecingd" number,
+    "ordenumeros" varchar2(30) NOT NULL,
+    "proccodigos" varchar2(30),
+    "ordesitiejes" varchar2(100),
+    "usuacodigos" varchar2(30),
+    "ordeestaacs" varchar2(30),
+    "ordeobservs" varchar2(4000 BYTE),
+    "ordefecingd" number,
+    "ordefecregd" number,
+    "ordefecvend" number,
+    "ordefecfinad" number,
+    "ordefecentn" number
+);
+CREATE TABLE "ordenempresa" (
+    "ordenumeros" varchar2(30) NOT NULL,
+    "contidentis" varchar2(30),
+    "priocodigos" varchar2(30),
+    "tiorcodigos" varchar2(30),
+    "evencodigos" varchar2(30),
+    "causcodigos" varchar2(30),
+    "orgacodigos" varchar2(30),
+    "merecodigos" varchar2(30),
+    "locacodigos" varchar2(30),
+    "oremradicas" varchar2(30),
+    "infrcodigos" varchar2(30),
+    "oremsolucios" varchar2(4000 BYTE),
+    "paciindentis" varchar2(100),
+  	"sesocodigos" varchar2(30),
+  	"couscodigos" varchar2(30),
+  	"ipsecodigosv varchar2(30)
+);
+CREATE TABLE "ordenempresa_log" (
+    "orlonumeron" number NOT NULL,
+    "ordenumeros" varchar2(30) NOT NULL,
+    "contidentis" varchar2(30),
+    "priocodigos" varchar2(30),
+    "tiorcodigos" varchar2(30),
+    "evencodigos" varchar2(30),
+    "causcodigos" varchar2(30),
+    "orgacodigos" varchar2(30),
+    "merecodigos" varchar2(30),
+    "locacodigos" varchar2(30),
+    "oremradicas" varchar2(30),
+    "infrcodigos" varchar2(30),
+    "oremsolucios" varchar2(4000 BYTE),
+    "paciindentis" varchar2(100),
+  	"sesocodigos" varchar2(30),
+  	"couscodigos" varchar2(30),
+  	"ipsecodigosv varchar2(30)
+);
+CREATE TABLE "organizacion" (
+    "orgacodigos" varchar2(30) NOT NULL,
+    "organombres" varchar2(100),
+    "tiorcodigos" varchar2(30),
+    "orgacgpads" varchar2(30),
+    "orgaordenn" number,
+    "orgafechcred" number,
+    "esorcodigos" varchar2(30),
+    "grupcodigos" varchar2(30),
+    "orgatelefo1s" varchar2(30),
+    "orgatelefo2s" varchar2(30),
+    "locacodigos" varchar2(30),
+    "orgaemails" varchar2(200),
+    "orgaactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "personal" (
+    "perscodigos" varchar2(30) NOT NULL,
+    "persidentifs" varchar2(30),
+    "persnombres" varchar2(100),
+    "persapell1s" varchar2(100),
+    "persapell2s" varchar2(100),
+    "persusrnams" varchar2(100),
+    "cargcodigos" varchar2(30),
+    "persprofecs" varchar2(100),
+    "perstelefo1" varchar2(30),
+    "perstelefo2" varchar2(30),
+    "locacodigos" varchar2(30),
+    "persdireccis" varchar2(100),
+    "persemails" varchar2(150),
+    "perscontacts" varchar2(100),
+    "perstelcont" varchar2(30),
+    "persestadoc" char(1) DEFAULT 'A'
+);
+CREATE TABLE "pregformula" (
+    "pregcodigon" number DEFAULT 0 NOT NULL,
+    "formcodigon" number DEFAULT 0 NOT NULL
+);
+CREATE TABLE "pregunta" (
+    "pregcodigon" number DEFAULT 0 NOT NULL,
+    "morecodigon" number DEFAULT 0,
+    "pregpadren" number DEFAULT 0,
+    "pregdescris" varchar2(4000 BYTE) NOT NULL,
+    "temacodigon" number
+);
+CREATE TABLE "prioridad" (
+    "priocodigos" varchar2(30) NOT NULL,
+    "prionombres" varchar2(200),
+    "priodescrips" varchar2(4000 BYTE),
+    "prioactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "proceso" (
+    "proccodigos" varchar2(30) NOT NULL,
+    "procnombres" varchar2(100),
+    "procdescris" varchar2(4000 BYTE),
+    "perscodigos" varchar2(30),
+    "procestinis" varchar2(30),
+    "procestfins" varchar2(30),
+    "procfeccren" number,
+    "orgacodigos" varchar2(30) NOT NULL,
+    "proctiempon" number,
+    "procactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "proveedor" (
+    "provcodigos" varchar2(30) NOT NULL,
+    "provnombres" varchar2(100) NOT NULL,
+    "provnnomreprs" varchar2(100),
+    "provdireccis" varchar2(100),
+    "protelefons" varchar2(30),
+    "provemails" varchar2(100),
+    "provwebs" varchar2(100),
+    "paiscodigos" varchar2(30),
+    "depacodigos" varchar2(30),
+    "ciudcodigos" varchar2(30),
+    "provactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "proveerecurs" (
+    "prrecodigos" varchar2(30) NOT NULL,
+    "provcodigos" varchar2(30) NOT NULL,
+    "recucodigos" varchar2(30) NOT NULL,
+    "prrevalorecf" float(10)
+);
+CREATE TABLE "recorrido" (
+    "recocodigos" varchar2(30) NOT NULL,
+    "ordenumeros" varchar2(30) NOT NULL,
+    "actacodigos" varchar2(30) NOT NULL,
+    "recoactpads" varchar2(30),
+    "recoobligats" varchar2(3),
+    "recoinstancs" char(1),
+    "recofecingn" number,
+    "recoactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "recurso" (
+    "recucodigos" varchar2(30) NOT NULL,
+    "recunombres" varchar2(150) NOT NULL,
+    "grrecodigos" varchar2(30) NOT NULL,
+    "tirecodigos" varchar2(30) NOT NULL,
+    "unmecodigos" varchar2(30) NOT NULL,
+    "recudescrips" varchar2(4000 BYTE),
+    "recuactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "recuseribode" (
+    "resbnumedocu" varchar2(30) NOT NULL,
+    "recucodigos" varchar2(30) NOT NULL,
+    "resbserirecu" varchar2(20) NOT NULL,
+    "resbbodeactu" varchar2(50) NOT NULL,
+    "resbbodeante" varchar2(30) NOT NULL,
+    "resbfechmovi" number NOT NULL,
+    "perscodigos" varchar2(30) NOT NULL
+);
+CREATE TABLE "reglas" (
+    "reglcodigos" varchar2(30) NOT NULL,
+    "reglnombres" varchar2(200) NOT NULL,
+    "regldescrips" varchar2(4000 BYTE) NOT NULL
+);
+CREATE TABLE "reportes" (
+    "repocodigon" number NOT NULL,
+    "reponombres" varchar2(100) NOT NULL,
+    "lengcodigos" varchar2(30) NOT NULL
+);
+CREATE TABLE "reportescampos" (
+    "repocodigon" number NOT NULL,
+    "recacodigon" number NOT NULL,
+    "lengcodigos" varchar2(30) NOT NULL,
+    "recanombres" varchar2(4000 BYTE)
+);
+CREATE TABLE "respuestausu" (
+	"reuscodigon" number DEFAULT 0 NOT NULL,
+    "formcodigon" number DEFAULT 0 NOT NULL,
+    "reusfecingn" number DEFAULT 0 NOT NULL,
+    "usuacodigos" varchar2(30) NOT NULL,
+    "reusdirips" varchar2(200),
+    "ordenumeros" varchar2(30),
+    "orgacodigos" varchar2(30),
+    "contindentis" varchar2(30),
+    "paciindentis" varchar2(100)
+);
+CREATE TABLE "ruta" (
+    "rutacodigon" number NOT NULL,
+    "proccodigos" varchar2(30) NOT NULL,
+    "tarecodigos" varchar2(30) NOT NULL,
+    "rutaesactas" varchar2(30) NOT NULL,
+    "rutatarsigs" varchar2(30),
+    "rutainitars" varchar2(2),
+    "rutaporcumn" float(10)
+);
+CREATE TABLE "rutaregla" (
+    "rutacodigon" number NOT NULL,
+    "reglcodigos" varchar2(30) NOT NULL
+);
+CREATE TABLE "saldo" (
+    "bodecodigos" varchar2(30) NOT NULL,
+    "recucodigos" varchar2(30) NOT NULL,
+    "saldnumdocs" varchar2(30) NOT NULL,
+    "saldrecsaldn" float(10) NOT NULL,
+    "saldfechregn" float(10) NOT NULL
+);
+CREATE TABLE "saldoserie" (
+    "bodecodigos" varchar2(30) NOT NULL,
+    "recucodigos" varchar2(30) NOT NULL,
+    "saserecseris" varchar2(30) NOT NULL,
+    "sasefechregn" float(10) NOT NULL
+);
+CREATE TABLE "tarea" (
+    "tarecodigos" varchar2(30) NOT NULL,
+    "tarenombres" varchar2(100),
+    "orgacodigos" varchar2(30),
+    "taredescris" varchar2(4000 BYTE),
+    "tareactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "tareassincro" (
+    "tasicodigon" number NOT NULL,
+    "proccodigos" varchar2(30) NOT NULL,
+    "tasisigtareas" varchar2(30) NOT NULL,
+    "tasiacttareas" varchar2(30) NOT NULL,
+    "tasiesactas" varchar2(30) NOT NULL,
+    "tasiindice" number,
+    "tasitipsincs" varchar2(30)
+);
+CREATE TABLE "tema" (
+    "temacodigon" number NOT NULL,
+    "ejtecodigon" number NOT NULL,
+    "temanombres" varchar2(100) NOT NULL,
+    "temadescri" varchar2(4000 BYTE)
+);
+CREATE TABLE "tipoarchivo" (
+    "tiarcodigos" varchar2(30) NOT NULL,
+    "tiarnombres" varchar2(200) NOT NULL,
+    "tiarobservas" varchar2(4000 BYTE),
+    "tiarestados" char(1) DEFAULT 'A'
+);
+CREATE TABLE "tipobodega" (
+    "tibocodigos" varchar2(30) NOT NULL,
+    "tibonombres" varchar2(100) NOT NULL,
+    "tibodescrips" varchar2(4000 BYTE)
+);
+CREATE TABLE "tipocliente" (
+    "ticlcodigos" varchar2(30) NOT NULL,
+    "ticlnombres" varchar2(150),
+    "ticldescrips" varchar2(4000 BYTE),
+    "ticlactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "tipocontrato" (
+    "ticocodigos" varchar2(30) NOT NULL,
+    "ticonombres" varchar2(150) NOT NULL,
+    "ticodescrips" varchar2(4000 BYTE),
+    "ticoactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "tipodocument" (
+    "tidocodigos" varchar2(30) NOT NULL,
+    "tidonombres" varchar2(150) NOT NULL,
+    "tidodescrips" varchar2(4000 BYTE),
+    "tidoactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "tipoidentifi" (
+    "tiidcodigos" varchar2(2) NOT NULL,
+    "tiidnombres" varchar2(22),
+    "tiiddescrips" varchar2(4000 BYTE),
+    "tiidactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "tipolocaliza" (
+    "tilocodigos" varchar2(30) NOT NULL,
+    "tilonombres" varchar2(200),
+    "tilodesc" varchar2(4000 BYTE),
+    "tilocodpadrs" varchar2(30),
+    "tiloimagens" varchar2(200),
+    "tiloestados" char(1) DEFAULT 'A'
+);
+CREATE TABLE "tipomoneda" (
+    "timocodigos" varchar2(30) NOT NULL,
+    "timonombres" varchar2(150) NOT NULL,
+    "timoequivaln" float(10),
+    "timodescrips" varchar2(4000 BYTE),
+    "timoactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "tipoorden" (
+    "tiorcodigos" varchar2(30) NOT NULL,
+    "tiornombres" varchar2(150),
+    "tiordescrips" varchar2(4000 BYTE),
+    "tioractivos" char(1) DEFAULT 'A',
+    "tiorpeson" number DEFAULT 0
+);
+CREATE TABLE "tipoorgani" (
+    "tiorcodigos" varchar2(30) NOT NULL,
+    "tiornombres" varchar2(200),
+    "tiordesc" varchar2(4000 BYTE),
+    "tiorcodpadrs" varchar2(30),
+    "tioractivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "tiporecurso" (
+    "tirecodigos" varchar2(30) NOT NULL,
+    "tirenombres" varchar2(100) NOT NULL,
+    "tiredescrips" varchar2(4000 BYTE)
+);
+CREATE TABLE "transfertarea" (
+    "trtacodigos" varchar2(30) NOT NULL,
+    "tarecodigos" varchar2(30) NOT NULL,
+    "orgacodigos" varchar2(30) NOT NULL,
+    "trtafechan" number NOT NULL,
+    "trtafecingn" number NOT NULL,
+    "trtaobservas" varchar2(4000 BYTE)
+);
+CREATE TABLE "unidadmedida" (
+    "unmecodigos" varchar2(30) NOT NULL,
+    "unmenombres" varchar2(100) NOT NULL,
+    "unmesiglas" varchar2(10) NOT NULL,
+    "unmedescrips" varchar2(4000 BYTE),
+    "unmeactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "unidadtiempo" (
+    "unticodigos" varchar2(30) NOT NULL,
+    "untinombres" varchar2(100),
+    "untidescris" varchar2(4000 BYTE),
+    "untiactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "validacion" (
+    "valicodigos" varchar2(30) NOT NULL,
+    "proccodigos" varchar2(30),
+    "tarecodigos" varchar2(30),
+    "valiestacts" varchar2(30),
+    "valiestants" varchar2(30),
+    "validescrips" varchar2(4000 BYTE)
+);
+CREATE TABLE "valordimension" (
+    "dimecodigon" number NOT NULL,
+    "dedinombres" varchar2(12) NOT NULL,
+    "vadicodigon" number NOT NULL,
+    "vadidominios" varchar2(100) NOT NULL,
+    "vadidomivals" varchar2(100) NOT NULL,
+    "vadivalors" varchar2(4000 BYTE) NOT NULL
+);
+CREATE TABLE "valormoderesp" (
+    "varecodigon" number DEFAULT 0 NOT NULL,
+    "morecodigon" number DEFAULT 0 NOT NULL,
+    "varenombres" varchar2(200) NOT NULL,
+    "varedescrips" varchar2(4000 BYTE)
+);
+CREATE TABLE "tipoproducto" (
+    "tiprcodigos" varchar2(30) NOT NULL,
+    "tiprnombres" varchar2(200) NOT NULL,
+    "tiprdescrips" varchar2(4000 BYTE),
+    "tipractivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "producto" (
+    "prodcodigos" varchar2(30) NOT NULL,
+    "prodnombres" varchar2(200) NOT NULL,
+    "marccodigos" varchar2(30),
+    "modecodigos" varchar2(30),
+    "tiprcodigos" varchar2(30) NOT NULL,
+    "prodversions" varchar2(30),
+    "proddescrips" varchar2(4000 BYTE),
+    "prodcoston" float(10),
+    "prodvalorn" float(10),
+    "prodfechinin" number,
+    "prodfechfinn" number,
+    "prodfotos" varchar2(200),
+    "prodactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "relatarepers" (
+    "retpcodigos" varchar2(30) NOT NULL,
+    "proccodigos" varchar2(30) NOT NULL,
+    "tarecodigos" varchar2(30) NOT NULL,
+    "retpfeccren" number,
+    "retpactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "detaretape" (
+    "retpcodigos" varchar2(30) NOT NULL,
+    "drtpcodigos" varchar2(30) NOT NULL,
+    "orgacodigos" varchar2(30) NOT NULL
+);
+CREATE TABLE "enlace" (
+    "enlacodigos" varchar2(30) NOT NULL,	
+    "ordenumeros" varchar2(30) NOT NULL,
+    "enlaordenus" varchar2(30) NOT NULL,
+    "enlafecregn" number NOT NULL,
+    "usuacodigos" varchar2(30)
+);
+CREATE TABLE "casosproinci" (
+    "capicodigos" varchar2(30) NOT NULL,
+    "capinumordps" varchar2(30) NOT NULL, 
+    "capinumordis" varchar2(30) NOT NULL,
+    "capifecregn" number NOT NULL,
+    "usuacodigos" varchar2(30)
+);
+CREATE TABLE "organumerador"(
+  "orgacodigos" varchar2(30) NOT NULL,
+  "numeproximon" number
+);
+CREATE TABLE "logrotacion"(
+  "loroorolcods" varchar2(30) NOT NULL,
+  "loroornecods" varchar2(30) NOT NULL,
+  "loroornenoms" varchar2(100) NOT NULL,
+  "loroorcopaos" varchar2(30) NOT NULL,
+  "loroorcopans" varchar2(30) NOT NULL,
+  "loroordpads"  varchar2(4000 BYTE),
+  "loroordnews"  varchar2(4000 BYTE),
+  "lorofechregn" number,
+  "usuacodigos" varchar2(100) NOT NULL
+);
+CREATE TABLE "categoria" (
+  "catecodigon" number NOT NULL,
+  "catenombres" varchar2(100) NOT NULL,
+  "catedescris" varchar2(4000 BYTE),
+  "cateactivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "entrada" (
+  "entrcodigon" number NOT NULL,
+  "entrusucreas" varchar2(100) NOT NULL,
+  "entrfechorun" number NOT NULL,
+  "agprcodigos" varchar2(30),
+  "catecodigon" number NOT NULL,
+  "entrdescris" varchar2(4000 BYTE) NOT NULL,
+  "entrduracion" number NOT NULL,
+  "entractivas" varchar2(2) DEFAULT 'A'
+);
+CREATE TABLE "organentrada" (
+  "entrcodigon" number NOT NULL,
+  "orgacodigos" varchar2(30) NOT NULL,
+  "perscodigos" varchar2(30)
+);
+CREATE TABLE "estadoentrada" (
+  "esencodigos" varchar2(30) NOT NULL,
+  "esennombres" varchar2(100) NOT NULL,
+  "esenactivas" char(1) DEFAULT 'A' NOT NULL
+);
+CREATE TABLE "agendapriori" (
+  "agprcodigos" varchar2(30) NOT NULL,
+  "agprnombres" varchar2(200),
+  "agprdescrips" varchar2(4000 BYTE),
+  "agpractivas" char(1) DEFAULT 'A'
+);
+CREATE TABLE "refercross" (
+  "ordenumexps" varchar2(100),
+  "ordenumeros" varchar2(30),
+  "actacodigos" varchar2(30),
+  "entrcodigon" number NOT NULL,
+  "recrcodigon" number NOT NULL
+);
+CREATE TABLE "preentrada" (
+  "preecodigon" number NOT NULL,
+  "catecodigon" number NOT NULL,
+  "contcodigon" number NOT NULL,
+  "preedescris" varchar2(4000 BYTE),
+  "preefecregn" number,
+  "entrcodigon" number
+);
+CREATE TABLE "segurisocial" (
+    "sesocodigos" varchar2(30) NOT NULL,
+    "sesonombres" varchar2(150),
+    "sesodescrips" varchar2(4000 BYTE),
+    "sesoactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "condiusuario" (
+    "couscodigos" varchar2(30) NOT NULL,
+    "cousnombres" varchar2(150),
+    "cousdescrips" varchar2(4000 BYTE),
+    "cousactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "tipoexamen" (
+    "tiexcodigos" varchar2(30) NOT NULL,
+    "tiexnombres" varchar2(150),
+    "tiexdescrips" varchar2(4000 BYTE),
+    "tiexactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "ipsservicio" (
+    "ipsecodigos" varchar2(30) NOT NULL,
+    "ipsenombres" varchar2(150),
+    "ipsedescrips" varchar2(4000 BYTE),
+    "ipseactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "sexo" (
+    "sexocodigos" char(1) NOT NULL,
+    "sexonombres" varchar2(9),
+    "sexoobservs" varchar2(4000 BYTE),
+    "sexoactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "paciente" (
+    "paciindentis" varchar2(100) NOT NULL,
+    "tiidcodigos" varchar2(2),
+    "paciprinoms" varchar2(20),
+    "pacisegnoms" varchar2(30),
+    "pacipriapes" varchar2(30),
+    "pacisegapes" varchar2(30),
+    "pacifecnacis" number,
+    "sexocodigos" char(1),
+    "paciemail" varchar2(100),
+    "locacodigos" varchar2(30),
+    "pacidirecios" varchar2(100),
+    "pacitelefons" varchar2(13),
+    "pacinumcels" varchar2(13),
+    "paciobservs" varchar2(4000 BYTE),
+    "paciactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "equivalencias" (
+	"equicodigon" number NOT NULL,
+	"equitablcros" varchar2(30) NOT NULL,
+	"equicampcros" varchar2(15) NOT NULL,
+	"equivalcros" varchar2(15) NOT NULL,
+	"equinomcros" varchar2(250) NOT NULL,
+	"equiareacros" varchar2(30) NOT NULL,
+	"equitabldocs" varchar2(30) NOT NULL,
+	"equicampdocs" varchar2(15) NOT NULL,
+	"equivaldocs" number NOT NULL,
+	"equinomdocs" varchar2(250) NOT NULL,
+	"equiareadocs" varchar2(30) NOT NULL,
+	"equiseridocs" varchar2(30) NOT NULL,
+	"equifechacrn"  number NOT NULL,
+	"equiestados" char(1) NOT NULL
+);
+CREATE TABLE "equivalenciacaso" (
+	"eqcacodigon" number NOT NULL,
+	"equicodigon" number NOT NULL,
+	"ordenumeros" varchar2(30) NOT NULL,
+	"equifecharen" number NOT NULL
+);
+CREATE TABLE "integralog" (
+	"inlocodigon" number NOT NULL,
+	"inlofchaejin" number NOT NULL,
+	"inloidcrosss" varchar2(30) NOT NULL,
+	"inlofchaejfn" number,
+	"inlousuarios" varchar2(30),
+	"inloapps"     varchar2(100) NOT NULL,
+ 	"inloerrors"   varchar2(4000 BYTE),
+	"inloestados" char(1) DEFAULT 'F'
+);
+CREATE TABLE "intelogdoc" (
+	"inlocodigon" number NOT NULL,
+	"nmbre_srie" varchar2(100),
+	"nmbre_tpo_crpta" varchar2(100),
+	"nmbre_crpta" varchar2(200),
+	"nmbre_tpo_dcto" varchar2(100),
+	"nmbre_dcto" varchar2(200),
+	"ext" varchar2(30),
+	"fncnrio" varchar2(200),
+	"c_indice1" varchar2(100),
+	"c_indice2" varchar2(100),
+	"c_indice3" varchar2(100),
+	"c_indice4" varchar2(100),
+	"c_descripcion" varchar2(4000 BYTE),
+	"d_indice1" varchar2 (100),
+	"d_indice2" varchar2 (100),
+	"d_indice3" varchar2 (100),
+	"d_indice4" varchar2 (100),
+	"d_indice5" varchar2 (100),
+	"d_indice6" varchar2 (100),
+	"d_indice7" varchar2 (100),
+	"d_indice8" varchar2 (100),
+	"d_indice9" varchar2 (100),
+	"d_descripcion" varchar2(4000 BYTE),
+	"d_id_cross" varchar2(100) NOT NULL,
+	"exto" varchar2(100),
+	"texto_error" varchar2(4000 BYTE)
+);
+CREATE TABLE "extensarchiv" (
+    "exarcodigos" varchar2(3) NOT NULL,
+    "exarnombres" varchar2(50),
+    "exarobservs" varchar2(4000 BYTE),
+    "exaractivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "tablastipole" (
+    "tatlcodigos" varchar2(30) NOT NULL,
+    "tatlnomtabls" varchar2(30) NOT NULL,
+    "tatlnomcacos" varchar2(200) NOT NULL,
+    "tatlnocadess" varchar2(30) NOT NULL,
+    "tatlvalcods" varchar2(200) NOT NULL,
+    "tatlvaldescs" varchar2(4000 BYTE),
+    "langcodigos" varchar2(100),
+    "tatlvaldesls" varchar2(4000 BYTE)
+);
+CREATE TABLE "solicitante"(
+    "solicodigos" varchar2(30) NOT NULL,
+    "contcodigon" number,
+    "cliecodigos" varchar2(30),
+    "solifecregn" number,
+    "usuacodigos" varchar2(30),
+    "soliactivos" char(1) DEFAULT 'A'
+);
+CREATE TABLE "actatmp" (
+    "actmcodigos" varchar2(30) NOT NULL,
+    "actmnombres" varchar2(100),
+    "actmfechregn" number,
+    "usuacodigos" varchar2(30),
+    "actmactivas" char(1) DEFAULT 'A'::varchar
+);
+CREATE VIEW "view_solicitante" AS SELECT "solicitante"."solicodigos" ,"solicitante"."contcodigon" ,
+ "contacto"."contindentis" || ' -- ' || COALESCE("contacto"."contprinoms", '') || ' ' || COALESCE("contacto"."contsegnoms", '') || ' ' || COALESCE("contacto"."contpriapes", '') || ' ' || COALESCE("contacto"."contsegapes", '') AS "contnombres",
+ "solicitante"."cliecodigos" ,"cliente"."clienombres" ,"solicitante"."solifecregn" ,"solicitante"."usuacodigos" ,"solicitante"."soliactivos" 
+ FROM "solicitante" LEFT JOIN "cliente" ON ("solicitante"."cliecodigos"="cliente"."cliecodigos"), "contacto" 
+ WHERE "solicitante"."contcodigon"="contacto"."contcodigon" ;

@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2021-08-07T03:55:55.951066Z
+K 7
+svn:log
+V 130
+Se arregla el problema del charset en la interfaz de solicitante que es emergente desde la interfaz de caso. Se coloca utf8_decode
+END

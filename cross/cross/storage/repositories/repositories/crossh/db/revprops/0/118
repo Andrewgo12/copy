@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 4
+root
+K 8
+svn:date
+V 27
+2020-10-08T17:06:13.507260Z
+K 7
+svn:log
+V 86
+Se quita el método sendGenericEmail en el servicio de General para la alerta de casos
+END

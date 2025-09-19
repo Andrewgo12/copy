@@ -1,0 +1,191 @@
+# DIAGRAMA DE FLUJO - PROYECTO CROSS300
+
+## ESTRUCTURA COMPLETA DEL PROYECTO
+
+```
+cross300/
+├── index.php (PUNTO DE ENTRADA)
+│
+├── config/
+│   ├── config.inc.php (Configuración principal)
+│   ├── application.conf.data
+│   ├── application.constant.data
+│   ├── web.conf.data (Configuración de vistas)
+│   ├── dependences.txt
+│   ├── SaveConfigurationFile.php
+│   ├── SaveConstantFile.php
+│   ├── SaveNavigationFile.php
+│   └── language/
+│       ├── en/ (Inglés)
+│       │   ├── en.generic.php
+│       │   ├── en.webuser.php
+│       │   ├── en.messages.php
+│       │   └── [otros archivos de idioma]
+│       └── es/ (Español)
+│           ├── es.generic.php
+│           ├── es.webuser.php
+│           ├── es.messages.php
+│           ├── es.orden.php
+│           ├── es.solucion.php
+│           └── [otros archivos de idioma]
+│
+├── data/
+│   ├── anexos/ (Archivos adjuntos)
+│   ├── cache/ (Archivos temporales)
+│   └── Pgsql/ (Clases de base de datos PostgreSQL)
+│       ├── FeCrPgsqlOrden.class.php
+│       ├── FeCrPgsqlSolucion.class.php
+│       ├── FeCrPgsqlActaempresa.class.php
+│       ├── FeCrPgsqlCompromiso.class.php
+│       └── [otras clases de BD]
+│
+├── domain/ (Lógica de negocio)
+│   ├── FeCrOrdenManager.class.php
+│   ├── FeCrSolucionManager.class.php
+│   ├── FeCrActaempresaManager.class.php
+│   ├── FeCrCompromisoManager.class.php
+│   ├── FeCrReportesManager.class.php
+│   └── [otros managers]
+│
+├── rs/ (Servicios REST)
+│   ├── jsrs.php
+│   └── JsrsHandler.php
+│
+├── templates_c/ (Templates compilados Smarty)
+│   ├── es/
+│   │   ├── Form_Orden.tpl.php
+│   │   ├── Form_WebUser.tpl.php
+│   │   ├── Form_Solucion.tpl.php
+│   │   └── [otros templates compilados]
+│   └── en/
+│       └── [templates en inglés]
+│
+├── web/
+│   ├── commands/ (Comandos MVC)
+│   │   ├── FeCrCmdDefaultWebUser.class.php
+│   │   ├── FeCrCmdDefaultOrden.class.php
+│   │   ├── FeCrCmdAddOrden.class.php
+│   │   ├── FeCrCmdUpdateOrden.class.php
+│   │   ├── FeCrCmdDeleteOrden.class.php
+│   │   ├── FeCrCmdDefaultSolucion.class.php
+│   │   ├── FeCrCmdAddSolucion.class.php
+│   │   ├── FeCrCmdDefaultReportsCenter.class.php
+│   │   └── [otros comandos CRUD]
+│   │
+│   ├── css/ (Estilos)
+│   │   ├── estilos.css
+│   │   └── estilocvc.css
+│   │
+│   ├── images/ (Imágenes)
+│   │   ├── pager/
+│   │   │   ├── derecha.gif
+│   │   │   ├── izquierda.gif
+│   │   │   └── [otros iconos paginación]
+│   │   ├── actualizar_002.gif
+│   │   ├── borrar.gif
+│   │   ├── crear.gif
+│   │   ├── editar.gif
+│   │   └── [otros iconos]
+│   │
+│   ├── js/ (JavaScript)
+│   │   ├── prototype/ (Framework Prototype)
+│   │   ├── AutoCompletar.js
+│   │   ├── jsOrden.js
+│   │   ├── jsreportscenter.js
+│   │   ├── libCalendar.js
+│   │   └── [otros scripts]
+│   │
+│   ├── plugins/ (Plugins Smarty)
+│   │   ├── function.textfield.php
+│   │   ├── function.select_row_table.php
+│   │   ├── function.consult_table.php
+│   │   ├── function.viewfichaord.php
+│   │   ├── function.listadoorden.php
+│   │   └── [otros plugins]
+│   │
+│   └── templates/ (Templates Smarty originales)
+│       ├── Form_WebUser.tpl (Login/Usuario)
+│       ├── Form_Orden.tpl (Órdenes)
+│       ├── Form_Solucion.tpl (Soluciones)
+│       ├── Form_Actaempresa.tpl (Actas)
+│       ├── Form_Compromiso.tpl (Compromisos)
+│       ├── Form_ReportsCenter.tpl (Centro reportes)
+│       ├── Form_ListadoOrden.tpl (Listado órdenes)
+│       ├── Form_ConsultSolucion.tpl (Consulta soluciones)
+│       ├── Form_AdminTareas.tpl (Admin tareas)
+│       └── [otros templates]
+│
+└── tmp*.xls (Archivos Excel temporales)
+```
+
+## FLUJO DE EJECUCIÓN
+
+```
+1. ENTRADA
+   index.php
+   ↓
+   
+2. CONFIGURACIÓN
+   config/config.inc.php
+   ↓ Carga Application class
+   ↓ Define directorios
+   
+3. FRONT CONTROLLER
+   Web/FrontController.class.php
+   ↓ WebRegistry::getWebCommand()
+   ↓ Obtiene acción de $_REQUEST["action"]
+   
+4. COMANDO
+   web/commands/FeCrCmd*.class.php
+   ↓ execute()
+   ↓ Lógica de negocio
+   
+5. MANAGER (si necesario)
+   domain/FeCr*Manager.class.php
+   ↓ Procesa datos
+   
+6. BASE DE DATOS (si necesario)
+   data/Pgsql/FeCrPgsql*.class.php
+   ↓ Operaciones CRUD
+   
+7. VISTA
+   WebRegistry::getWebView()
+   ↓ Carga template
+   
+8. TEMPLATE
+   web/templates/Form_*.tpl
+   ↓ TemplateView::show()
+   ↓ Smarty rendering
+   
+9. SALIDA
+   HTML generado al navegador
+```
+
+## MÓDULOS PRINCIPALES
+
+### GESTIÓN DE ÓRDENES
+- Crear, editar, eliminar órdenes
+- Listado y consulta de órdenes
+- Seguimiento de órdenes
+
+### GESTIÓN DE SOLUCIONES
+- Registro de soluciones
+- Consulta de soluciones
+- Anexos y documentos
+
+### REPORTES
+- Centro de reportes
+- Reportes consolidados
+- Reportes detallados
+- Tiempos de ejecución
+
+### ADMINISTRACIÓN
+- Gestión de usuarios
+- Administración de tareas
+- Configuración del sistema
+- Transferencia de tareas
+
+### SOPORTE MULTIIDIOMA
+- Español (es/)
+- Inglés (en/)
+- Archivos de traducción por módulo

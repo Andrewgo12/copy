@@ -1,0 +1,323 @@
+function jsCleanSelect(sbId){
+	//acceso al objeto
+	var objSelect = document.getElementById(sbId); 
+	objSelect.options.length = 0;
+	objSelect.options[0] = new Option("---" ,"");
+}
+/**
+* Propiedad intelectual de FullEngine
+*
+* Muestra o esconde un div 
+* @author freina
+* @date @date 10-Jul-2009 13:59
+* @location Cali-Colombia
+*/
+function jsDrawdiv(sbId){
+	var sbBrowser='';
+	sbBrowser=jsBrowser();
+ 	contenedor = document.getElementById(sbId);
+ 	if(sbBrowser =='IE'){
+ 		 contenedor.style.visibility='visible';
+		contenedor.style.display='inline';
+ 	}else{
+ 		contenedor.style.visibility='visible';
+		contenedor.style.display='inline';
+ 	}
+ 	return true;
+}
+
+/**
+* Propiedad intelectual de FullEngine
+*
+* Esconde un div
+* @author freina
+* @date @date 10-Jul-2009 13:59
+* @location Cali-Colombia
+*/
+function jsErasediv(sbId){
+	var sbBrowser=''; 
+	sbBrowser=jsBrowser();
+ 	contenedor = document.getElementById(sbId);
+ 	if(sbBrowser =='IE'){
+ 		contenedor.style.visibility='hidden';
+		contenedor.style.display='none';
+ 	}
+ 	else{
+ 		contenedor.style.visibility='hidden';
+		contenedor.style.display='none';
+ 	}
+ 	return true;
+}
+
+/**
+* Propiedad intelectual de FullEngine
+*
+* determina el navegador
+* @author freina
+* @date 10-Jul-2009 13:59
+* @location Cali-Colombia
+*/
+function jsBrowser(){
+  if (document.layers) return "NS";
+  if (document.all) {
+		// But is it really IE?
+		// convert all characters to lowercase to simplify testing
+		var agt=navigator.userAgent.toLowerCase();
+		var is_opera = (agt.indexOf("opera") != -1);
+		var is_konq = (agt.indexOf("konqueror") != -1);
+		if(is_opera) {
+			return "OPR";
+		} else {
+			if(is_konq) {
+				return "KONQ";
+			} else {
+				// Really is IE
+				return "IE";
+			}
+		}
+  }
+  if (document.getElementById) return "MOZ";
+  return "OTHER";
+}
+function clearContainer(sbId){
+	contenedor = document.getElementById(sbId);
+	contenedor.innerHTML = '';
+	jsErasediv(sbId);
+}
+function serialize(rcArray){
+	var nuCont = 0;
+	var nuCant = 0;
+	nuCant = rcArray.length;
+	var sbString = 'a:'+nuCant+':{';
+	for(nuCont=0; nuCont<nuCant; nuCont++){
+		sbString +='i:'+nuCont+';a:2:{i:0;s:'+rcArray[nuCont][0].length+':"'+rcArray[nuCont][0]+'";i:1;s:'+rcArray[nuCont][1].length+':"'+rcArray[nuCont][1]+'";}';
+	}
+	sbString += '}';
+	
+	return sbString;
+}
+function jsAction(){
+	clearContainer("div_respuesta");
+}
+/**
+* Copyright 2009 FullEngine
+* 
+* Carga la informacion de un formulario si este esta almacenado
+* @author freina<freina@parquesoft.com>
+* @param string action
+* @date 30-Jul-2009 18:12
+* @location Cali-Colombia
+*/
+function jsShowFormulario(){
+	
+	var params='';
+	var objFormcodigon= new Object;
+	var sbAction='FeEnCmdShowFormulario';
+	objFormcodigon = document.getElementById('formcodigon');
+	var params = 'action='+sbAction+'&formcodigon='+objFormcodigon.value;
+	
+	
+	//alert(params);
+	var opt = {
+	    // Use POST
+	    method: 'post',
+	    // Send this lovely data
+	    postBody: params,
+	    // Handle successful response
+	    onSuccess: showResponse,
+	    // Handle 404
+	    on404: function(t) {
+	        alert('Error 404: location "' + t.statusText + '" was not found.');
+	    },
+	    // Handle other errors
+	    onFailure: function(t) {
+	        alert('Error ' + t.status + ' -- ' + t.statusText);
+	    }
+	}
+
+	new Ajax.Request('index.php', opt);
+}
+function showResponse(req){
+	//se limpia el container
+	clearContainer("div_encuesta");
+	var rcRequest = eval(req.responseText);
+	if(rcRequest[0]==1){
+		contenedor = document.getElementById("div_encuesta");
+		jsDrawdiv("div_encuesta");
+		contenedor.innerHTML = decodeBase64(rcRequest[1]);
+	}else{
+		alert(decodeBase64(rcRequest[1]));
+	}
+}
+//=====================
+function jsSelectedAnswer(obj){
+	
+	var params='';
+	var rcTmp= new Array();
+	rcTmp = obj.name.split("_");
+	var sbAction='FeEnCmdDrawFormulario';
+	var objFormcodigon= new Object;
+	objFormcodigon = document.getElementById('formcodigon');
+	var params = 'action='+sbAction+'&oprecodigon='+obj.value+'&pregcodigon='+rcTmp[0]+'&sbDiv='+rcTmp[2];
+	
+	
+	//alert(params);
+	var opt = {
+	    // Use POST
+	    method: 'post',
+	    // Send this lovely data
+	    postBody: params,
+	    // Handle successful response
+	    onSuccess: showResponseSelected,
+	    // Handle 404
+	    on404: function(t) {
+	        alert('Error 404: location "' + t.statusText + '" was not found.');
+	    },
+	    // Handle other errors
+	    onFailure: function(t) {
+	        alert('Error ' + t.status + ' -- ' + t.statusText);
+	    }
+	}
+
+	new Ajax.Request('index.php', opt);
+}
+function showResponseSelected(req){
+	
+	var rcRequest = eval(req.responseText);
+	var sbId='';
+	//se limpia el container
+	if(rcRequest[0]==1){
+		sbId = "div_"+rcRequest[2];
+		clearContainer(sbId);
+		contenedor = document.getElementById(sbId);
+		jsDrawdiv(sbId);
+		contenedor.innerHTML = decodeBase64(rcRequest[1]);
+	}else{
+		alert(decodeBase64(rcRequest[1]));
+	}
+}
+
+function jsSaveEncuesta(){
+	
+	var params='';
+	var sbTmp = '';
+	var sbAction='FeEnCmdSaveEncuesta';
+	var objContidentis= new Object;
+	objContidentis = document.getElementById('contidentis');
+	var objOrgacodigos= new Object;
+	objOrgacodigos = document.getElementById('orgacodigos');
+	var objOrdenumeros= new Object;
+	objOrdenumeros = document.getElementById('ordenumeros');
+	var objPaciindentis= new Object;
+	objPaciindentis = document.getElementById('paciindentis');
+	console.log(objContidentis + " "+ objOrgacodigos + " "+ objPaciindentis);
+	var params = 'action='+sbAction+'&contidentis='+objContidentis.value+'&orgacodigos='
+	+objOrgacodigos.value+'&ordenumeros='+objOrdenumeros.value+'&paciindentis='+objPaciindentis.value;
+	
+	//se determinan los objetos textarea y se almacenan
+	sbTmp = jsgetTextarea();
+	
+	params += '&sbDesc='+sbTmp;
+	
+	//alert(params);
+	var opt = {
+	    // Use POST
+	    method: 'post',
+	    // Send this lovely data
+	    postBody: params,
+	    // Handle successful response
+	    onSuccess: showResponseSave,
+	    // Handle 404
+	    on404: function(t) {
+	        alert('Error 404: location "' + t.statusText + '" was not found.');
+	    },
+	    // Handle other errors
+	    onFailure: function(t) {
+	        alert('Error ' + t.status + ' -- ' + t.statusText);
+	    }
+	}
+
+	new Ajax.Request('index.php', opt);
+}
+function showResponseSave(req){
+	var rcRequest = eval(req.responseText);
+	alert(decodeBase64(rcRequest[1]));
+	if(rcRequest[0]){
+		document.frmEncuesta.action.value="FeEnCmdDefaultEncuesta";
+		document.frmEncuesta.submit();
+	}
+}
+function jsgetTextarea(){
+	var nuElements = 0;
+	var nuCont = 0;
+	var nuRow = 0;
+	var sbName = '';
+	var sbId = '';
+	var sbResult = '';
+	var objObject = new Object;
+	var rcTmp = new Array();
+		
+	//Recorre el formulario
+	nuElements = document.forms[0].length;
+	for(nuCont;nuCont<nuElements;nuCont++){
+		objObject =document.forms[0].elements[nuCont]; 
+		if(objObject.type == "textarea" && objObject.value!=''){
+			sbName = objObject.name;
+			sbId = objObject.id;
+			rcTmp[nuRow] = new Array(sbId,encodeBase64(objObject.value));
+			nuRow ++;
+		}
+	}
+	if(nuRow){
+		sbResult = serialize(rcTmp);
+	}
+	return sbResult;
+}
+function jsSaveEncuestaWeb(){
+	var params='';
+	var sbTmp = '';
+	var sbAction='FeEnCmdSaveEncuesta';
+	var objContidentis= new Object;
+	objContidentis = document.getElementById('contidentis');
+	var objOrgacodigos= new Object;
+	objOrgacodigos = document.getElementById('orgacodigos');
+	var objOrdenumeros= new Object;
+	objOrdenumeros = document.getElementById('ordenumeros');
+	var objPaciindentis= new Object;
+	objPaciindentis = document.getElementById('paciindentis');
+	var params = 'action='+sbAction+'&contidentis='+objContidentis.value+'&orgacodigos='
+	+objOrgacodigos.value+'&ordenumeros='+objOrdenumeros.value+'&paciindentis='+objPaciindentis.value;
+	
+	//se determinan los objetos textarea y se almacenan
+	sbTmp = jsgetTextarea();
+	
+	params += '&sbDesc='+sbTmp;
+	
+	//alert(params);
+	var opt = {
+	    // Use POST
+	    method: 'post',
+	    // Send this lovely data
+	    postBody: params,
+	    // Handle successful response
+	    onSuccess: showResponseSaveWeb,
+	    // Handle 404
+	    on404: function(t) {
+	        alert('Error 404: location "' + t.statusText + '" was not found.');
+	    },
+	    // Handle other errors
+	    onFailure: function(t) {
+	        alert('Error ' + t.status + ' -- ' + t.statusText);
+	    }
+	}
+
+	new Ajax.Request('index.php', opt);
+}
+function showResponseSaveWeb(req){
+	var rcRequest = eval(req.responseText);
+	alert(decodeBase64(rcRequest[1]));
+	if(rcRequest[0]){
+		document.frmEncuesta.action.value="FeEnCmdDefaultEncuestaWeb";
+		document.frmEncuesta.submit();
+	}
+}
